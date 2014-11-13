@@ -1,0 +1,26 @@
+Admin
+====================
+username : admin
+password : admin
+
+ORGANIZATIONS
+====================
+
+1.TALC
+username :talc123
+password :talc123
+
+2.CONNECTNCABS
+username :connectncabs
+password :connectncabs
+
+USERS
+===================
+
+1.NIJO
+username :nijojoseph
+password :nijo123
+
+1.DIVYA
+username :divya
+password :divya123
