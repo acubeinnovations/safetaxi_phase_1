@@ -18,7 +18,7 @@ define('FILE_WRITE_MODE', 0666);
 define('DIR_READ_MODE', 0755);
 define('DIR_WRITE_MODE', 0777);
 
-define('PRODUCT_NAME','SAFE TAXI PHASE 1');
+define('PRODUCT_NAME','SAFE-TAXI PHASE-1');
 
 define('SYSTEM_ADMINISTRATOR',1);
 define('FRONT_DESK',2);
