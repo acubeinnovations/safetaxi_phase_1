@@ -14,12 +14,10 @@
 if(!isset($customer)){
 $customer='';
 }
-if(!isset($customer_type_id)){
-$customer_type_id='';
+if(!isset($customer_status_id)){
+$customer_status_id='';
 }
-if(!isset($customer_group_id)){
-$customer_group_id='';
-}
+
 if(!isset($mobile)){
 $mobile='';
 }
@@ -40,11 +38,8 @@ $mobile='';
 					<td><?php echo form_input(array('name'=>'mobile','id'=>'mobile','class'=>'mobile form-control' ,'placeholder'=>'Mobile Number','value'=>$mobile)); ?></td>
 						<td><?php $class="form-control";
 							  $id='c_type';
-						echo $this->form_functions->populate_dropdown('customer_type_id',$customer_types,$customer_type_id,$class,$id,$msg="Select Customer Type");?> </td>
-						 <td><?php $class="form-control";
-							  $id='c_group';
-							 
-						echo $this->form_functions->populate_dropdown('customer_group_id',$customer_groups,$customer_group_id,$class,$id,$msg="Select Customer Group");?> </td>
+						echo $this->form_functions->populate_dropdown('customer_status_id',$customer_statuses,$customer_status_id,$class,$id,$msg="Select Customer status");?> </td>
+						
 					    <td><?php echo form_submit("customer_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
 						<td><?php echo form_open(  base_url().'front-desk/customer');
@@ -77,7 +72,7 @@ echo form_close();?></td>
 					    <th>Contact Details</th>
 					    <th>Trip Details</th>	
 						<th>Current Status</th>	
-						<th>Account Statement</th>
+						
 						
 					</tr>
 					<?php
@@ -86,15 +81,13 @@ echo form_close();?></td>
 					?>
 					<tr>
 						
-						<td><?php echo anchor(base_url().'front-desk/customer/'.$customers[$customer_index]['id'],$customers[$customer_index]['name']).br();
-if($customers[$customer_index]['customer_group_id']==gINVALID || $customers[$customer_index]['customer_group_id']==0){ echo " ";}else{echo $customer_groups[$customers[$customer_index]['customer_group_id']].br();}if($customers[$customer_index]['customer_type_id']==gINVALID || $customers[$customer_index]['customer_type_id']==0){ echo " ";}else{echo $customer_types[$customers[$customer_index]['customer_type_id']];}?></td>
+						<td><?php echo anchor(base_url().'front-desk/customer/'.$customers[$customer_index]['id'],$customers[$customer_index]['name']).br();?></td>
 					    <td><?php echo $customers[$customer_index]['mobile'].br();?>
-						<?php echo $customers[$customer_index]['email'].br(); ?>
 						<?php echo $customers[$customer_index]['address']; ?>
 						</td>
 
 					    <td><?php if($customer_trips[$customers[$customer_index]['id']]!=gINVALID){ echo anchor(base_url().'front-desk/trip-booking/'.$customer_trips[$customers[$customer_index]['id']],'Trip ID :'.$customer_trips[$customers[$customer_index]['id']]); } else{ echo ''; } ?></td>
-					    <td><?php if($customer_statuses[$customers[$customer_index]['id']]!='NoBookings'){ echo '<span class="label label-info">'.$customer_statuses[$customers[$customer_index]['id']].'</span>'.br(); }else{ echo '<span class="label label-danger">'.$customer_statuses[$customers[$customer_index]['id']].'</span>'.br(); } ?></td>	
+					    <td><?php if($customer_current_statuses[$customers[$customer_index]['id']]!='NoBookings'){ echo '<span class="label label-info">'.$customer_current_statuses[$customers[$customer_index]['id']].'</span>'.br(); }else{ echo '<span class="label label-danger">'.$customer_current_statuses[$customers[$customer_index]['id']].'</span>'.br(); } ?></td>	
 
 					</tr>
 					<?php 

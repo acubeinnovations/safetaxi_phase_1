@@ -3,11 +3,10 @@
 
 	$customer_id		=	'-1';
 	$name				=	'';	
-	$dob				=	'';
-	$customer_group_id		= 	'';
-	$customer_type_id		= 	'';
+	$customer_status_id		= 	'';
 	
-	$email				= 	'';
+	
+	
 	$mobile				= 	'';
 	$address			= 	'';
 
@@ -25,12 +24,11 @@
 	
 	}
 	$name				=	$data['name'];	
-	$dob				=	$data['dob'];
-	$customer_group_id		= 	$data['customer_group_id'];
-	if($customer_group_id==gINVALID){$customer_group_id		='';}
-	$customer_type_id		= 	$data['customer_type_id'];
-	if($customer_type_id==gINVALID){$customer_type_id		='';}
-	$email				= 	$data['email'];
+	
+	$customer_status_id		= 	$data['customer_status_id'];
+	if($customer_status_id==gINVALID){$customer_status_id		='';}
+	
+	
 	$mobile				= 	$data['mobile'];
 	$address			= 	$data['address'];
 	}
@@ -52,40 +50,32 @@
 				    <?php echo form_input(array('name'=>'name','class'=>'form-control','placeholder'=>'Enter Name','value'=>$name)); ?>
 					<?php echo $this->form_functions->form_error_session('name', '<p class="text-red">', '</p>'); ?>
 				</div>
-			
+			<!--
 				<div class="form-group">
 					<?php echo form_label('Email','emaillabel'); ?>
 				    <?php echo form_input(array('name'=>'email','class'=>'form-control','placeholder'=>'Enter email','value'=>$email)); 
 					if($customer_id!='' && $customer_id>gINVALID) {  ?><div class="hide-me"> <?php echo form_input(array('name'=>'h_email','class'=>'form-control','value'=>$email)); ?></div><?php } ?>
 					<?php echo $this->form_functions->form_error_session('email', '<p class="text-red">', '</p>'); ?>
 				</div>
-				<div class="form-group">
-					<?php echo form_label('Date Of Birth ','doblabel'); ?>
-				    <?php echo form_input(array('name'=>'dob','class'=>'form-control initialize-date-picker','placeholder'=>'Enter DOB','value'=>$dob)); 
-					 echo $this->form_functions->form_error_session('dob', '<p class="text-red">', '</p>'); ?>
-				</div>
+				-->
 				<div class="form-group">
 					<?php echo form_label('Phone','phonelabel'); ?>
 				    <?php echo form_input(array('name'=>'mobile','class'=>'form-control','placeholder'=>'Enter Phone','value'=>$mobile)); 
 					if($customer_id!='' && $customer_id>gINVALID) {  ?><div class="hide-me"> <?php echo form_input(array('name'=>'h_phone','value'=>$mobile)); ?></div><?php } ?>
 					<?php echo $this->form_functions->form_error_session('mobile', '<p class="text-red">', '</p>'); ?>
 				</div>
-			
 				<div class="form-group">
-					<?php echo form_label('Customer Type','ctypelabel'); 
-				   $class="form-control customer-type";
-					echo $this->form_functions->populate_dropdown('customer_type_id',$customer_types,$customer_type_id,$class,$id='',$msg="Select Customer type");?> 
-				</div>
-			</div>
-			<div class="div-with-50-percent-width-with-margin-10">
-				<div class="form-group">
-					<?php echo form_label('Customer Group','cgrouplabel'); ?>
-				   <?php echo $this->form_functions->populate_dropdown('customer_group_id',$customer_groups,$customer_group_id,$class ='form-control',$id='',$msg="Select Groups"); ?>
+					<?php echo form_label('Customer Statuses','cgrouplabel'); ?>
+				   <?php echo $this->form_functions->populate_dropdown('customer_status_id',$customer_statuses,$customer_status_id,$class ='form-control',$id='',$msg="Select status"); ?>
 					
 				</div>
+			
+			</div>
+			<div class="div-with-50-percent-width-with-margin-10">
+				
 				<div class="form-group">
 					<?php echo form_label('Address','addresslabel'); ?>
-				    <?php echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address)); ?>
+				    <?php echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address,'rows'=>'9')); ?>
 					<?php echo form_error('address', '<p class="text-red">', '</p>'); ?>
 				</div>
 		   		<div class="box-footer">

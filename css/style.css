@@ -296,7 +296,7 @@ border-top:none;
 }
 .add-customer,
 .clear-customer{
-display:none;
+margin:15px 0 0 15px;
 }
 .clear-guest{
 display:none;
@@ -646,3 +646,66 @@ width:2% !important;
 	background-color: #DFF0D8;
     border-color: #B0EDCD;
 }
+
+
+
+/* trips safe-taxi start*/
+
+.trip-booking-area{
+
+width:100%;
+min-height:600px;
+
+}
+.trip-booking-area-first-col{
+
+width:80%;
+float:left;
+min-height:600px;
+}
+
+.trip-booking{
+width:100%;
+background:yellow;
+min-height:200px;
+}
+
+.trip-booking-info{
+min-height:400px;
+width:100%;
+background:blue;
+}
+
+.trip-booking-area-second-col{
+width:20%;
+min-height:600px;
+float:left;
+}
+
+.trip-booking-notifications{
+min-height:600px;
+width:100%;
+background:red;
+}
+
+.table-width-100-percent-td-width-25-percent{
+width:100%;
+
+}
+.table-width-100-percent-td-width-25-percent >  td{
+width:23%;
+margin:10px;
+}
+.margin-10-px{
+margin:10px;
+}
+
+.search-vehicles{
+
+margin-top: 10px;
+}
+/* trips safe-taxi end*/
+
+
+
+

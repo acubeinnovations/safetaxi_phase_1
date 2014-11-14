@@ -44,8 +44,8 @@ define('TRIP_STATUS_TRIP_COMPLETED',6);
 define('TRIP_STATUS_TRIP_PAYED',7);
 define('TRIP_STATUS_TRIP_BILLED',8);
 
-define('BEACON_LIGHT_RED',1);
-define('BEACON_LIGHT_BLUE',2);
+define('CUSTOMER_ACTIVE',1);
+define('CUSTOMER_UNDER_PROCESSING',2);
 
 define('gINVALID',-1);
 /*

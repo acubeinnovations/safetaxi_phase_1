@@ -3,7 +3,6 @@ class Customers_model extends CI_Model {
 	
 	
 	public function getCustomerDetails($data){ 
-	//$this->db->select('id,name,email,mobile');
 	$this->db->from('customers');
 	if($data!=''){
 		$this->db->where($data);
@@ -13,11 +12,9 @@ class Customers_model extends CI_Model {
 	}
 
 	public function addCustomer($data){
-		$data['organisation_id']=$this->session->userdata('organisation_id');
 		$data['user_id']=$this->session->userdata('id');
  		if($data['mobile']!=''){
 		$condition['mobile']=$data['mobile'];
-		$condition['organisation_id']=$this->session->userdata('organisation_id');
 		$res=$this->getCustomerDetails($condition);
 		if(count($res)==0){
 			$this->db->set('created', 'NOW()', FALSE);
@@ -89,12 +86,9 @@ class Customers_model extends CI_Model {
 	$result= $qry->result_array();
 	for($i=0;$i<$count;$i++){
 			$values[$result[$i]['id']]=$result[$i]['id'];
-			}
+	}
 	
 	return $values;
 
-	
-	
 	}
 }
-?>
