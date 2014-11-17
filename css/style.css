@@ -280,7 +280,7 @@ margin-top:-40px;
 margin-top: -18px;
 }
 .margin-top-less-6{
-margin-top: -6px;
+margin-top: -6px !important;;
 }
 .margin-top-less-15{
 margin-top: -15px;
