@@ -338,6 +338,7 @@ class User extends CI_Controller {
 	if($this->session_check()==true) {
 	
 	$data['title']="Trip Booking | ".PRODUCT_NAME;  
+	$data['id']=-1;
 	$page='user-pages/trip-booking';
 	$this->load_templates($page,$data);
 	

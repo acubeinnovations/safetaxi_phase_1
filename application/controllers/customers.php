@@ -177,7 +177,7 @@ class Customers extends CI_Controller {
 	} 
 
 	public function set_customer_session($data){
-	$session_data=array('customer_id'=>$data[0]['id'],'customer_name'=>$data[0]['name'],'customer_email'=>$data[0]['email'],'customer_mobile'=>$data[0]['mobile']);
+	$session_data=array('customer_id'=>$data[0]['id'],'customer_name'=>$data[0]['name'],'customer_mobile'=>$data[0]['mobile']);
 	$this->session->set_userdata($session_data);
 	
 	}

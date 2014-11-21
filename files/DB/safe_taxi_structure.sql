@@ -3,22 +3,23 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 13, 2014 at 12:19 PM
+-- Generation Time: Nov 20, 2014 at 05:19 AM
 -- Server version: 5.5.37-0ubuntu0.13.10.1
 -- PHP Version: 5.5.3-1ubuntu2.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-
 --
 -- Database: `safetaxi`
 --
 
 -- --------------------------------------------------------
+
 --
 -- Table structure for table `ci_sessions`
 --
+
 CREATE TABLE IF NOT EXISTS `ci_sessions` (
   `session_id` varchar(40) NOT NULL DEFAULT '0',
   `ip_address` varchar(16) NOT NULL DEFAULT '0',
@@ -29,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `ci_sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+
 --
 -- Table structure for table `customers`
 --
@@ -62,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `customer_statuses` (
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -112,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `driver_statuses` (
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -124,14 +126,16 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `notification_type_id` int(11) NOT NULL,
   `notification_status_id` int(11) NOT NULL,
-  `driver_id` int(11) NOT NULL,
+  `notification_view_status_id` int(11) NOT NULL,
+  `app_key` varchar(255) NOT NULL,
   `trip_id` int(11) NOT NULL,
   `message` text NOT NULL,
   `user_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `notification_type_id` (`notification_type_id`,`notification_status_id`,`driver_id`,`trip_id`,`user_id`)
+  KEY `notification_type_id` (`notification_type_id`,`notification_status_id`,`trip_id`,`user_id`),
+  KEY `notification_view_status_id` (`notification_view_status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -173,6 +177,24 @@ CREATE TABLE IF NOT EXISTS `notification_types` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notification_view_statuses`
+--
+
+CREATE TABLE IF NOT EXISTS `notification_view_statuses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text NOT NULL,
+  `value` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `statuses`
 --
 
@@ -183,6 +205,29 @@ CREATE TABLE IF NOT EXISTS `statuses` (
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tariffs`
+--
+
+CREATE TABLE IF NOT EXISTS `tariffs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `minimum_kilometers` double NOT NULL,
+  `minimum_hours` double NOT NULL,
+  `from_date` date NOT NULL,
+  `to_date` date NOT NULL,
+  `rate` double NOT NULL,
+  `additional_kilometer_rate` double NOT NULL,
+  `additional_hour_rate` double NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -199,12 +244,13 @@ CREATE TABLE IF NOT EXISTS `trips` (
   `booking_time` time NOT NULL,
   `pick_up_date` date NOT NULL,
   `pick_up_time` time NOT NULL,
-  `drop_date` date NOT NULL,
-  `drop_time` time NOT NULL,
   `trip_from` text NOT NULL,
   `trip_from_landmark` text NOT NULL,
   `trip_from_lat` varchar(30) NOT NULL,
   `trip_from_lng` varchar(30) NOT NULL,
+  `trip_start_date_time` datetime NOT NULL,
+  `trip_end_date_time` datetime NOT NULL,
+  `tariff_rate` double NOT NULL,
   `trip_to` text NOT NULL,
   `trip_to_landmark` text NOT NULL,
   `trip_to_lat` varchar(30) NOT NULL,
@@ -239,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `trip_statuses` (
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -257,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `trip_types` (
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -281,7 +327,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_status_id` (`user_status_id`,`user_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -336,14 +382,12 @@ CREATE TABLE IF NOT EXISTS `user_types` (
 
 CREATE TABLE IF NOT EXISTS `vehicle_locations_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `vehicle_id` int(11) NOT NULL,
-  `imei` varchar(30) NOT NULL,
   `app_key` varchar(255) NOT NULL,
   `lat` varchar(30) NOT NULL,
   `lng` varchar(30) NOT NULL,
   `trip_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `vehicle_id` (`vehicle_id`,`trip_id`)
+  KEY `vehicle_id` (`trip_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

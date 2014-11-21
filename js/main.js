@@ -1,14 +1,17 @@
 $(document).ready(function(){
+
 $('.settings-add').click(function(){
 var trigger = $(this).parent().prev().prev().find('#editbox').attr('trigger');
 if(trigger=='true'){
 $(this).siblings().find(':submit').trigger('click');
 }
 });
+
 $('.settings-edit').click(function(){
 
 $(this).siblings().find(':submit').trigger('click');
 });
+
 $('.settings-delete').click(function(){
 $(this).siblings().find(':submit').trigger('click');
 });
@@ -116,6 +119,8 @@ url=url+'&trip_status='+trip_status;
 window.open(url, '_blank');
 }
 });
+
+
 $('.print-driver').on('click',function(){
 var name=$('#driver_name').val();
 var city=$('#driver_city').val();
@@ -132,6 +137,7 @@ url=url+'&city='+city;
 window.open(url, '_blank');
 
 });
+
 $('.print-vehicle').on('click',function(){
 
 var reg_num=$('#reg_num').val();
@@ -292,56 +298,36 @@ var API_KEY='AIzaSyBy-tN2uOTP10IsJtJn8v5WvKh5uMYigq8';
 
 
 //trip_bookig page-js start
-var pathname = window.location.pathname.split("/");
 
-if(pathname[3]=="trip-booking" || pathname[4]=="trip-booking"){
 
-if($('.advanced-chek-box').attr('checked')=='checked'){
+//address
 
-$('.group-toggle').toggle();
+var options = {
+			 types:  ['establishment'],
+		    componentRestrictions: {country: "IN"}
+		 };
+var autocompletepickup = new google.maps.places.Autocomplete($("#pickup")[0], options);
+var autocompletedrop = new google.maps.places.Autocomplete($("#drop")[0], options);
 
-}
+google.maps.event.addListener(autocompletepickup, 'place_changed', function() {
+var place = autocompletepickup.getPlace();
+var cityLat = place.geometry.location.lat();
+var cityLng = place.geometry.location.lng();
+$('.pickuplat').attr('value',cityLat);
+$('.pickuplng').attr('value',cityLng);
 
-if($('.guest-chek-box').attr('checked')=='checked'){
 
-$('.guest-toggle').toggle();
+});
 
-}
+google.maps.event.addListener(autocompletedrop, 'place_changed', function() {
+var place = autocompletedrop.getPlace();
+var cityLat = place.geometry.location.lat();
+var cityLng = place.geometry.location.lng();
+$('.droplat').attr('value',cityLat);
+$('.droplng').attr('value',cityLng);
+});
 
-if($('.beacon-light-chek-box').attr('checked')=='checked'){
-var radio_button_to_be_checked = $('.beacon-light-chek-box').attr('radio_to_be_selected');
-if(radio_button_to_be_checked=='red'){
 
-$('.beacon-radio1-container > .iradio_minimal > .iCheck-helper').trigger('click');
-
-	
-
-}else if(radio_button_to_be_checked=='blue'){
-
-$('.beacon-radio2-container > .iradio_minimal > .iCheck-helper').trigger('click');
-
-	
-
-}
-}
-/*
-if($("#trip_id").val() > -1) {
-
-$('#email').attr('disabled','');
-$('#customer').attr('disabled','');
-$('#mobile').attr('disabled','');
-
-}
-*/
-
-/*
-if($("#pickupcity").val()!=''){
-getDistance();
-}
-*/
-if($("#viacity").val()!='' || $("#viaarea").val()!='' || $("#vialandmark").val()!=''){
-$('.toggle-via').toggle();
-}
 
 
 if($('.recurrent-yes-chek-box').attr('checked')=='checked'){
@@ -398,75 +384,7 @@ $('#reccurent_alternatives_droptimepicker'+i).datetimepicker({datepicker:false,
 });
 }
 }
-
-
 }
-if( $('#vehicle-ac-type').val()!=-1 || $('#vehicle-model').val()!=-1){
-
-if($('.vehicle-tarif-checker').attr('tariff_id')!=''){
-tariff_id=$('.vehicle-tarif-checker').attr('tariff_id');//alert(tariff_id);
-GenerateVehiclesAndTarif(tariff_id,available_vehicle_id='');
-}else{		
-
-	
-GenerateVehiclesAndTarif(tarif_id='',available_vehicle_id='');
-}
-
-}
-
-}
-$('.beacon-light-chk-box-container > .icheckbox_minimal > .iCheck-helper').on('click',function(){
-
-if($('.beacon-light-chek-box').attr('checked')=='checked'){
-	$('.beacon-radio1-container > .iradio_minimal > .iCheck-helper').trigger('click');
-}else{
-	$('.beacon-radio1-container > .iradio_minimal').removeClass('checked');
-	$('.beacon-radio2-container > .iradio_minimal').removeClass('checked');
-	$('#beacon-light-radio1').prop('checked',false);
-	$('#beacon-light-radio2').prop('checked',false);
-}
-
-});
-
-
-//date picker removed for pickupdat n time drop date n time
-
-//$('#pickupdatepicker').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-//$('#dropdatepicker').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-/*$('#pickuptimepicker').datetimepicker({datepicker:false,
-	format:'H:i',
-	step:30
-});
-/$('#droptimepicker').datetim	
-
-        
-
-	epicker({datepicker:false,
-	format:'H:i',
-	step:30
-});
-*/
-
-$('#via').click(function(event){
-	event.preventDefault();
-$('.toggle-via').toggle();
-
-
-});
-
-$('.advanced-container > .icheckbox_minimal > .iCheck-helper').on('click',function(){
-
-$('.group-toggle').toggle();
-
-
-});
-$('.guest-container > .icheckbox_minimal > .iCheck-helper').on('click',function(){
-
-$('.guest-toggle').toggle();
-
-
-});
-
 
  var base_url=window.location.origin;
 
@@ -552,22 +470,13 @@ $('.add-reccurent-dates').attr('count',Number(count)+1);
 });
 
 //for checking user in db
-$('#email,#mobile').on('keyup click',function(){
-var email=$('#email').val();
+$('#mobile').on('keyup click',function(){
+
 var mobile=$('#mobile').val();
-	if(Trim(email)=="" && Trim(mobile)==""){
+	if(Trim(mobile)==""){
 		$('.add-customer').hide();
 	}
-    if(Trim(email)==""){
-        
-    }else{
-	    
-	    pattern = /^[a-zA-Z0-9]\w+(\.)?\w+@\w+\.\w{2,5}(\.\w{2,5})?$/;
-	    result = pattern.test(email);
-	    if( result== false) {
-	     email='';
-	    }
-	}
+    
  
     if(Trim(mobile)==""){
        
@@ -578,144 +487,69 @@ var mobile=$('#mobile').val();
  		 mobile='';
      }
 	}
-	if(Trim(mobile)!="" || Trim(email)!=""){
+	if(Trim(mobile)!=""){
 	$.post(base_url+'/customers/customer-check',{
-	email:email,
 	mobile:mobile,
 	customer:'yes'
 	},function(data){
 	if(data!=false){
 		data=jQuery.parseJSON(data);
 		$('#customer').val(data[0].name);
-		$('#email').val(data[0].email);	
 		$('#mobile').val(data[0].mobile);
-		$(".passenger-basic-info > .form-group > label[for=name_error]").text('');
-		$(".passenger-basic-info > .form-group > label[for=email_error]").text('');
-		$(".passenger-basic-info > .form-group > label[for=mobile_error]").text('');
-		$('#customer-group').val('');
+		$("label[for=name_error]").text('');
+		$("label[for=mobile_error]").text('');
+		$("label[for=name_error]").css('display','none');
+		$("label[for=mobile_error]").css('display','none');
 		$('.new-customer').attr('value',false);
-		if(data[0].customer_group_id>0){
-			
-			$('#customer-group').val(data[0].customer_group_id);
-			
-			}
+		
 			
 		$('.clear-customer').show();
 		$('.add-customer').hide();
       }else{
 		$('.clear-customer').hide();
 		$('.add-customer').show();
+		$('#customer').val('');
 	}
 	});
 	}
 	});
 //guest passengerchecking in db
 
-	$('#guestemail,#guestmobile').on('keyup click',function(){
-var email=$('#guestemail').val();
-var mobile=$('#guestmobile').val();
-	
-    if(Trim(email)==""){
-        
-    }else{
-	    
-	    pattern = /^[a-zA-Z0-9]\w+(\.)?\w+@\w+\.\w{2,5}(\.\w{2,5})?$/;
-	    result = pattern.test(email);
-	    if( result== false) {
-	     email='';
-	    }
-	}
- 
-    if(Trim(mobile)==""){
-       
-    }else{
-	   var regEx = /^(\+91|\+91|0)?\d{10}$/;
-	   if (!mobile.match(regEx)) {
-	 		 mobile='';
-		 }
-	}
-	if(Trim(mobile)!="" || Trim(email)!=""){
-	$.post(base_url+'/customers/customer-check',{
-	email:email,
-	mobile:mobile,
-	customer:'no'
-	},function(data){
-	if(data!=false){
-		data=jQuery.parseJSON(data);
-		$('#guestname').val(data[0].name);
-		$('#guestemail').val(data[0].email);	
-		$('#guestmobile').val(data[0].mobile);
-		$('#guest_id').val(data[0].id);
-		$('.clear-guest').show();
-		
-      }
-	});
-	}
-	});
 	//clear customer information fields
 	$('.clear-customer').click(function(){
 		$('#customer').val('');
 		$('#email').val('');	
 		$('#mobile').val('');
-		$('.clear-customer').hide();
-		$(".passenger-basic-info > .form-group > label[for=name_error]").text('');
-		$(".passenger-basic-info > .form-group > label[for=email_error]").text('');
-		$(".passenger-basic-info > .form-group > label[for=mobile_error]").text('');
+		$("label[for=name_error]").text('');
+		$("label[for=mobile_error]").text('');
+		$("label[for=name_error]").css('display','none');
+		$("label[for=mobile_error]").css('display','none');
 		$('#customer-group').val('');
 		
 
 	});
-	//clear guest information fields
-	$('.clear-guest').click(function(){
-		$('#guestname').val('');
-		$('#guestemail').val('');	
-		$('#guestmobile').val('');
-		$('.clear-guest').hide();
-		$('#guest_id').val('-1');
-		
-	});
+	
 
 	//add pasenger informations
 	$('.add-customer').click(function(){
 		var name =$('#customer').val();
-		var email=$('#email').val();
 		var mobile=$('#mobile').val();
-		var error_email ="";
 		var error_mobile ="";
 		var error_name='';
 	if(Trim(name)==""){
 		error_name ="Name is mandatory";
 	}
-    if(Trim(email)=="" && Trim(mobile)==""){
-       alert("Please Enter Phone Number or Email");
-		return false;
-    }else{
-	    if(Trim(email)!=""){
-	    pattern = /^[a-zA-Z0-9]\w+(\.)?\w+@\w+\.\w{2,5}(\.\w{2,5})?$/;
-	    result = pattern.test(email);
-	    if( result== false) {
-	      error_email ="Entered email is is not valid";
-	    }
-		}
-		if(Trim(mobile)!=""){
-		var regEx = /^(\+91|\+91|0)?\d{10}$/;
-   
-		if (!mobile.match(regEx)) {
-	 		error_mobile ="Mobile is not valid";
-		 }
-		}
-		}
+
  
-    
-	if(error_mobile!='' || error_email!='' || error_name!='')
+	if(error_mobile!='' || error_name!='')
 	{
-	$(".passenger-basic-info > .form-group > label[for=name_error]").text(error_name);
-	$(".passenger-basic-info > .form-group > label[for=email_error]").text(error_email);
-	$(".passenger-basic-info > .form-group > label[for=mobile_error]").text(error_mobile);
+	$("label[for=name_error]").text(error_name);
+	$("label[for=mobile_error]").text(error_mobile);
+	$("label[for=name_error]").css('display','block');
+		$("label[for=mobile_error]").css('display','block');
 	}else{
 	$.post(base_url+'/customers/add-customer',{
 	name:name,
-	email:email,
 	mobile:mobile
 	},function(data){
 	if(data!=true){
@@ -723,10 +557,11 @@ var mobile=$('#guestmobile').val();
 	}else{
 	
 	$('.new-customer').attr('value',false);
-	$(".passenger-basic-info > .form-group > label[for=name_error]").html('');
-	$(".passenger-basic-info > .form-group > label[for=email_error]").html('');
-	$(".passenger-basic-info > .form-group > label[for=mobile_error]").text('');
-	$('#email').trigger('click');
+	$(".label[for=name_error]").html('');
+	$("label[for=mobile_error]").text('');
+	$("label[for=name_error]").css('display','none');
+	$("label[for=mobile_error]").css('display','none');
+	$('#mobile').trigger('click');
 	}
 
 	});
@@ -736,47 +571,7 @@ var mobile=$('#guestmobile').val();
 
 	});
 
-/*
-$("#pickupcity").on('keyup',function(){
-var pickupcity=$("#pickupcity").val();
-if(pickupcity!='' && pickupcity.length>3){
 
-placeAutofillGenerator(pickupcity,'autofill-pickupcity','pickupcity');
-
-}
-});
-
-$("#dropdownlocation").on('keyup',function(){
-
-var dropdownlocation=$("#dropdownlocation").val();
-if(dropdownlocation!='' && dropdownlocation.length>3){
-
-placeAutofillGenerator(dropdownlocation,'autofill-dropdownlocation','dropdownlocation');
-
-}
-});
-
-$("#viacity").on('keyup',function(){
-var viacity=$("#viacity").val();
-if(viacity!='' && viacity.length>3){
-
-placeAutofillGenerator(viacity,'autofill-viacity','viacity');
-
-}
-});
-
-
-/*
-$("#pickupcity,#pickuparea,#dropdownlocation,#dropdownarea,#viacity,#viaarea").on('keyup click',function(){
-var pickupcity=$("#pickupcity").val();
-var dropdownlocation=$("#dropdownlocation").val();
-var viacity=$("#viacity").val();
-if(pickupcity!='' && pickupcity.length>3 && dropdownlocation!='' && dropdownlocation.length>3 || viacity!='' && viacity.length>3){
-getDistance();
-}
-});
-
-*/
 function getDistance(){
 
 var pickupcity=$("#pickupcity").val();//alert(pickupcity);
@@ -877,45 +672,7 @@ $('.estimated-time-of-journey').html('');
 }
 }
 
-function placeAutofillGenerator(city,ul_class,insert_to){
-var insert_to=insert_to;
-$('#'+insert_to).prop('disabled', true);
 
-$('.display-me').css('display','block');
-
-var 
-url='https://maps.googleapis.com/maps/api/place/autocomplete/json?input='+city+'&types=(cities)&components=country:IN&language=en&key='+API_KEY;
-
-$.post(base_url+'/maps/get-places',{
-	url:url,
-	insert_to:insert_to
-	},function(data){
-if(data!='false'){
-$('.'+ul_class).html(data);
-$('.'+ul_class).parent().addClass('open');
-$('.display-me').css('display','none');
-$('#'+insert_to).prop('disabled', false);
-}
-
-});
-
-}
-$('html').click(function(){
-$('.input-group-btn').removeClass('open');
-});
-
-$('.drop-down-places').live('click',function(e){
-
-var insert_to=$(this).attr('insert_to');
-var place=$(this).attr('place');
-var full_address=$(this).text();
-full_address=replaceCommas(full_address);
-full_address=full_address.replace(/\s+/g, '');
-$('#'+insert_to).val(place);
-$('#'+insert_to).trigger('click');
-$(this).parent().parent().parent().removeClass('open');
-getLatLng(full_address,insert_to);
-});
 
 function replaceCommas(place){ 
 	 var placeArray = place.split(','); 
@@ -1078,138 +835,9 @@ $('.no-of-days').html(no_of_days+' '+days+' Trip');
 
 }
 }
-/*
-$('#tarrif,#available_vehicle').on('change',function(){
-var tarriff_vehicle_make_id=$('#tarrif option:selected').attr('vehicle_make_id');
-var avaiable_vehicle_make_id=$('#available_vehicle option:selected').attr('vehicle_make_id');
 
 
-if($('#tarrif').val()!=-1 && $('#available_vehicle').val()!=-1){
-if(tarriff_vehicle_make_id!=avaiable_vehicle_make_id){
-alert('Select Vehicle and Tarrif correctly.');
-}
-}
-});
-/*
-$('#vehicle-type').on('change',function(){
-$('#vehicle-make').val('');
-$('#vehicle-model').val('');
-});
-*/
-//tarrif selecter
-$('#vehicle-ac-type,#vehicle-model').on('change',function(){
-GenerateVehiclesAndTarif(tarif_id='',available_vehicle_id='');
-});
-
-function GenerateVehiclesAndTarif(tarif_id='',available_vehicle_id=''){
-
-var vehicle_ac_type = $('#vehicle-ac-type').val();
-if(vehicle_ac_type==-1){
-vehicle_ac_type=1;
-}
-var vehicle_model = $('#vehicle-model').val();
-
-var tarif_id=tarif_id;
-/*if(vehicle_type!=-1 && vehicle_ac_type!=-1 && vehicle_make!=-1 && vehicle_model!=-1 && pickupdate!='' && pickuptime!='' && dropdate!='' && droptime!='' ){
-
-var pickupdatetime = pickupdate+' '+pickuptime+':00';
-var dropdatetime   = dropdate+' '+droptime+':00';
-$('.display-me').css('display','block');
-generateAvailableVehicles(vehicle_type,vehicle_make,vehicle_model,vehicle_ac_type,pickupdatetime,dropdatetime,available_vehicle_id);
-generateTariffs(vehicle_type,vehicle_ac_type,vehicle_make,vehicle_model,tarif_id);
-
-}else */
-if(vehicle_ac_type!=-1 && vehicle_model!=-1){
-$('.display-me').css('display','block');
-generateTariffs(vehicle_ac_type,vehicle_model,tarif_id);
-
-}
-
-
-}
-/*
-function generateAvailableVehicles(vehicle_type,vehicle_make,vehicle_model,vehicle_ac_type,pickupdatetime,dropdatetime,available_vehicle_id=''){//alert(available_vehicle_id);
-	//alert(vehicle_type);alert(vehicle_ac_type);alert(pickupdatetime);alert(dropdatetime);
-	var available_vehicle_id=available_vehicle_id;
 	
-	var selected="selected=selected";
-	var vehicle_makes=$('.vehicle-makes').html().split(',');
-	$('#available_vehicle option').remove();
-	$('#available_vehicle').append($("<option value='-1'></option>").text('--Select Vehicle--'));
-	if(Trim(available_vehicle_id)!='' && Trim(available_vehicle_id)!=-1 ){
-		$.post(base_url+"/trip-booking/getVehicle",
-		  {
-			id:available_vehicle_id
-		  },function(data1){data1=jQuery.parseJSON(data1);
-			selected_option="<option value='"+data1.data[0].id+"' vehicle_model_id='"+data1.data[0].vehicle_model_id+"'  vehicle_make_id='"+data1.data[0].vehicle_make_id+"' "+selected+">"+data1.data[0].registration_number+"</option>";
-			$('#available_vehicle').append(selected_option);
-			});
-	}
-	 $.post(base_url+"/trip-booking/getAvailableVehicles",
-		  {
-			vehicle_type:vehicle_type,
-			vehicle_ac_type:vehicle_ac_type,
-			vehicle_make:vehicle_make,
-			vehicle_model:vehicle_model,
-			pickupdatetime:pickupdatetime,
-			dropdatetime:dropdatetime
-		  },function(data){
-			if(data!='false'){
-			data=jQuery.parseJSON(data);
-			for(var i=0;i<data.data.length;i++){
-								
-			  $('#available_vehicle').append($("<option value='"+data.data[i].vehicle_id+"' vehicle_model_id='"+data.data[i].vehicle_model_id+"'  vehicle_make_id='"+data.data[i].vehicle_make_id+"' ></option>").text(data.data[i].registration_number));
-				
-			}
-		
-			}else{
-					if(available_vehicle_id=='' || available_vehicle_id==-1 ){
-					$('#available_vehicle option').remove();
-					$('#available_vehicle').append($("<option value='-1'></option>").text('--Select Vehicle--'));
-					alert('No Available Vehicles');
-					}
-			}
-			$('.display-me').css('display','none');
-		   });
-
-}*/
-function generateTariffs(vehicle_ac_type,vehicle_model,tarif_id=''){
-	var tarif_id=tarif_id;
-	 $.post(base_url+"/tarrif/tariffSelecter",
-		  {
-			
-			vehicle_ac_type:vehicle_ac_type,
-			vehicle_model:vehicle_model
-		  },function(data){
-			if(data!='false'){
-			data=jQuery.parseJSON(data);
-			$('#tarrif option').remove();
-			 $('#tarrif').append($("<option rate='-1' additional_kilometer_rate='-1' minimum_kilometers='-1'></option>").attr("value",'-1').text('--Select Tariffs--'));
-			i=0;//alert(data.data.length);
-			for(var i=0;i<data.data.length;i++){
-			if(tarif_id==data.data[i].id){
-			var selected="selected=selected";
-			}else{
-			var selected="";
-			}
-			  $('#tarrif').append($("<option rate='"+data.data[i].rate+"' additional_kilometer_rate='"+data.data[i].additional_kilometer_rate+"' minimum_kilometers='"+data.data[i].minimum_kilometers+"' vehicle_model_id='"+data.data[i].vehicle_model_id+"'  vehicle_make_id='"+data.data[i].vehicle_make_id+"' "+selected+"></option>").attr("value",data.data[i].id).text(data.data[i].title));
-				
-			}
-			$('.display-me').css('display','none');
-			if(tarif_id!=''){
-
-			//SetRoughEstimate();
-			}
-			}else{
-			 $('#tarrif option').remove();
-			 $('#tarrif').append($("<option rate='-1' additional_kilometer_rate='-1' minimum_kilometers='-1'></option>").attr("value",'-1').text('--Select Tariffs--'));
-				$('.display-me').css('display','none');
-			}
-			
-		  });
-		
-
-}	
 
 $('.format-date').blur(function(){
 
@@ -1261,30 +889,6 @@ $(this).val(formatted_time);
 });
 
 
-/*
-
-$('.format-date').keyup(function(){
-
-var date=$('.format-date').val();
-var date_array='';
-if((date.match(new RegExp("-", "g")) || []).length>1){
- 		 var date_array=date.split('-');
-	
-}else if((date.match(new RegExp("/", "g")) || []).length>1){alert((date.match(new RegExp("/", "g")) || []).length);
- 		 var date_array=date.split('/');
-	
-}else if((date.match(new RegExp(".", "g")) || []).length>1){
- 		 var date_array=date.split('.');
-	
-}
-//alert(date);
-if(date_array.length>1 && date_array.length<3){alert(date);
-var formatted_date=date_array[0]+'-'+date_array[1]+'-'+date_array[2];
-$('.format-date').val(formatted_date);
-}
-});
-
-*/
 function diffDateTime(startDT, endDT){
  
   if(typeof startDT == 'string' && startDT.match(/^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}[amp ]{0,3}$/i)){
@@ -1437,304 +1041,20 @@ $.post(base_url+"/user/getNotifications",
 
 //trips paje js start
 
-$('.complete-trip').click(function(){
-if($(this).find('span').attr('vehicle_model_id')>0){
-return true;
-}else{
-var trip_id=$(this).find('span').attr('trip_id');
-var url=base_url+"/organization/front-desk/trip-booking/"+trip_id;
-var r = confirm("Please Select Vehicle Model To Complete The Trip..Click OK to Continue..!");
-    if (r == true) {
-       window.open(url, '_blank');
-		return false; 
-    } else {
-       return false; 
-    }
-   
-}
-});
-
-
-$('.voucher').on('click',function(){
-var trip_id=$(this).attr('trip_id');
-var driver_id=$(this).attr('driver_id');
-var tarrif_id=$(this).attr('tarrif_id');
-var no_of_days=$(this).attr('no_of_days');
-var pick_up_time=$(this).attr('pick_up_time');
-var vehicle_model_id=$(this).attr('vehicle_model_id');
-var vehicle_ac_type=$(this).attr('vehicle_ac_type_id');
-if(vehicle_ac_type==-1){
-vehicle_ac_type=1;
-}
-$('.trip-voucher-save').attr('no_of_days',no_of_days);
-
-$('.overlay-container').css('display','block');
-
-var top=-1*(Number($('.trips-table').height())+70);
-$('.modal-body').css('top',top);
-
-/*
-var windowHeight = $(window).height();  
-var modaltop =  (windowHeight  - $('.modal-body').height())/2;
-
-//var top=-1*(Number($('.trips-table').height())+70);
-$('.modal-body').css('top',modaltop);*/
-//$('.modal-body').css('position','fixed');
-$('.trip-voucher-save').attr('trip_id',trip_id);
-$('.trip-voucher-save').attr('driver_id',driver_id);
-	$.post(base_url+"/trip-booking/getVouchers",
-		  {
-			trip_id:trip_id,
-			ajax:'YES'
-			
-		},function(data){
-		  if(data=='false'){
-				$('.tripstartingtime').val(pick_up_time);
-			}else{
-			
-			$('.startkm').val(data[0].start_km_reading);
-			$('.endkm').val(data[0].end_km_reading);
-			$('.garageclosingkm').val(data[0].garage_closing_kilometer_reading);
-			$('.garageclosingtime').val(data[0].garage_closing_time);
-			$('.releasingplace').val(data[0].releasing_place);
-			$('.parkingfee').val(data[0].parking_fees);
-			$('.tollfee').val(data[0].toll_fees);
-			$('.statetax').val(data[0].state_tax);
-			$('.tripstartingtime').val(data[0].trip_starting_time);
-			$('.tripendingtime').val(data[0].trip_ending_time);
-			$('.nighthalt').val(data[0].night_halt_charges);
-			$('.extrafuel').val(data[0].fuel_extra_charges);
-			$('.driverbata').val(data[0].driver_bata);
-			
-		}
-		});
-
-		generateTariffs(vehicle_ac_type,vehicle_model_id,tarrif_id);
-			
-});
-
-$('.modal-close').on('click',function(){
-
-	clearErrorLabels();
-
-});
-
-
 
 
 $(document).keydown(function(e) {
   
   if (e.keyCode == 27) { 
-	clearErrorLabels();
+	$('.overlay-container').css('display','	none');
  }   // esc
 
 });
-function clearErrorLabels(){
-$('.overlay-container').css('display','	none');
-$('.start-km-error').html('');
-$('.end-km-error').html('');
-$('.garage-km-error').html('');
-$('.garage-time-error').html('');
-$('.tariff-error').html('');
-
-$('.startkm').val('');
-$('.endkm').val('');
-$('.garageclosingkm').val('');
-$('.garageclosingtime').val('');
-$('.releasingplace').val('');
-$('.parkingfee').val('');
-$('.tollfee').val('');
-$('.statetax').val('');
-$('.tripstartingtime').val('');
-$('.tripendingtime').val('');
-$('#tarrif').val('');
-$('.nighthalt').val('');
-$('.extrafuel').val('');
-$('.driverbata').val('');
-}
-
-/*
-$('#tarrif').on('change',function(){
-var current_loc=window.location.href;
-if(current_loc.indexOf('trips')  === -1){
-tarrif_id=$('#tarrif').val();
-if(tarrif_id!=-1){
-			$.post(base_url+"/trip-booking/getTarrif",
-			  {
-				tarrif_id:tarrif_id,
-				ajax:'YES'
-			
-			},function(data){
-			  if(data=='false'){
-				}else{
-				$('.trip-voucher-save').attr('rate',data[0].rate);
-				$('.trip-voucher-save').attr('additional_kilometer_rate',data[0].additional_kilometer_rate);
-				$('.trip-voucher-save').attr('minimum_kilometers',data[0].minimum_kilometers);
-				//$('.trip-voucher-save').attr('driver_bata',data[0].driver_bata);
-				
-				}
-			});
-			}else{
-				$('.trip-voucher-save').attr('rate','');
-				$('.trip-voucher-save').attr('additional_kilometer_rate','');
-				$('.trip-voucher-save').attr('minimum_kilometers','');
-
-			}
-
-}
-});
-
-*/
-$('.trip-voucher-save').on('click',function(){
-
-var extrakmtravelled=0;
-var tarrif_id=$('#tarrif').val();
-var error=false;
-var rate='';
-var additional_kilometer_rate='';
-var minimum_kilometers='';
-if(tarrif_id==-1){
-	error=true;
-	$('.tariff-error').html('Tariff required');
-
-}else{
-$('.tariff-error').html('');
-var rate=$('#tarrif option:selected').attr('rate');
-var additional_kilometer_rate=$('#tarrif option:selected').attr('additional_kilometer_rate');
-var minimum_kilometers=$('#tarrif option:selected').attr('minimum_kilometers');
-}
-
-var no_of_days=$('.trip-voucher-save').attr('no_of_days');
-
-if(no_of_days==0){
-no_of_days=1;
-}
-//var driver_bata=$('.trip-voucher-save').attr('driver_bata');
-
-var startkm=$('.startkm').val();
-var endkm=$('.endkm').val();
-
-var totkmtravelled=Number(endkm)-Number(startkm);
-
-/*
-if(totkmtravelled>minimum_kilometers){
-extrakmtravelled=totkmtravelled-minimum_kilometers;
-expense=(Number(minimum_kilometers)*Number(rate))+(Number(extrakmtravelled)*Number(additional_kilometer_rate));
-}else{
-
-expense=Number(totkmtravelled)*Number(rate);
-
-}
-*/
-
-if(no_of_days>1){
-
-if(Number(totkmtravelled) > Number(minimum_kilometers)*Number(no_of_days)){
-var extra_distance=Number(totkmtravelled)-(Number(minimum_kilometers)*Number(no_of_days));
-charge=(Number(minimum_kilometers)*Number(no_of_days))*Number(rate);
-extra_charge=Number(extra_distance)*Number(additional_kilometer_rate);
-totexpense=Math.round(Number(charge)+Number(extra_charge)).toFixed(2);
-}else{
-totexpense=Math.round((Number(minimum_kilometers)*Number(no_of_days))*Number(rate)).toFixed(2);
-}
-}else{
-
-if(Number(totkmtravelled) > minimum_kilometers){
-var extra_distance=Number(totkmtravelled)-Number(minimum_kilometers);
-charge=Number(minimum_kilometers)*Number(rate);
-extra_charge=Number(extra_distance)*Number(additional_kilometer_rate);
-totexpense=Math.round(Number(charge)+Number(extra_charge)).toFixed(2);
-}else{
-totexpense=Math.round(Number(minimum_kilometers)*Number(rate)).toFixed(2);
-}
-}
-
-var garageclosingkm=$('.garageclosingkm').val();
-//var garageclosingtime=$('.garageclosingtime').val();
-//var releasingplace=$('.releasingplace').val();
-
-var trip_starting_time=$('.tripstartingtime').val();
-var trip_ending_time=$('.tripendingtime').val();
-var parkingfee=$('.parkingfee').val();
-var tollfee=$('.tollfee').val();
-var statetax=$('.statetax').val();
-var nighthalt=$('.nighthalt').val();
-var extrafuel=$('.extrafuel').val();
-var driverbata=$('.driverbata').val();
-
-totexpense=Number(totexpense)+Number(tollfee)+Number(parkingfee)+Number(nighthalt);
-
-var trip_id=$(this).attr('trip_id');
-var driver_id=$(this).attr('driver_id');
-
-if(startkm==''){
-$('.start-km-error').html('Start km Field is required');
-error=true;
-}else{
-$('.start-km-error').html('');
-}
-if(endkm==''){
-$('.end-km-error').html('End km Field is required');
-error=true;
-}else{
-$('.end-km-error').html('');
-}
 
 
-if(error==false){
-	 $.post(base_url+"/trip-booking/tripVoucher",
-		  {
-			trip_id:trip_id,
-			startkm:startkm,
-			endkm:endkm,
-			garageclosingkm:garageclosingkm,
-			parkingfee:parkingfee,
-			tollfee:tollfee,
-			statetax:statetax,
-			nighthalt:nighthalt,
-			extrafuel:extrafuel,
-			driver_id:driver_id,
-			totexpense:totexpense,
-			trip_starting_time:trip_starting_time,
-			trip_ending_time:trip_ending_time,
-			no_of_days:no_of_days,
-			driverbata:driverbata,
-			tarrif_id:tarrif_id
-			
-		},function(data){
-		  if(data!='false'){
-				window.location.replace(base_url+'/account/front_desk/NewDelivery/'+data);
-			}
-		});
-}else{
-	return false;
-}
-});
 //trips page js end
 
-
-//device-page js start
-
-
-$('.addDeviceico').click(function(){
-$('#addDevice ').trigger('click');
-});
-$('.deviceUpdate').click(function(){
-
-$(this).siblings().find(':submit').trigger('click');
-
-});
-$('.deviceDelete').click(function(){
-
-$(this).siblings().find(':submit').trigger('click');
-
-});
-
-
-// device-page js end
-
-	
-	//add tarrif page js start
+//add tarrif page js start
 	//$('#fromdatepicker').datetimepicker({timepicker:false,format:'Y-m-d'});
 	$('.fromdatepicker').each(function(){
 	$(this).datetimepicker({timepicker:false,format:'Y-m-d'});
@@ -1755,11 +1075,6 @@ $('#tab_1').trigger('click');
 });
 
 //for marital status
-
-$('#marital_id').change(function(){
-//alert($(this).value());exit;
-});
-
 
 
  });

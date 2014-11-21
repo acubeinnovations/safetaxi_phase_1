@@ -270,6 +270,9 @@ float:right;
 .margin-top-less-10{
 margin-top:-10px;
 }
+.margin-top-less-12{
+margin-top:-12px !important;
+}
 .margin-top-less-20{
 margin-top:-20px;
 }
@@ -666,14 +669,14 @@ min-height:600px;
 
 .trip-booking{
 width:100%;
-background:yellow;
+
 min-height:200px;
 }
 
 .trip-booking-info{
 min-height:400px;
 width:100%;
-background:blue;
+
 }
 
 .trip-booking-area-second-col{
@@ -685,7 +688,7 @@ float:left;
 .trip-booking-notifications{
 min-height:600px;
 width:100%;
-background:red;
+
 }
 
 .table-width-100-percent-td-width-25-percent{
@@ -703,6 +706,28 @@ margin:10px;
 .search-vehicles{
 
 margin-top: 10px;
+}
+.width-40-percent{
+	width:40% !important;
+}
+.width-20-percent{
+	width:20%;
+}
+.width-30-percent{
+width:30% !important;;
+}
+.height-27-px{
+height:27px;
+}
+
+.margin-top-less-1{
+
+margin-top:-1px;
+}
+
+label[for=name_error],label[for=mobile_error]{
+color: #F56954 !important;
+display:none;
 }
 /* trips safe-taxi end*/
 
