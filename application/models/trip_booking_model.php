@@ -24,6 +24,18 @@ class Trip_booking_model extends CI_Model {
 	}
 	}
 
+	function getTripDriver($id){
+
+	$this->db->from('trips');
+	$condition=array('id'=>$id);
+    $this->db->where($condition);
+	
+    $results = $this->db->get()->result();
+	if(count($results)>0){
+	return $results[0]->driver_id;
+	}
+	}
+
 	function getVehicle($id){
 
 	$this->db->from('vehicles');
@@ -40,14 +52,54 @@ class Trip_booking_model extends CI_Model {
 
 	function getDriverDetails($id){
 
-	$this->db->from('drivers');
-	$condition=array('id'=>$id);
-    $this->db->where($condition);
-	
-    $results = $this->db->get()->result();
-	if(count($results)>0){
-	return $results;
+	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id;
+	$result=$this->db->query($qry);
+	$result=$result->result_array();
+	if(count($result)>0){
+	return $result;
+	}else{
+	return false;
 	}
+
+	}
+
+	function changeDriverstatus($driver_id,$data){
+	
+	$this->db->where('id',$driver_id );
+	$this->db->set('updated', 'NOW()', FALSE);
+	$this->db->update("drivers",$data);
+
+	}
+
+	function setNotifications($data){
+		$this->db->set('created', 'NOW()', FALSE);
+		$this->db->set('user_id', $this->session->userdata('id'), FALSE);
+		$this->db->insert('notifications',$data);
+		if($this->db->insert_id()>0){
+			return $this->db->insert_id();
+		}else{
+			return false;
+		}
+
+
+	}
+	
+	function getAvailableVehicles($data){
+	
+	$qry = sprintf("SELECT DISTINCT VL.app_key,VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians('%s') ) * cos( radians(VL.lat ) ) * cos( radians( VL.lng) - radians('%s') ) + sin( radians('%s') ) * sin( radians( VL.lat ) ) ) ) AS distance FROM vehicle_locations_logs AS VL LEFT JOIN drivers AS D ON D.app_key = VL.app_key WHERE D.driver_status_id ='".DRIVER_STATUS_ACTIVE."'  HAVING distance < '%s'  order by VL.created DESC",
+  mysql_real_escape_string($data['center_lat']),
+  mysql_real_escape_string($data['center_lng']),
+  mysql_real_escape_string($data['center_lat']),
+  mysql_real_escape_string($data['radius']));
+	
+	$result=$this->db->query($qry);
+	$result=$result->result_array();
+	if(count($result)>0){
+	return $result;
+	}else{
+	return false;
+	}
+	
 	}
 
 	function checkTripVoucherEntry($trip_id){

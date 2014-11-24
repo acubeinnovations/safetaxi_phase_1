@@ -63,7 +63,7 @@ class Trip_booking extends CI_Controller {
 			
 			if(isset($_REQUEST['book_trip'])){
 
-				if(isset($_REQUEST['trip_id'])){
+				if(isset($_REQUEST['id'])){
 					$data['id']=$this->input->post('id');
 				}else{
 					$data['id']=-1;
@@ -77,12 +77,14 @@ class Trip_booking extends CI_Controller {
 				$this->form_validation->set_rules('trip_to_landmark','Drop  landmark','trim|xss_clean');
 				$this->form_validation->set_rules('pick_up_date','Date','trim|required|xss_clean');
 				$this->form_validation->set_rules('pick_up_time','Time','trim|required|xss_clean');
+				$this->form_validation->set_rules('radius','Radius','trim|required|xss_clean');
 								
 	
 				$data['name']				=	$this->input->post('name');
 				$data['new_customer']		=	$this->input->post('new_customer');
 				
 				$data['mobile']				=	$this->input->post('mobile');
+				$data['radius']				=	$this->input->post('radius');
 				
 				$data['trip_from']			=	$this->input->post('trip_from');
 				$data['trip_from_lat']		=	$this->input->post('trip_from_lat');
@@ -110,17 +112,20 @@ class Trip_booking extends CI_Controller {
 				
 				
 			
-			echo $dbdata['customer_id']					=$this->session->userdata('customer_id');
+			$dbdata['customer_id']					=$this->session->userdata('customer_id');
 			if($data['id']==gINVALID){
-				$dbdata['trip_status_id']				= TRIP_STATUS_PENDING;
-				$dbdata['driver_id']					= gINVALID;
+				$dbdata['trip_status_id']			= TRIP_STATUS_PENDING;
+				$dbdata['driver_id']				= gINVALID;
 			}
 			$dbdata['booking_date']					= date('Y-m-d');
 			$dbdata['booking_time']					= date('H:i');
 			
 			$dbdata['pick_up_date']					=date("Y-m-d", strtotime($data['pick_up_date']));
 			$dbdata['pick_up_time']					=$data['pick_up_time'];
+			$tripdatetime							=$dbdata['pick_up_date'].' '.$dbdata['pick_up_time'];
+			$dbdata['trip_type_id']					=$this->checkFutureOrInstantTrip($tripdatetime);
 			
+
 			$dbdata['trip_from']					=$data['trip_from'];
 			$dbdata['trip_from_lat']				=$data['trip_from_lat'];
 			$dbdata['trip_from_lng']				=$data['trip_from_lng'];
@@ -134,8 +139,7 @@ class Trip_booking extends CI_Controller {
 			$customer['mob']=$this->session->userdata('customer_mobile');
 			$customer['email']=$this->session->userdata('customer_email');	
 			$customer['name']=$this->session->userdata('customer_name');
-echo '<pre>';			
-print_r($dbdata);echo '</pre>';
+
 			$this->session->set_userdata('customer_id','');
 			$this->session->set_userdata('customer_name','');
 			$this->session->set_userdata('customer_email','');
@@ -144,9 +148,23 @@ print_r($dbdata);echo '</pre>';
 				if(isset($data['id']) && $data['id']>0){
 				$res = $this->trip_booking_model->updateTrip($dbdata,$data['id']);
 				if($res==true){
+					$driver=$this->trip_booking_model->getDriverDetails($data['id']);
+					if($driver!=false ){
+						$app_key=$driver[0]['app_key'];
+						$driver_id=$driver[0]['id'];
+						$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_UPDATE;
+						$notification_data['notification_status_id']=gINVALID;
+						$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+						$notification_data['app_key']=$app_key;
+						$notification_data['trip_id']=$data['id'];
+						$this->trip_booking_model->setNotifications($notification_data);
+						
+
+					}
+					
 					$this->session->set_userdata(array('dbSuccess'=>'Trip Updated Succesfully..!!'));
 					$this->session->set_userdata(array('dbError'=>''));
-					if($dbdata['trip_status_id']==TRIP_STATUS_CONFIRMED){
+					if($dbdata['trip_status_id']==TRIP_STATUS_ACCEPTED){
 						$this->SendTripConfirmation($dbdata,$data['id'],$customer);
 					}
 				}else{
@@ -161,8 +179,21 @@ print_r($dbdata);echo '</pre>';
 				if($res!=false && $res>0){
 					$this->session->set_userdata(array('dbSuccess'=>'Trip Booked Succesfully..!!'));
 					$this->session->set_userdata(array('dbError'=>''));
-					if($dbdata['trip_status_id']==TRIP_STATUS_CONFIRMED){
-						$this->SendTripConfirmation($dbdata,$res,$customer);
+					$data_locations['center_lat']=$dbdata['trip_from_lat'];
+					$data_locations['center_lng']=$dbdata['trip_from_lng'];
+					$data_locations['radius']=$data['radius'];	
+					$drivers=$this->searchVehicles($data_locations);
+					if(count($drivers)>0){
+						for($i=0;$i<count($drivers);$i++){
+							$app_key=$drivers[$i]['app_key'];
+							$notification_data['notification_type_id']=NOTIFICATION_TYPE_NEW_TRIP;
+							$notification_data['notification_status_id']=gINVALID;
+							$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+							$notification_data['app_key']=$app_key;
+							$notification_data['trip_id']=$res;
+							$this->trip_booking_model->setNotifications($notification_data);
+						}
+
 					}
 				
 				}else{
@@ -176,8 +207,7 @@ print_r($dbdata);echo '</pre>';
 		}else if(isset($_REQUEST['cancel_trip'])){
 			if(isset($_REQUEST['id'])){
 			
-				$trip_id			=	$this->input->post('
-id');
+				$trip_id			=	$this->input->post('id');
 				
 				$customer_id 		=	$this->session->userdata('customer_id');
 				$customer['name'] 		=	$this->session->userdata('customer_name');
@@ -190,6 +220,20 @@ id');
 				$data['trip_status_id']=TRIP_STATUS_CANCELLED;
 				$res = $this->trip_booking_model->updateTrip($data,$trip_id);
 				if($res==true){
+		
+					$driver=$this->trip_booking_model->getDriverDetails($trip_id);
+					if($driver!=false ){
+						$app_key=$driver[0]['app_key'];
+						$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_CANCELLED;
+						$notification_data['notification_status_id']=gINVALID;
+						$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+						$notification_data['app_key']=$app_key;
+						$notification_data['trip_id']=$trip_id;
+						$this->trip_booking_model->setNotifications($notification_data);
+
+					}
+					
+
 					$this->session->set_userdata(array('dbSuccess'=>'Trip Cancelled Succesfully..!!'));
 					$this->session->set_userdata(array('dbError'=>''));
 					$this->SendTripCancellation($trip_id,$customer);
@@ -206,8 +250,27 @@ id');
 			}
 		} 
 	}
+	function searchVehicles($data_locations){
+		
+		return $this->trip_booking_model->getAvailableVehicles($data_locations);
 
+	}
+	function checkFutureOrInstantTrip($tripdatetime){
 
+		$date1 = date_create(date('Y-m-d H:i:s'));
+		$date2 = date_create($tripdatetime);
+		$diff= date_diff($date1, $date2);//echo $diff->d.' '. $diff->h.' '.$diff->i;
+		if(($diff->d == 0 && $diff->h==0 && $diff->i > 30) || ($diff->d == 0 && $diff->h > 0) || $diff->d > 0) {
+
+		return FUTURE_TRIP;
+
+		}else{
+
+		return INSTANT_TRIP;
+
+		}
+
+	}
 	public function reccurent(){
 	
 	if($data['id']==-1){
@@ -432,43 +495,12 @@ id');
 		}
 	} 
 	public function SendTripConfirmation($data,$id,$customer){
-		$message='Hi Customer,Your Trip ID:'.$id.' has been confirmed.Date:'.$data['pick_up_date'].' '.$data['pick_up_time'].' Location :'.$data['pick_up_city'].'-'.$data['drop_city'].' Enjoy your trip.';
-	$tbl_arry=array('vehicle_types','vehicle_ac_types','vehicle_makes','vehicle_models');
+		$message='Hi Customer,Your Trip ID:'.$id.' has been confirmed.Date:'.$data['pick_up_date'].' '.$data['pick_up_time'].' Location :'.$data['trip_from'].'-'.$data['trip_to'].' Enjoy your trip.';
 	
-	for ($i=0;$i<4;$i++){
-	$result=$this->user_model->getArray($tbl_arry[$i]);
-	if($result!=false){
-	$data1[$tbl_arry[$i]]=$result;
-	}
-	else{
-	$data1[$tbl_arry[$i]]='';
-	}
-	}
 	$driver=$this->trip_booking_model->getDriverDetails($data['driver_id']);
-	$vehicle=$this->trip_booking_model->getVehicle($data['vehicle_id']);
-	$this->sms->sendSms($customer['mob'],$message);
-	$booking_date=$this->trip_booking_model->getTripBokkingDate($id);
-if($data['vehicle_model_id']==gINVALID){
-$vehicle_model='';
-}else{
-$vehicle_model=$data1['vehicle_models'][$data['vehicle_model_id']];
-}
-if($data['vehicle_type_id']==gINVALID){
-$vehicle_type='';
-}else{
-$vehicle_type=$data1['vehicle_types'][$data['vehicle_type_id']];
-}
-if($data['vehicle_make_id']==gINVALID){
-$vehicle_make='';
-}else{
-$vehicle_make=$data1['vehicle_makes'][$data['vehicle_make_id']];
-}
-	$email_content="<table style='border:1px solid #333;'><tbody><tr><td colspan='3' style='border-bottom: 1px solid;'>Passenger Information</td></tr><tr><td style='width:250px;'>Name</td><td>:</td><td style='width:250px;'>".$customer['name']."</td></tr><tr><td style='width:250px;'>Contact</td><td>:</td><td style='width:250px;'>".$customer['mob']."</td></tr><tr><td style='width:250px;'>No of Passengers</td><td>:</td><td style='width:250px;'>".$data['no_of_passengers']."</td></tr><tr><td colspan='3' style='border-bottom: 1px solid;border-top: 1px solid;'>Booking Information</td></tr><tr><td style='width:250px;'>Trip From</td><td>:</td><td style='width:250px;'>".$data['pick_up_city']."</td></tr><tr><td style='width:250px;'>Trip to</td><td>:</td><td style='width:250px;'>".$data['drop_city']."</td></tr><tr><td style='width:250px;'>Booking Date</td><td>:</td><td style='width:250px;'>".$booking_date."</td></tr><tr><td style='width:250px;'>Trip Date :</td><td>:</td><td style='width:250px;'>".$data['pick_up_date']."</td></tr><tr><td style='width:250px;'>Reporting Time</td><td>:</td><td style='width:250px;'>".$data['pick_up_time']."</td></tr><tr><td style='width:250px;''>Pick up</td><td>:</td><td style='width:250px;'>".$data['pick_up_area']."</td></tr><tr><td colspan='3' style='border-bottom: 1px solid;border-top: 1px solid;'>Vehicle Information</td></tr><tr><td style='width:250px;'>Type</td><td>:</td><td style='width:250px;'>".$vehicle_make." ".$vehicle_model."-".$vehicle_type."</td></tr><tr><td style='width:250px;'>Reg No</td><td>:</td><td style='width:250px;'>".$vehicle[0]->registration_number."</td></tr><tr><td style='width:250px;'>Driver</td><td>:</td><td style='width:250px;'>".$driver[0]->name." , ".$driver[0]->mobile."</td></tr><tr><td colspan='3' style='border-bottom: 1px solid;border-top: 1px solid;'>Other Remarks</td></tr><tr><td>".br(3)."</td></tr><tr><td></td></tr></tbody></table>";
 	
-	if($customer['email']!=''){
-	$subject="Connect N Cabs";
-	$this->send_email->emailMe($customer['email'],$subject,$email_content);
-	}
+	$this->sms->sendSms($customer['mob'],$message);
+	
 	}
 
 	public function SendTripCancellation($id,$customer){

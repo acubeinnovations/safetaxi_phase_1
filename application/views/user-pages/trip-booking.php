@@ -1,46 +1,4 @@
 <?php
-echo $this->session->userdata('customer_id');
-if($id==gINVALID){
-$name='';
-$mobile='';
-$trip_from='';
-$trip_from_landmark='';
-$trip_to='';
-$trip_to_landmark='';
-if(!isset($pick_up_date)){
-$pick_up_date=date('Y-m-d');
-}
-$pick_up_time='';
-$drop_date='';
-$drop_time='';
-$trip_from_lat	='';
-$trip_from_lng	='';
-
-$trip_to_lat	='';
-$trip_to_lng	='';
-}
-
-if($this->mysession->get('post')!=NULL){
-$data=$this->mysession->get('post');
-$name=$data['name'];
-$mobile=$data['mobile'];
-$trip_from=$data['trip_from'];
-$trip_from_landmark=$data['trip_from_landmark'];
-$trip_to=$data['trip_to'];
-$trip_to_landmark=$data['trip_to_landmark'];
-if(!isset($data['pick_up_date'])){
-	$pick_up_date=date('Y-m-d');
-}else{
-$pick_up_date=$data['pick_up_date'];
-}
-$trip_from_lat	=$data['trip_from_lat'];
-$trip_from_lng	=$data['trip_from_lng'];
-
-$trip_to_lat	=$data['trip_to_lat'];
-$trip_to_lng	=$data['trip_to_lng'];
-$pick_up_time=$data['pick_up_time'];
-$this->mysession->delete('post');
-}
 
 ?>
 <div class="trip-booking-body">
@@ -146,7 +104,7 @@ $this->mysession->delete('post');
 							</td>
 							<td>
 								<div class="input-group margin-10-px ">
-                                        <input class="form-control width-30-percent float-left height-27-px" value=1 type="text">
+                                        <input name="radius" class="form-control width-30-percent float-left height-27-px" value=1 type="text">
                                         <span class="input-group-addon float-left width-20-percent height-27-px">KM</span>
                                     </div>
 							</td>
@@ -171,7 +129,7 @@ $this->mysession->delete('post');
 							<td>
 								<div class="form-group margin-10-px margin-top-less-12">
 									<input class="btn btn-success btn-sm 	search-vehicles" name="book_trip" type="submit" value="SAVE AND SEARCH">
-									<?php if($id!=gINVALID){ ?> <button class="btn btn-dager btn-sm 	search-vehicles" name="cancel_trip" type="submit">CANCEL</button><div class="hide-me"> <input name="id" class="" value="<?php echo $id; ?>" type="text"></div>  <?php } ?>
+									<?php if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"><div class="hide-me"> <input name="id" class="" value="<?php echo $id; ?>" type="text"></div>  <?php } ?>
 								</div>
 							</td>
 					</tr>
@@ -210,6 +168,56 @@ $this->mysession->delete('post');
 				<div class="trip-booking-notifications">
 					 <fieldset class="body-border">
 					<legend class="body-head">Notifications</legend>
+						<div class="ajax-notifications">
+		<?php
+		
+		if(count($notification)>0 && $notification!=''){
+		for($notification_index=0;$notification_index<count($notification);$notification_index++){?>
+		<a href="<?php echo base_url().'front-desk/trip-booking/'.$notification[$notification_index]->id;?>" class="notify-link">
+		<div class="callout callout-warning no-right-padding">
+		<div class="notification<?php echo $notification_index; ?>">
+			<table style="width:100%;" class="font-size-12-px">
+				<tr>
+					<td class='notification-trip-id'>
+						Trip ID :
+					</td>
+					<td>
+						<?php echo $notification[$notification_index]->id; ?>
+					</td>
+				</tr>
+				<tr>
+					<td class='notification-pickup-city'>
+						Cust :
+					</td>
+					<td>
+						<?php echo $customers_array[$notification[$notification_index]->customer_id]; ?>
+					</td>
+				</tr>
+				<tr>
+					<td class='notification-trip-id'>
+						Pick up :
+					</td>
+					<td>
+						<?php echo $notification[$notification_index]->trip_from; ?>
+					</td>
+				</tr>
+				<tr>
+					<td class='notification-pickup-city'>
+					Date :</td><td><?php echo $notification[$notification_index]->pick_up_date; ?>
+					</td>
+				</tr>
+			</table>
+		</div>
+		</div>
+		</a>
+		<?php }
+
+
+		}
+
+
+		?>
+		</div>
  					</fieldset>
 				</div>
 				<!--trip-booking-notifications -end-->

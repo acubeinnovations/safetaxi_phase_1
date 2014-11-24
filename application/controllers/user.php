@@ -336,14 +336,75 @@ class User extends CI_Controller {
 
 	public function ShowBookTrip($trip_id =''){
 	if($this->session_check()==true) {
-	if($trip_id!=''){
+	if($this->mysession->get('post')!=NULL){
+		$data=$this->mysession->get('post');
+		$this->mysession->delete('post');
+	}else if($trip_id!=''){
 	$condition=array('id'=>$trip_id);
-	$data['values']=$this->trip_booking_model->getDetails($condition);
-
+	$values=$this->trip_booking_model->getDetails($condition);
+	$data['id']=$trip_id;
+	if($values[0]->customer_id!=gINVALID){
+	$condition=array('id'=>$values[0]->customer_id);
+		$customers=$this->customers_model->getCustomerDetails($condition);//print_r($customers);exit;
+		if(count($customers)>0){
+			$data['name']=$customers[0]['name'];
+			$data['mobile']=$customers[0]['mobile'];
+			$this->session->set_userdata('customer_id',$customers[0]['id']);
+			$this->session->set_userdata('customer_name',$customers[0]['name']);
+			$this->session->set_userdata('customer_mobile',$customers[0]['mobile']);
+		}else{
+			$data['name']='';
+			$data['mobile']='';
+		}
 	}
-	print_r($data['values']);
+	
+	$data['trip_from']=$values[0]->trip_from;
+	$data['trip_to']=$values[0]->trip_to;
+	$data['trip_from_landmark']=$values[0]->trip_from_landmark;
+	$data['trip_to_landmark']=$values[0]->trip_to_landmark;
+	$data['pick_up_date']=$values[0]->pick_up_date;
+	$data['pick_up_time']=$values[0]->pick_up_time;	
+	$data['trip_from_lat']=$values[0]->trip_from_lat;	
+	$data['trip_to_lat']=$values[0]->trip_to_lat;
+	$data['trip_from_lng']=$values[0]->trip_from_lng;
+	$data['trip_to_lng']=$values[0]->trip_to_lng;
+	$data['driver_id']=$values[0]->driver_id;
+	$data['trip_status_id']=$values[0]->trip_status_id;
+	
+	
+	}else{
+	$data['id']=gINVALID;
+	$data['name']='';
+	$data['mobile']='';
+	$data['trip_from']='';
+	$data['trip_to']='';
+	$data['trip_from_landmark']='';
+	$data['trip_to_landmark']='';
+	$data['pick_up_date']=date('Y-m-d');;
+	$data['pick_up_time']='';	
+	$data['trip_from_lat']='';	
+	$data['trip_to_lat']='';
+	$data['trip_from_lng']='';
+	$data['trip_to_lng']='';
+	}
+	$tbl_arry=array();
+	
+	for ($i=0;$i<count($tbl_arry);$i++){
+	$result=$this->user_model->getArray($tbl_arry[$i]);
+	if($result!=false){
+	$data[$tbl_arry[$i]]=$result;
+	}
+	else{
+	$data[$tbl_arry[$i]]='';
+	}
+	}
+	$conditon =array('trip_status_id'=>TRIP_STATUS_PENDING,'CONCAT(pick_up_date," ",pick_up_time) >='=>date('Y-m-d H:i'));
+	$orderby = ' CONCAT(pick_up_date,pick_up_time) ASC';
+	$data['notification']=$this->trip_booking_model->getDetails($conditon,$orderby);
+	$data['customers_array']=$this->customers_model->getArray();
+	//print_r($data['notification']);
 	$data['title']="Trip Booking | ".PRODUCT_NAME;  
-	$data['id']=-1;
+	
 	$page='user-pages/trip-booking';
 	$this->load_templates($page,$data);
 	
