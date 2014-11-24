@@ -25,8 +25,22 @@
 					<tr>
 					    <td><?php echo form_input(array('name'=>'driver_name','class'=>'form-control','id'=>'driver_name','placeholder'=>'By Name','size'=>30));?> </td>
 						<td><?php echo form_input(array('name'=>'driver_city','class'=>'form-control','id'=>'driver_city','placeholder'=>'By City','size'=>30));?> </td>
-						<!--<td><?php// $class="form-control";
-						//echo $this->form_functions->populate_dropdown('model',$v_models,$selected='',$class,$id='',$msg='Select Vehicle Model')?> </td>-->
+						<td><?php $class="form-control";
+							  $id='status';
+							  $status[0]='Available';
+							  $status[1]='On-Trip';
+							  if(isset($status_id)){
+							  $status_id=$status_id;
+							  }
+							  else{
+							   $status_id='';
+							  }
+						echo $this->form_functions->populate_dropdown('status',$status,$status_id,$class,$id,$msg="Select Status");?> </td>
+						 <td><?php $class="form-control";
+							  $id='drivers';
+						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id="",$class,$id,$msg="Select Driver");?></td>
+
+
 					    
 						<td><?php echo form_submit("search","Search","class='btn btn-primary'");?></td>
 						
@@ -43,8 +57,7 @@
 			</table>
 		</div>
 		
-		<div class="msg"> <?php 
-			if (isset($result)){ echo $result;} else {?></div>
+		<div class="msg"> </div>
 	
 		
 		<div class="box-body table-responsive no-padding driver-list-div">
@@ -53,31 +66,30 @@
 					<tr>
 					    <th>Driver</th>
 					    <th>Contact Details</th>
-					    <th>Vehicle Details</th>
+					    <th>Registration Number</th>
+					    <th>App Key</th>
 						<th>Current Status</th>
-						<th> Account Statement</th>
+						
 					</tr>
 					<?php 
 					if(isset($values)){ 
 					foreach ($values as $det):
 					$phone_numbers='';
 					?>
-					<tr><?php if($det['phone']!='' && $det['mobile']!=''){ $phone_numbers=$det['phone']." , ".$det['mobile']; }else if($det['phone']!=''){ $phone_numbers=$det['phone']; }else if($det['mobile']!=''){ $phone_numbers=$det['mobile']; }?>
+					<tr>
 					    <td><?php echo anchor(base_url().'front-desk/driver-profile/'.$det['id'],$det['name']).nbs(3);?></td>
-					    <td><?php echo $phone_numbers.br().$det['present_address'].br().$det['district'];?></td>	
-						<td><?php if( !isset($vehicles[$det['id']]['registration_number']) || $vehicles[$det['id']]['registration_number']==''){ echo '';}else{echo $vehicles[$det['id']]['registration_number'].br();}
-						if(!isset($vehicles[$det['id']]['vehicle_model_id']) || $vehicles[$det['id']]['vehicle_model_id']==gINVALID){ echo '';}else{echo $v_models[$vehicles[$det['id']]['vehicle_model_id']].br();}
-						if(!isset($vehicles[$det['id']]['vehicle_make_id']) || $vehicles[$det['id']]['vehicle_make_id']==gINVALID){ echo '';}else{echo $v_makes[$vehicles[$det['id']]['vehicle_make_id']];}?></td>
-						<td><?php if($driver_statuses[$det['id']]!='Available'){ echo '<span class="label label-info">'.$driver_statuses[$det['id']].'</span>'.br(); }else{ echo '<span class="label label-success">'.$driver_statuses[$det['id']].'</span>'.br(); } if($driver_trips[$det['id']]!=gINVALID){ echo anchor(base_url().'front-desk/trip-booking/'.$driver_trips[$det['id']],'Trip ID :'.$driver_trips[$det['id']]); } else{ echo ''; } ?></td>
-						<td></td>
+					    <td><?php echo $det['mobile'];?></td>	
+						<td><?php echo $det['vehicle_registration_number'];?></td>
+						<td><?php echo $det['app_key'];?></td>.
+						<td><?php echo $det['driver_status_id'];?></td>
 					</tr>
 					<?php endforeach;
 					}
 					?>
 				</tbody>
-			</table><?php echo $page_links;?>
+			</table><?php //echo $page_links;?>
 		</div>
-		<?php } ?>
+		
 	</fieldset>
 </div>
 

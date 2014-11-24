@@ -2,8 +2,7 @@
 class Driver_model extends CI_Model {
 public function addDriverdetails($data){
 
-	$this->db->set('salary', '2500');
-	$this->db->set('minimum_working_days', '25');
+
 	$this->db->set('created', 'NOW()', FALSE);
 	$this->db->insert('drivers',$data);
 	return $this->db->insert_id();
@@ -28,8 +27,8 @@ public function getDriverDetails($data){
 	}
 	}
 
-	public function getDrivers(){ 
-	$qry='SELECT D.name,D.id,D.mobile,VD.from_date,VD.to_date,VD.driver_id,VD.vehicle_id FROM drivers AS D LEFT JOIN vehicle_drivers AS VD ON  D.id =VD.driver_id AND D.organisation_id = '.$this->session->userdata('organisation_id').' WHERE VD.organisation_id = '.$this->session->userdata('organisation_id').' AND VD.to_date="9999-12-30"';
+	/*public function getDrivers(){ 
+	$qry='SELECT * FROM drivers';
 	$results=$this->db->query($qry);
 	$results=$results->result_array();
 	if(count($results)>0){
@@ -43,7 +42,30 @@ public function getDriverDetails($data){
 	}else{
 		return false;
 	}
+	}*/
+
+	/**/
+	public function getDrivers(){ 
+	$qry='SELECT * FROM drivers';	
+	$results=$this->db->query($qry);
+	$results=$results->result_array();
+	if(count($results)>0){
+	
+		return $results;
+	}else{
+		return false;
 	}
+	}
+	/**/
+
+
+
+
+
+
+
+
+
 
 	function getDriversArray($condion=''){
 	$this->db->from('drivers');
