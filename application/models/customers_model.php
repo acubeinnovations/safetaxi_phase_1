@@ -44,7 +44,7 @@ class Customers_model extends CI_Model {
 	}
 	}
 	public function getCurrentStatuses($id){ 
-	$qry='SELECT * FROM trips WHERE CONCAT(pick_up_date," ",pick_up_time) <= "'.date("Y-m-d H:i").'" AND CONCAT(drop_date," ",drop_time) >= "'.date("Y-m-d H:i").'" AND customer_id="'.$id.'"  AND trip_status_id='.TRIP_STATUS_CONFIRMED;
+	$qry='SELECT * FROM trips WHERE CONCAT(pick_up_date," ",pick_up_time) <= "'.date("Y-m-d H:i").'" AND customer_id="'.$id.'"  AND trip_status_id='.TRIP_STATUS_CONFIRMED;
 	$results=$this->db->query($qry);
 	$results=$results->result_array();//echo $this->db->last_query();
 	if(count($results)>0){

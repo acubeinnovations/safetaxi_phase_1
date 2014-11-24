@@ -3,7 +3,7 @@
 		<legend class="body-head">Search</legend><div class="form-group">
 			<div class="box-body table-responsive no-padding">
 			
-			<?php echo form_open(base_url()."organization/front-desk/tripvouchers"); ?>
+			<?php echo form_open(base_url()."front-desk/tripvouchers"); ?>
 			<table class="table list-trip-table no-border">
 				<tbody>
 					<tr>

@@ -33,7 +33,7 @@ if(isset($values)){
 			<fieldset class="body-border">
    			 <legend class="body-head">Profile</legend>
 				<div class="div-with-50-percent-width-with-margin-10">
-				<?php echo form_open(base_url().'organization/front-desk/profile');?>
+				<?php echo form_open(base_url().'front-desk/profile');?>
 				<div class="form-group">
 				   <?php echo form_label('Username','usernamelabel'); ?>
 				   <?php echo form_input(array('name'=>'username','class'=>'form-control','id'=>'username','placeholder'=>'Enter Username','disabled'=>'','value'=>$username)).form_hidden('husername',$username); ?>			

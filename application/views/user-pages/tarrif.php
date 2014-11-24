@@ -42,7 +42,7 @@ $this->session->set_userdata('post','');
 <legend class="body-head">Search</legend>
 <table>
 <tr>
-<td><?php echo form_open(base_url()."organization/front-desk/tarrif"); 
+<td><?php echo form_open(base_url()."front-desk/tarrif"); 
  echo form_input(array('name'=>'search_from_date','class'=>'fromdatepicker form-control' ,'placeholder'=>' From Date')); ?>
 </td>
 <td><?php  echo form_input(array('name'=>'search_to_date','class'=>'fromdatepicker form-control' ,'placeholder'=>' To Date')); ?></td>

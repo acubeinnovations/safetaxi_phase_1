@@ -10,12 +10,13 @@ class Home extends CI_Controller {
 	{	if( $this->session->userdata('isLoggedIn') ) {
 		if( $this->session->userdata('type')==SYSTEM_ADMINISTRATOR){
 			redirect(base_url().'admin');
-		}}else if($this->session->userdata('type')==FRONT_DESK){
-			 redirect(base_url().'organization/front-desk');
+		}else if($this->session->userdata('type')==FRONT_DESK){
+			 redirect(base_url().'front-desk');
+		}
 		}else{
 		$data['title']="Login | ".PRODUCT_NAME;	
 		$this->load->view('user-pages/login',$data);
-		//redirect(base_url().'organization/login');
+		
 		}
 	}
 }

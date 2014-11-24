@@ -19,7 +19,7 @@
 	<fieldset class="body-border">
 		<legend class="body-head">List Drivers</legend>
 		<div class="box-body table-responsive no-padding">
-			<?php echo form_open(base_url().'organization/front-desk/list-driver');?>
+			<?php echo form_open(base_url().'front-desk/list-driver');?>
 			<table class="table list-org-table">
 				<tbody>
 					<tr>
@@ -34,7 +34,7 @@
 						<td><?php echo nbs(55); ?></td>
 						<td><?php echo nbs(35); ?></td>
 						
-						<td><?php echo form_open( base_url().'organization/front-desk/driver-profile');
+						<td><?php echo form_open( base_url().'front-desk/driver-profile');
 								  echo form_submit("add","Add","class='btn btn-primary'");
 								  echo form_close(); ?></td>
 						<td><?php echo form_button('print-driver','Print',"class='btn btn-primary print-driver'"); ?></td>
@@ -63,12 +63,12 @@
 					$phone_numbers='';
 					?>
 					<tr><?php if($det['phone']!='' && $det['mobile']!=''){ $phone_numbers=$det['phone']." , ".$det['mobile']; }else if($det['phone']!=''){ $phone_numbers=$det['phone']; }else if($det['mobile']!=''){ $phone_numbers=$det['mobile']; }?>
-					    <td><?php echo anchor(base_url().'organization/front-desk/driver-profile/'.$det['id'],$det['name']).nbs(3);?></td>
+					    <td><?php echo anchor(base_url().'front-desk/driver-profile/'.$det['id'],$det['name']).nbs(3);?></td>
 					    <td><?php echo $phone_numbers.br().$det['present_address'].br().$det['district'];?></td>	
 						<td><?php if( !isset($vehicles[$det['id']]['registration_number']) || $vehicles[$det['id']]['registration_number']==''){ echo '';}else{echo $vehicles[$det['id']]['registration_number'].br();}
 						if(!isset($vehicles[$det['id']]['vehicle_model_id']) || $vehicles[$det['id']]['vehicle_model_id']==gINVALID){ echo '';}else{echo $v_models[$vehicles[$det['id']]['vehicle_model_id']].br();}
 						if(!isset($vehicles[$det['id']]['vehicle_make_id']) || $vehicles[$det['id']]['vehicle_make_id']==gINVALID){ echo '';}else{echo $v_makes[$vehicles[$det['id']]['vehicle_make_id']];}?></td>
-						<td><?php if($driver_statuses[$det['id']]!='Available'){ echo '<span class="label label-info">'.$driver_statuses[$det['id']].'</span>'.br(); }else{ echo '<span class="label label-success">'.$driver_statuses[$det['id']].'</span>'.br(); } if($driver_trips[$det['id']]!=gINVALID){ echo anchor(base_url().'organization/front-desk/trip-booking/'.$driver_trips[$det['id']],'Trip ID :'.$driver_trips[$det['id']]); } else{ echo ''; } ?></td>
+						<td><?php if($driver_statuses[$det['id']]!='Available'){ echo '<span class="label label-info">'.$driver_statuses[$det['id']].'</span>'.br(); }else{ echo '<span class="label label-success">'.$driver_statuses[$det['id']].'</span>'.br(); } if($driver_trips[$det['id']]!=gINVALID){ echo anchor(base_url().'front-desk/trip-booking/'.$driver_trips[$det['id']],'Trip ID :'.$driver_trips[$det['id']]); } else{ echo ''; } ?></td>
 						<td></td>
 					</tr>
 					<?php endforeach;

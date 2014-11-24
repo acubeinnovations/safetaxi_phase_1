@@ -1,7 +1,7 @@
 <div class="change-password-body">
 		<fieldset class="body-border">
 	   		<legend class="body-head">Change Password</legend>
-			<?php echo form_open(base_url().'organization/front-desk/changepassword');?>
+			<?php echo form_open(base_url().'front-desk/changepassword');?>
 		    <div class="form-group">
 			   <?php echo form_label('Current Password','old_passwordlabel'); ?>
 		       <?php echo form_password(array('name'=>'old_password','class'=>'form-control','id'=>'old_password','placeholder'=>'Enter Current Password','value'=>$old_password)); ?>

@@ -336,7 +336,12 @@ class User extends CI_Controller {
 
 	public function ShowBookTrip($trip_id =''){
 	if($this->session_check()==true) {
-	
+	if($trip_id!=''){
+	$condition=array('id'=>$trip_id);
+	$data['values']=$this->trip_booking_model->getDetails($condition);
+
+	}
+	print_r($data['values']);
 	$data['title']="Trip Booking | ".PRODUCT_NAME;  
 	$data['id']=-1;
 	$page='user-pages/trip-booking';
@@ -635,7 +640,8 @@ public function profile() {
 	}
 	public function ShowDriverView($param2) {
 		if($this->session_check()==true) {
-				$data['select']=$this->select_Box_Values();
+				$tbl=array();
+				$data['select']=$this->select_Box_Values($tbl);
 				
 				
 			//trip details
@@ -685,7 +691,8 @@ public function profile() {
 			//print_r($data['trips']);exit;
 			$data['title']='Driver Profile| '.PRODUCT_NAME;
 			$page='user-pages/addDrivers';
-			$data['select']=$this->select_Box_Values();
+			$tbl=array();
+			$data['select']=$this->select_Box_Values($tbl);
 			$this->load_templates($page,$data);
 		
 			}
@@ -706,6 +713,7 @@ public function profile() {
 			}
 	}
 	public function select_Box_Values($tbl_arry){
+		$data=array();
 		for ($i=0;$i<count($tbl_arry);$i++){
 		$result=$this->user_model->getArray($tbl_arry[$i]);
 		if($result!=false){

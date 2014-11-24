@@ -41,7 +41,7 @@ $this->session->set_userdata('post','');
 <legend class="body-head">Search</legend>
 <table>
 <tr>
-<td><?php echo form_open(base_url()."organization/front-desk/tarrif-masters"); 
+<td><?php echo form_open(base_url()."front-desk/tarrif-masters"); 
 echo form_input(array('name'=>'search_title','class'=>'form-control','id'=>'title1','placeholder'=>'Title','value'=>$title1)); ?>
 </td>
 <td><?php $class="form-control";

@@ -29,7 +29,7 @@ if($this->session->userdata('dbError') != ''){ ?>
 <legend class="body-head">Search</legend>
 <table>
 <tr>
-<td><?php echo form_open(base_url()."organization/front-desk/device"); 
+<td><?php echo form_open(base_url()."front-desk/device"); 
  echo form_input(array('name'=>'s_sim_no','class'=>'form-control' ,'placeholder'=>'Sim No','value'=>$s_sim_no)); ?>
 </td>
 <td><?php  echo form_input(array('name'=>'s_imei','class'=>'form-control' ,'placeholder'=>'Enter IMEI','value'=>$s_imei)); ?></td>
