@@ -723,7 +723,8 @@ public function profile() {
 	
 	  public function ShowDriverList($param1,$param2) {
 	if($this->session_check()==true) {
-
+	$data['values']=$this->driver_model->getDrivers();
+	$data['drivers']=$this->driver_model->getDriversArray($condition=''); 
 	$data['title']='List Driver| '.PRODUCT_NAME;
 	$page='user-pages/driverList';
 	$this->load_templates($page,$data);	
@@ -745,10 +746,7 @@ public function profile() {
 			}   
 			//trip details
 		
-			if($param2!=''){
-			
-			$data['trips']=$this->trip_booking_model->getDriverVouchers($param2);
-			}
+		
 			//print_r($data['trips']);exit;
 			$data['title']='Driver Profile| '.PRODUCT_NAME;
 			$page='user-pages/addDrivers';

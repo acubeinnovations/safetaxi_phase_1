@@ -165,6 +165,7 @@ class Trip extends CI_Controller {
 	$vehicle_seating_capacity=$data['vehicle_seating_capacity'];
 	$vehicle_ac_types=$data['vehicle_ac_types'];
 	$vehicles=$this->trip_booking_model->getVehiclesArray($condition='');
+	
 	$drivers=$this->driver_model->getDriversArray($condition='');
 	
 	$conditon = array('id'=>$trip_id);

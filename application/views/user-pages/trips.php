@@ -54,13 +54,13 @@ $trip_sl_no=$page;
 					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'Drop Date','value'=>$trip_drop_date)); ?></td>
 						 <td><?php $class="form-control";
 							  $id='vehicles';
-						echo $this->form_functions->populate_dropdown('vehicles',$vehicles,$vehicle_id,$class,$id,$msg="Select Vehicle");?></td>
+						echo $this->form_functions->populate_dropdown('vehicles',$vehicles="",$vehicle_id,$class,$id,$msg="Select Vehicle");?></td>
 						 <td><?php $class="form-control";
 							  $id='drivers';
-						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id,$class,$id,$msg="Select Driver");?></td>
+						echo $this->form_functions->populate_dropdown('drivers',$drivers="",$driver_id="",$class,$id,$msg="Select Driver");?></td>
 						<td><?php $class="form-control";
 							  $id='trip-status';
-						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
+						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses="",$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
 					    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
 					<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
@@ -78,19 +78,17 @@ echo form_close();?></td>
 				<tbody>
 					<tr>	
 						
-					    <th style="width:2%">Trip ID </th>
-					    <th style="width:4%">Booking Date</th>
+					    <th style="width:2%">Sl nO: </th>
+					    <th style="width:4%">Trip id</th>
 						<!--<th style="width:15%">Customer</th>-->
-					    <th style="width:4%">Pickup Date</th>
-					    <th style="width:11%">Vehicle</th>
-					    <th  style="width:11%">Pickup Loc</th>
-					    <th  style="width:11%">Guest</th>
-						<th style="width:11%">Visit To</th>
-						<th style="width:11%">Called By</th>						
-						
-						<th style="width:11%">Driver</th>
+					    <th style="width:4%">Booking Date</th>
+					    <th style="width:11%">Pickup Date</th>
+					    <th  style="width:11%">Pickup Time</th>
+					    <th  style="width:11%">Route</th>
+						<th style="width:11%">Customer Name</th>
+						<th style="width:11%">Phone Number</th>						
 						 <th style="width:11%">Status</th>
-						 <th style="width:13%">Action</th>
+						
 					</tr>
 					<?php
 					
@@ -159,7 +157,7 @@ echo form_close();?></td>
 						}
 					?>
 				</tbody>
-			</table><?php echo $page_links;?>
+			</table><?php //echo $page_links;?>
 		</div>
 		<?php } ?>
 	</fieldset>
