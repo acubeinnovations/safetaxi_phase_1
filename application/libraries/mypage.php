@@ -1,5 +1,8 @@
 <?php 
 class  Mypage{
+
+
+
 function paging($tbl,$per_page,$offset='',$baseurl,$Uriseg,$custom='',$qry=''){
 		$CI = & get_instance();
 		$CI->load->model('page_model');
@@ -23,5 +26,32 @@ function paging($tbl,$per_page,$offset='',$baseurl,$Uriseg,$custom='',$qry=''){
 		return $data;
 		
 }
+
+
+function get_paging($page = 0, $per_page = 2){
+		$this->load->helper('url');
+        $this->load->library('table');
+        $this->load->library('pagination');
+
+        if ($this->input->get('per_page', TRUE)) {
+            $per_page = $_GET['per_page'];            
+            $config['per_page'] = $per_page;          
+        }
+        else {            
+            $config['per_page'] = $per_page;            
+        }
+        
+        $config['base_url'] = $baseurl;                
+        $config['suffix'] = '?per_page='.$per_page;    
+        $config['cur_page'] = 0;
+        $config['total_rows'] = $this->db->get('entries')->num_rows();        
+        $this->pagination->initialize($config);        
+        
+        $data['records'] = $this->db->get('entries', $per_page, $page);        
+        $data['per_page'] = $per_page;        
+        $data['page'] = $page;        
+        
+        
+   } 
 }
 ?>

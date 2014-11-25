@@ -161,6 +161,8 @@ class Trip_booking_model extends CI_Model {
 	return true;
 	}
 
+	/**********/
+
 	function getDetails($conditon ='',$orderby=''){
 
 	$this->db->from('trips');

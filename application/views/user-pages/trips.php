@@ -52,15 +52,13 @@ $trip_sl_no=$page;
 						<!--<td><?php echo form_input(array('name'=>'customer','class'=>'customer form-control' ,'placeholder'=>'Customer name','value'=>$customer)); ?></td>-->
 					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'Pick up Date','value'=>$trip_pick_date)); ?></td>
 					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'Drop Date','value'=>$trip_drop_date)); ?></td>
-						 <td><?php $class="form-control";
-							  $id='vehicles';
-						echo $this->form_functions->populate_dropdown('vehicles',$vehicles="",$vehicle_id,$class,$id,$msg="Select Vehicle");?></td>
+						 
 						 <td><?php $class="form-control";
 							  $id='drivers';
-						echo $this->form_functions->populate_dropdown('drivers',$drivers="",$driver_id="",$class,$id,$msg="Select Driver");?></td>
+						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id="",$class,$id,$msg="Select Driver");?></td>
 						<td><?php $class="form-control";
 							  $id='trip-status';
-						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses="",$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
+						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
 					    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
 					<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
@@ -94,8 +92,8 @@ echo form_close();?></td>
 					
 					
 					for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$pickdate=$trips[$trip_index]['pick_up_date'].' '.$trips[$trip_index]['pick_up_time'];
-						$dropdate=$trips[$trip_index]['drop_date']." ".$trips[$trip_index]['drop_time'];
+						$pickdate=$trips[$trip_index]['pick_up_date'];
+						$dropdate=$trips[$trip_index]['drop_date'];
 
 						$date1 = date_create($pickdate);
 						$date2 = date_create($dropdate);
