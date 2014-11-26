@@ -61,12 +61,93 @@ class Trip_booking extends CI_Controller {
 	}	
 	public function bookTrip() {
 			
-			if(isset($_REQUEST['book_trip'])){
+		if(isset($_REQUEST['book_trip'])){
 
-				if(isset($_REQUEST['id'])){
+				$this->saveTrip($revoke=false);
+				
+		}else if(isset($_REQUEST['revoke'])){
+
+				$this->saveTrip($revoke=true);
+
+		}else if(isset($_REQUEST['cancel_trip'])){
+			if(isset($_REQUEST['id'])){
+			
+				$trip_id			=	$this->input->post('id');
+				
+				$customer_id 		=	$this->session->userdata('customer_id');
+				$customer['name'] 	=	$this->session->userdata('customer_name');
+				$customer['mob'] 	= 	$this->session->userdata('customer_mobile');
+				$customer['email'] 	= 	$this->session->userdata('customer_email');
+
+				
+				$data['trip_status_id']=TRIP_STATUS_CANCELLED;
+				$res = $this->trip_booking_model->updateTrip($data,$trip_id);
+				if($res==true){
+		
+					$driver=$this->trip_booking_model->getDriverDetails($trip_id);
+					if($driver!=false ){
+						$app_key=$driver[0]['app_key'];
+						$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_CANCELLED;
+						$notification_data['notification_status_id']=gINVALID;
+						$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+						$notification_data['app_key']=$app_key;
+						$notification_data['trip_id']=$trip_id;
+						$trip_update=TRUE;
+						$this->trip_booking_model->setNotifications($notification_data,$trip_update);
+
+					}
+					
+
+					$this->session->set_userdata(array('dbSuccess'=>'Trip Cancelled Succesfully..!!'));
+					$this->session->set_userdata(array('dbError'=>''));
+					$this->SendTripCancellation($trip_id,$customer);
+				}else{
+					$this->session->set_userdata(array('dbError'=>'Trip Cancelled unsuccesfully..!!'));
+					$this->session->set_userdata(array('dbSuccess'=>''));
+				}
+				$this->session->set_userdata('customer_id','');
+				$this->session->set_userdata('customer_name','');
+				$this->session->set_userdata('customer_email','');
+				$this->session->set_userdata('customer_mobile','');
+				$this->session->set_userdata('driver_id','');
+				redirect(base_url().'front-desk/trip-booking');
+			}
+		} else if(isset($_REQUEST['search'])){
+					$data_locations['center_lat']=$this->input->post('trip_from_lat');
+					$data_locations['center_lng']=$this->input->post('trip_from_lng');
+					$data_locations['radius']=$this->input->post('radius');	
+					$id=$this->input->post('id');
+					$drivers=$this->searchVehicles($data_locations);
+					if(count($drivers)>0){
+						for($i=0;$i<count($drivers);$i++){
+							$app_key=$drivers[$i]['app_key'];
+							$notification_data['notification_type_id']=NOTIFICATION_TYPE_NEW_TRIP;
+							$notification_data['notification_status_id']=gINVALID;
+							$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+							$notification_data['app_key']=$app_key;
+							$notification_data['trip_id']=$id;
+							$trip_update=FALSE;
+							if($app_key!=''){
+								$this->trip_booking_model->setNotifications($notification_data,$trip_update);
+							}
+						}
+
+					}else{
+						$this->session->set_userdata(array('dbError'=>'No Vehicles Available in this Radius..!!'));
+						$this->session->set_userdata(array('dbSuccess'=>''));
+
+					}
+					
+				redirect(base_url().'front-desk/trip-booking/'.$id);
+		}
+	}
+
+	function saveTrip($revoke=false){
+
+		if(isset($_REQUEST['id']) && $_REQUEST['id']!=gINVALID){
 					$data['id']=$this->input->post('id');
 				}else{
-					$data['id']=-1;
+					$data['id']=gINVALID;
 				}
 			
 				$this->form_validation->set_rules('name','Customer name','trim|xss_clean|required');
@@ -90,13 +171,13 @@ class Trip_booking extends CI_Controller {
 				$data['trip_from_lat']		=	$this->input->post('trip_from_lat');
 				$data['trip_from_lng']		=	$this->input->post('trip_from_lng');
 
-				$data['trip_from_landmark']		=	$this->input->post('trip_from_landmark');
-				$data['trip_to']	=	$this->input->post('trip_to');
-				$data['trip_to_lat']	=	$this->input->post('trip_to_lat');
-				$data['trip_to_lng']	=	$this->input->post('trip_to_lng');
+				$data['trip_from_landmark']	=	$this->input->post('trip_from_landmark');
+				$data['trip_to']			=	$this->input->post('trip_to');
+				$data['trip_to_lat']		=	$this->input->post('trip_to_lat');
+				$data['trip_to_lng']		=	$this->input->post('trip_to_lng');
 				$data['trip_to_landmark']	=	$this->input->post('trip_to_landmark');
-				$data['pick_up_date']	=	$this->input->post('pick_up_date');
-				$data['pick_up_time']	=	$this->input->post('pick_up_time');
+				$data['pick_up_date']		=	$this->input->post('pick_up_date');
+				$data['pick_up_time']		=	$this->input->post('pick_up_time');
 				
 				
 				
@@ -113,7 +194,7 @@ class Trip_booking extends CI_Controller {
 				
 			
 			$dbdata['customer_id']					=$this->session->userdata('customer_id');
-			if($data['id']==gINVALID){
+			if($data['id']==gINVALID || $revoke==true ){
 				$dbdata['trip_status_id']			= TRIP_STATUS_PENDING;
 				$dbdata['driver_id']				= gINVALID;
 			}
@@ -150,15 +231,49 @@ class Trip_booking extends CI_Controller {
 				if($res==true){
 					$driver=$this->trip_booking_model->getDriverDetails($data['id']);
 					if($driver!=false ){
-						$app_key=$driver[0]['app_key'];
-						$driver_id=$driver[0]['id'];
-						$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_UPDATE;
-						$notification_data['notification_status_id']=gINVALID;
-						$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
-						$notification_data['app_key']=$app_key;
-						$notification_data['trip_id']=$data['id'];
-						$this->trip_booking_model->setNotifications($notification_data);
+						if($revoke==true){
+							$app_key=$driver[0]['app_key'];
+							$driver_id=$driver[0]['id'];
+							$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_CANCELLED;
+							$notification_data['notification_status_id']=gINVALID;
+							$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+							$notification_data['app_key']=$app_key;
+							$notification_data['trip_id']=$data['id'];
+							$trip_update=TRUE;
+							$this->trip_booking_model->setNotifications($notification_data,$trip_update);
+							$data_locations['center_lat']=$dbdata['trip_from_lat'];
+							$data_locations['center_lng']=$dbdata['trip_from_lng'];
+							$data_locations['radius']=$data['radius'];
+							$drivers=$this->searchVehicles($data_locations);
+							if(count($drivers)>0){
+								for($i=0;$i<count($drivers);$i++){
+									$app_key=$drivers[$i]['app_key'];
+									$notification_data['notification_type_id']=NOTIFICATION_TYPE_NEW_TRIP;
+									$notification_data['notification_status_id']=gINVALID;
+									$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+									$notification_data['app_key']=$app_key;
+									$notification_data['trip_id']=$res;
+									$trip_update=TRUE;
+									$this->trip_booking_model->setNotifications($notification_data,$trip_update);
+								}
+
+							}else{
+								$this->session->set_userdata(array('dbError'=>'No Vehicles Available in this Radius..!!'));
+								$this->session->set_userdata(array('dbSuccess'=>''));
+
+							}
+						}else{
 						
+							$app_key=$driver[0]['app_key'];
+							$driver_id=$driver[0]['id'];
+							$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_UPDATE;
+							$notification_data['notification_status_id']=gINVALID;
+							$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+							$notification_data['app_key']=$app_key;
+							$notification_data['trip_id']=$data['id'];
+							$trip_update=FALSE;
+							$this->trip_booking_model->setNotifications($notification_data,$trip_update);
+						}
 
 					}
 					
@@ -181,7 +296,8 @@ class Trip_booking extends CI_Controller {
 					$this->session->set_userdata(array('dbError'=>''));
 					$data_locations['center_lat']=$dbdata['trip_from_lat'];
 					$data_locations['center_lng']=$dbdata['trip_from_lng'];
-					$data_locations['radius']=$data['radius'];	
+					$data_locations['radius']=$data['radius'];
+					
 					$drivers=$this->searchVehicles($data_locations);
 					if(count($drivers)>0){
 						for($i=0;$i<count($drivers);$i++){
@@ -191,8 +307,13 @@ class Trip_booking extends CI_Controller {
 							$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
 							$notification_data['app_key']=$app_key;
 							$notification_data['trip_id']=$res;
-							$this->trip_booking_model->setNotifications($notification_data);
+							$trip_update=FALSE;	
+							$this->trip_booking_model->setNotifications($notification_data,$trip_update);
 						}
+
+					}else{
+						$this->session->set_userdata(array('dbError'=>'No Vehicles Available in this Radius..!!'));
+						$this->session->set_userdata(array('dbSuccess'=>''));
 
 					}
 				
@@ -204,54 +325,11 @@ class Trip_booking extends CI_Controller {
 				 redirect(base_url().'front-desk/trip-booking');
 			}
 		}
-		}else if(isset($_REQUEST['cancel_trip'])){
-			if(isset($_REQUEST['id'])){
-			
-				$trip_id			=	$this->input->post('id');
-				
-				$customer_id 		=	$this->session->userdata('customer_id');
-				$customer['name'] 		=	$this->session->userdata('customer_name');
-				$customer['mob'] 	= 	$this->session->userdata('customer_mobile');
-				$customer['email'] 	= 	$this->session->userdata('customer_email');
 
-				$driver_id			=$this->session->userdata('driver_id');	
-				$condition=array('id'=>$driver_id);
-				$driver				=$this->driver_model->getDriverDetails($condition);
-				$data['trip_status_id']=TRIP_STATUS_CANCELLED;
-				$res = $this->trip_booking_model->updateTrip($data,$trip_id);
-				if($res==true){
-		
-					$driver=$this->trip_booking_model->getDriverDetails($trip_id);
-					if($driver!=false ){
-						$app_key=$driver[0]['app_key'];
-						$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_CANCELLED;
-						$notification_data['notification_status_id']=gINVALID;
-						$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
-						$notification_data['app_key']=$app_key;
-						$notification_data['trip_id']=$trip_id;
-						$this->trip_booking_model->setNotifications($notification_data);
-
-					}
-					
-
-					$this->session->set_userdata(array('dbSuccess'=>'Trip Cancelled Succesfully..!!'));
-					$this->session->set_userdata(array('dbError'=>''));
-					$this->SendTripCancellation($trip_id,$customer);
-				}else{
-					$this->session->set_userdata(array('dbError'=>'Trip Cancelled unsuccesfully..!!'));
-					$this->session->set_userdata(array('dbSuccess'=>''));
-				}
-				$this->session->set_userdata('customer_id','');
-				$this->session->set_userdata('customer_name','');
-				$this->session->set_userdata('customer_email','');
-				$this->session->set_userdata('customer_mobile','');
-				$this->session->set_userdata('driver_id','');
-				redirect(base_url().'front-desk/trip-booking');
-			}
-		} 
 	}
+
 	function searchVehicles($data_locations){
-		
+		$this->trip_booking_model->engageAllDrivers();
 		return $this->trip_booking_model->getAvailableVehicles($data_locations);
 
 	}

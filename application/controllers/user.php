@@ -370,10 +370,12 @@ class User extends CI_Controller {
 	$data['trip_to_lng']=$values[0]->trip_to_lng;
 	$data['driver_id']=$values[0]->driver_id;
 	$data['trip_status_id']=$values[0]->trip_status_id;
+	$data['driver_id']=$values[0]->driver_id;
 	
 	
 	}else{
 	$data['id']=gINVALID;
+	$data['driver_id']=gINVALID;
 	$data['name']='';
 	$data['mobile']='';
 	$data['trip_from']='';
@@ -402,7 +404,12 @@ class User extends CI_Controller {
 	$orderby = ' CONCAT(pick_up_date,pick_up_time) ASC';
 	$data['notification']=$this->trip_booking_model->getDetails($conditon,$orderby);
 	$data['customers_array']=$this->customers_model->getArray();
-	//print_r($data['notification']);
+	if($data['id']!=gINVALID){
+		$data['list_of_drivers']=$this->trip_booking_model->getNotifiedListOfDrivers($data['id']);
+
+	}else{
+		$data['list_of_drivers']='';
+	}
 	$data['title']="Trip Booking | ".PRODUCT_NAME;  
 	
 	$page='user-pages/trip-booking';

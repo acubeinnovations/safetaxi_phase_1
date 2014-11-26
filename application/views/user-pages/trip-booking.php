@@ -79,7 +79,9 @@
 							</td>
 							
 							<td>
-								
+								<div class="form-group margin-10-px">
+									<?php if($driver_id!=gINVALID){ ?><input  class="btn btn-warning btn-sm revoke-driver " name="revoke" type="submit" value="REVOKE DRIVER" ><?php } ?>	<div class="hide-me"> <input name="driver_id" class="" value="<?php echo $driver_id; ?>" type="text"></div>
+							 </div>
 							</td>
 							
 							
@@ -106,6 +108,7 @@
 								<div class="input-group margin-10-px ">
                                         <input name="radius" class="form-control width-30-percent float-left height-27-px" value=1 type="text">
                                         <span class="input-group-addon float-left width-20-percent height-27-px">KM</span>
+										<?php if($id!=gINVALID){ ?><i class="fa fa-fw fa-search btn btn-info btn-sm margin-left-3-px no-padding search-ico"></i> <div class="hide-me"> <input  class="btn btn-info btn-sm search " name="search" type="submit" ></div> <?php } ?>
                                     </div>
 							</td>
 							
@@ -127,8 +130,8 @@
 								</div>
 							</td>
 							<td>
-								<div class="form-group margin-10-px margin-top-less-12">
-									<input class="btn btn-success btn-sm 	search-vehicles" name="book_trip" type="submit" value="SAVE AND SEARCH">
+								<div class="form-group margin-10-px margin-top-less-12"><?php if($id!=gINVALID){ $saveandsearch="SAVE"; }else{ $saveandsearch="SAVE AND SEARCH";}?> 
+									<input class="btn btn-success btn-sm 	search-vehicles" name="book_trip" type="submit" value="<?php echo $saveandsearch; ?>">
 									<?php if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"><div class="hide-me"> <input name="id" class="" value="<?php echo $id; ?>" type="text"></div>  <?php } ?>
 								</div>
 							</td>
@@ -148,7 +151,35 @@
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_1">
-                                       
+		                                  <div class="box-body">
+				                            <table class="table table-bordered">
+						                            <tbody><tr>
+						                                <th style="width: 5%">Sl</th>
+						                                <th style="width:20%">Vehicle</th>
+						                                <th style="width:20%">Driver</th>
+						                                <th style="width:20%">Mobile</th>
+														 <th style="width:15%">Reject</th>
+														<th style="width:15%">Awarded</th>
+						                            </tr>
+										<?php if($list_of_drivers!=''){
+												for($index=0;$index<count($list_of_drivers);$index++){
+													if($driver_id!=gINVALID){
+													if($list_of_drivers[$index]['id']!=$driver_id){ $reject='<span class="badge bg-red">+</span>';$awarded=''; }else{ $awarded='<span class="badge bg-green">+</span>';$reject='';}
+															} ?>
+						                            <tr>
+						                                <td></td>
+														<td><?php echo $list_of_drivers[$index]['vehicle_registration_number']; ?></td>
+														<td><?php echo $list_of_drivers[$index]['name']; ?></td>
+						                                <td><?php echo $list_of_drivers[$index]['mobile']; ?></td>
+						                                <td><?php echo $reject; ?></td>
+						                                <td><?php echo $awarded; ?></td>
+						                            </tr>
+						                          <?php }
+													}
+													?>  
+						                       	 </tbody>
+											</table>
+		                           	 	</div>
                                     </div><!-- /.tab-pane -->
                                     <div class="tab-pane" id="tab_2">
                                        
