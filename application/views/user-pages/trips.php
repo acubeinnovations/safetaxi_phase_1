@@ -49,7 +49,8 @@ $trip_sl_no=$page;
 			<table class="table list-trip-table no-border">
 				<tbody>
 					<tr>
-						<!--<td><?php echo form_input(array('name'=>'customer','class'=>'customer form-control' ,'placeholder'=>'Customer name','value'=>$customer)); ?></td>-->
+
+						<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-BM-2569','value'=>$vehiclenumber,'id'=>'c_name')); ?></td>
 					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'From Date','value'=>$trip_pick_date)); ?></td>
 					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>$trip_drop_date)); ?></td>
 						 
@@ -79,10 +80,12 @@ echo form_close();?></td>
 					    <th style="width:2%">Sl no: </th>
 					    <th style="width:9%">Trip id</th>
 						<!--<th style="width:15%">Customer</th>-->
-					    <th style="width:11%">Booking Date</th>
-					    <th style="width:11%">Pickup Date</th>
-					    <th  style="width:11%">Pickup Time</th>
-					    <th  style="width:55%">Route</th>
+					   
+					    <th style="width:25%">Pickup</th>
+					    
+					    <th  style="width:20%">Source</th>
+					    <th  style="width:20%">Destination</th>
+					    <th  style="width:33%">Driver</th>
 						<th style="width:19%">Customer Name</th>
 						<th style="width:11%">Phone Number</th>						
 						 <th style="width:11%">Status</th>
@@ -103,11 +106,13 @@ echo form_close();?></td>
 					<tr>
 						<td><?php echo $trip_sl_no;?></td>
 						<td><?php echo $trips[$trip_index]['trip_id'];?></td>
-					   	<td><?php echo $trips[$trip_index]['booking_dates'];?></td>
-					   	<td><?php echo $trips[$trip_index]['pickup_date'];?></td>
-					   	<td><?php echo $trips[$trip_index]['pickuptime'];?></td>
+					   	
+					   	<td><?php echo $trips[$trip_index]['pickup_date'].' - '.$trips[$trip_index]['pickuptime'];?></td>
+					   	
 					   	<td><?php echo $trips[$trip_index]['trip_from'];?></td>
-					   	<td><?php echo $trips[$trip_index]['customername'];?></td>
+					   	<td><?php echo $trips[$trip_index]['trip_to'];?></td>
+					   	<td><?php echo $trips[$trip_index]['drivername'].' - '.$trips[$trip_index]['vehiclenumber'];?></td>
+					   	<td><?php echo $trips[$trip_index]['customer_name'];?></td>
 					   	<td><?php echo $trips[$trip_index]['mob'];?></td>
 					   	<td><?php echo $trips[$trip_index]['tripstatus'];?></td>
 					</tr>

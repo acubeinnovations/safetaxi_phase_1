@@ -450,12 +450,21 @@ class User extends CI_Controller {
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
-	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,C.name as customername,C.mobile as mob,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
+	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from, T.trip_to AS trip_to,C.name as customer_name,C.mobile as mob,D.name as drivername,D.vehicle_registration_number as vehiclenumber,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
 	$condition="";	
 	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
 	$param2='0';
 	}
+
+	//driver search
+	if($_REQUEST['vehicle_number']!=null){
+	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
+	$qry.=' And D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
+	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
+	}
+
+
 
 
 	
