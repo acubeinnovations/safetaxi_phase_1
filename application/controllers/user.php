@@ -270,7 +270,7 @@ class User extends CI_Controller {
 		if($this->session_check()==true) {
 	
 		$condition='';
-	    $per_page=10;
+	    $per_page=2;
 	    $like_arry='';
 		$data['s_imei']='';
 		$data['s_sim_no']='';
@@ -334,7 +334,7 @@ class User extends CI_Controller {
 
 
 
-	public function ShowBookTrip($trip_id =''){
+	public function ShowBookTrip($trip_id =''){ 
 	if($this->session_check()==true) {
 	if($this->mysession->get('post')!=NULL){
 		$data=$this->mysession->get('post');
@@ -437,6 +437,150 @@ class User extends CI_Controller {
 	}
 	public function Trips($param2){
 		if($this->session_check()==true) {
+			/* */
+			$trip_id=$param2;
+			$tbl_arry=array('drivers','trip_statuses');
+			for ($i=0;$i<count($tbl_arry);$i++){
+					$result=$this->user_model->getArray($tbl_arry[$i]);
+					if($result!=false){
+					$data[$tbl_arry[$i]]=$result;
+					}
+					else{
+					$data[$tbl_arry[$i]]='';
+					}
+			}	
+			// print_r($data);exit;
+			$drivers=$this->driver_model->getDriversArray($condition='');
+			$conditon = array('id'=>$trip_id);
+			$result=$this->trip_booking_model->getDetails($conditon);
+			/* search condition starts */
+				//for search
+	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
+
+	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,C.name as customername,C.mobile as mob,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
+	$condition="";	
+	if(isset($_REQUEST['trip_search'])){ 
+	if($param2==''){
+	$param2='0';
+	}
+
+
+	
+	//from date
+	if($_REQUEST['trip_pick_date']!=null ){
+	$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
+	//$date_now=date('Y-m-d');
+	
+	$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date >= "'.$_REQUEST['trip_pick_date'].'"';
+
+
+
+
+	}else{
+		//$condition.=' AND T.pick_up_date >= "'.$date_now.'"';
+	}
+	
+	} 
+	//from date ends
+
+
+
+	//to date starts
+	if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
+	$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	//$date_now=date('Y-m-d H');
+
+	$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+
+
+
+
+	}else{
+		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+	}
+	
+	} 
+	//to date ends
+
+
+
+
+
+//
+	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
+	$data['driver_id']=$_REQUEST['drivers'];
+	
+	$where_arry['driver_id']=$_REQUEST['drivers'];
+	if($condition==""){
+		$condition =' WHERE T.driver_id = '.$data['driver_id'];
+	}else{
+		$condition.=' AND T.driver_id = '.$data['driver_id'];
+	}
+	}
+
+	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
+	$data['status_id']=$_REQUEST['trip_status_id'];
+	//$date_now=date('Y-m-d H:i:s');
+	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
+
+	if($condition==""){
+		$condition =' WHERE T.trip_status_id='.$data['status_id'];
+	}else{
+		$condition.=' AND T.trip_status_id='.$data['status_id'];
+	}
+	}
+
+
+	
+	echo $qry.'<br>';
+	echo $condition.'<br>';
+
+	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	} 
+
+
+	//echo "hellow";
+	/*if(is_null($this->mysession->get('condition'))){
+	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	}*/
+	//$tbl="drivers";
+	$baseurl=base_url().'front-desk/list-driver/';
+	$uriseg ='4';
+	//echo $param2; exit;
+	//echo $qry;//exit;
+	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	//print_r($p_res);
+	$data['values']=$p_res['values'];
+	//$data['values']='';
+	//print_r($data['values']);exit;
+	$driver_trips='';
+	$driver_statuses='';
+	for($i=0;$i<count($data['values']);$i++){
+		//$id=$data['values'][$i]['id'];
+		//print_r($data['values']);exit;
+		$id=1;
+		$availability=$this->driver_model->getCurrentStatuses($id);
+		if($availability==false){
+		$driver_statuses[$id]='Available';
+		$driver_trips[$id]=gINVALID;
+		}else{
+		$driver_statuses[$id]='OnTrip';
+		$driver_trips[$id]=$availability[0]['id'];
+		}
+	}
+	$data['driver_statuses']=$driver_statuses;
+	$data['driver_trips']=$driver_trips;
+	if(empty($data['values'])){
+				$data['result']="No Results Found !";
+	}
+	$data['trips']=$data['values'];
+
+	
+			/* search condition ends*/
 			$data['title']="Trips | ".PRODUCT_NAME;  
 			$page='user-pages/trips';
 		    $this->load_templates($page,$data);
@@ -735,13 +879,15 @@ public function profile() {
 	$data['title']='List Driver| '.PRODUCT_NAME;
 	$page='user-pages/driverList';
 	$this->load_templates($page,$data);	
+	}
+
+	/////////////////////////////////////////for search
+
+	}
+	///for search
 	
 	
-	}
-	else{
-	$this->notAuthorized();
-	}
-	}
+	
 		
 		public function ShowDriverProfile($param1,$param2){
 			if($this->session_check()==true) {

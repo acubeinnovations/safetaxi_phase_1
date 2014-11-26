@@ -50,17 +50,15 @@ $trip_sl_no=$page;
 				<tbody>
 					<tr>
 						<!--<td><?php echo form_input(array('name'=>'customer','class'=>'customer form-control' ,'placeholder'=>'Customer name','value'=>$customer)); ?></td>-->
-					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'Pick up Date','value'=>$trip_pick_date)); ?></td>
-					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'Drop Date','value'=>$trip_drop_date)); ?></td>
-						 <td><?php $class="form-control";
-							  $id='vehicles';
-						echo $this->form_functions->populate_dropdown('vehicles',$vehicles="",$vehicle_id,$class,$id,$msg="Select Vehicle");?></td>
+					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'From Date','value'=>$trip_pick_date)); ?></td>
+					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>$trip_drop_date)); ?></td>
+						 
 						 <td><?php $class="form-control";
 							  $id='drivers';
-						echo $this->form_functions->populate_dropdown('drivers',$drivers="",$driver_id="",$class,$id,$msg="Select Driver");?></td>
+						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id,$class,$id,$msg="Select Driver");?></td>
 						<td><?php $class="form-control";
 							  $id='trip-status';
-						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses="",$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
+						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
 					    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
 					<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
@@ -78,79 +76,40 @@ echo form_close();?></td>
 				<tbody>
 					<tr>	
 						
-					    <th style="width:2%">Sl nO: </th>
-					    <th style="width:4%">Trip id</th>
+					    <th style="width:2%">Sl no: </th>
+					    <th style="width:9%">Trip id</th>
 						<!--<th style="width:15%">Customer</th>-->
-					    <th style="width:4%">Booking Date</th>
+					    <th style="width:11%">Booking Date</th>
 					    <th style="width:11%">Pickup Date</th>
 					    <th  style="width:11%">Pickup Time</th>
-					    <th  style="width:11%">Route</th>
-						<th style="width:11%">Customer Name</th>
+					    <th  style="width:55%">Route</th>
+						<th style="width:19%">Customer Name</th>
 						<th style="width:11%">Phone Number</th>						
 						 <th style="width:11%">Status</th>
-						
 					</tr>
 					<?php
 					
-					
+					$trip_sl_no=1;
 					for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$pickdate=$trips[$trip_index]['pick_up_date'].' '.$trips[$trip_index]['pick_up_time'];
-						$dropdate=$trips[$trip_index]['drop_date']." ".$trips[$trip_index]['drop_time'];
+						
+						$pickdate=$trips[$trip_index]['pickup_date'];
+						//$dropdate=$trips[$trip_index]['drop_date'];
 
 						$date1 = date_create($pickdate);
-						$date2 = date_create($dropdate);
+						//$date2 = date_create($dropdate);
 						
-						$diff= date_diff($date1, $date2);
-						if($diff->d > 0 && $diff->h >= 0 && $diff->i >=1 ){
-							$no_of_days=$diff->d+1;
-						}else{
-							$no_of_days=$diff->d;
-						}
+						
 					?>
 					<tr>
-						
+						<td><?php echo $trip_sl_no;?></td>
 						<td><?php echo $trips[$trip_index]['trip_id'];?></td>
-						<td><?php echo $trips[$trip_index]['booking_date'];?></td>
-					   <!-- <td><?php echo $customers[$trips[$trip_index]['customer_id']].br();
-						if($trips[$trip_index]['customer_group_id']==gINVALID || $trips[$trip_index]['customer_group_id']==0){echo '';}else{ echo $customer_groups[$trips[$trip_index]['customer_group_id']];}?></td>-->
-					    <td><?php echo $pickdate; ?></td>
-					    <td><?php 
-					    if($trips[$trip_index]['vehicle_id']==gINVALID || $trips[$trip_index]['vehicle_id']==0){echo 'Vehicle Not Allocated'.br();}else{ echo $trips[$trip_index]['registration_number'].br();
-					    }
-					    if($trips[$trip_index]['vehicle_model_id']==gINVALID || $trips[$trip_index]['vehicle_model_id']==0){echo '';}else{ echo $trips[$trip_index]['model'].br();
-					    }
-					    if($trips[$trip_index]['vehicle_ownership_types_id']==gINVALID || $trips[$trip_index]['vehicle_ownership_types_id']==0){echo '';}else{ echo $trips[$trip_index]['ownership'].br();
-					    }
-					    ?></td>
-						 <td><?php echo $trips[$trip_index]['pick_up_city'].br();
-									 echo $trips[$trip_index]['pick_up_area'];
-						 ?></td>
-					  <td>
-					  <?php if($trips[$trip_index]['guest_id']==gINVALID || $trips[$trip_index]['guest_id']==0){echo '';}else{ echo $trips[$trip_index]['guest_name'].br().$trips[$trip_index]['guest_info'];
-					    } ?>
-					  </td>
-						 <td><?php echo $trips[$trip_index]['drop_city'].br();
-									echo $trips[$trip_index]['drop_area'];
-						 ?></td>
-					 <td><?php if($trips[$trip_index]['customer_id']==gINVALID || $trips[$trip_index]['customer_id']==0){echo '';}else{ echo $trips[$trip_index]['customer_name'].br();
-					    }
-					    if($trips[$trip_index]['customer_group_id']==gINVALID || $trips[$trip_index]['customer_group_id']==0){echo '';}else{ echo $trips[$trip_index]['customer_group'].br();
-					    }
-					    if($trips[$trip_index]['customer_id']==gINVALID || $trips[$trip_index]['customer_id']==0){echo '';}else{ echo $trips[$trip_index]['customer_mobile'];
-					    }
-					    ?></td>
-					    
-					  <td><?php
-						if($trips[$trip_index]['driver_id']==gINVALID || $trips[$trip_index]['driver_id']==0){echo 'Driver Not Allocated';}else{ echo $trips[$trip_index]['driver'].br().$trips[$trip_index]['driver_info'];
-					    }
-						?></td>
-					    <td>
-							<span class="label <?php echo $status_class[$trips[$trip_index]['trip_status_id']]; ?>"><?php echo $trip_statuses[$trips[$trip_index]['trip_status_id']];?></span> 
-						
-						</td>	
-						
-						
-						<td><?php if($trips[$trip_index]['trip_status_id']==TRIP_STATUS_CONFIRMED || $trips[$trip_index]['trip_status_id']==TRIP_STATUS_PENDING ) { echo anchor_popup_default(base_url().'front-desk/trip-booking/'.$trips[$trip_index]['trip_id'],'E',array('class'=>'btn btn-primary')).nbs(5);if($trips[$trip_index]['trip_status_id']==TRIP_STATUS_CONFIRMED) { echo "<a href=".base_url().'trip/complete/'.$trips[$trip_index]['trip_id']."/".$this->uri->segment(4)." class='btn btn-primary complete-trip'><span vehicle_model_id='".$trips[$trip_index]['vehicle_model_id']."' tarrif_id='".$trips[$trip_index]['tariff_id']."' trip_id='".$trips[$trip_index]['trip_id']."'>C</span></a>"; } }else if($trips[$trip_index]['trip_status_id']==TRIP_STATUS_TRIP_COMPLETED){ echo "<a href=".base_url().'trip/view/'.$trips[$trip_index]['trip_id']." class='btn btn-primary' target='_blank'>P</a>".nbs(5)."<button class='btn btn-primary voucher' trip_id='".$trips[$trip_index]['trip_id']."' driver_id='".$trips[$trip_index]['driver_id']."' vehicle_model_id='".$trips[$trip_index]['vehicle_model_id']."' vehicle_ac_type_id='".$trips[$trip_index]['vehicle_ac_type_id']."' tarrif_id='".$trips[$trip_index]['tariff_id']."' type='button' no_of_days='".$no_of_days."' pick_up_time='".$trips[$trip_index]['pick_up_time']."' >V</button>"; }else if($trips[$trip_index]['trip_status_id']==TRIP_STATUS_TRIP_BILLED){ echo "<button class='btn btn-primary voucher' trip_id='".$trips[$trip_index]['trip_id']."' driver_id='".$trips[$trip_index]['driver_id']."' tarrif_id='".$trips[$trip_index]['tariff_id']."' type='button' no_of_days='".$no_of_days."' pick_up_time='".$trips[$trip_index]['pick_up_time']."' vehicle_ac_type_id='".$trips[$trip_index]['vehicle_ac_type_id']."' vehicle_model_id='".$trips[$trip_index]['vehicle_model_id']."' >V</button>"; } ?></td>
+					   	<td><?php echo $trips[$trip_index]['booking_dates'];?></td>
+					   	<td><?php echo $trips[$trip_index]['pickup_date'];?></td>
+					   	<td><?php echo $trips[$trip_index]['pickuptime'];?></td>
+					   	<td><?php echo $trips[$trip_index]['trip_from'];?></td>
+					   	<td><?php echo $trips[$trip_index]['customername'];?></td>
+					   	<td><?php echo $trips[$trip_index]['mob'];?></td>
+					   	<td><?php echo $trips[$trip_index]['tripstatus'];?></td>
 					</tr>
 					<?php 
 						$trip_sl_no++;

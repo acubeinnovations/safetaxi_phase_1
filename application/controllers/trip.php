@@ -147,7 +147,7 @@ class Trip extends CI_Controller {
 	$trip_id=$param2;
 	
 	
-	$tbl_arry=array('customer_types','booking_sources','trip_models','vehicle_types','vehicle_ac_types','vehicle_beacon_light_options','vehicle_seating_capacity');
+	$tbl_arry=array('trips','drivers');
 	for ($i=0;$i<count($tbl_arry);$i++){
 			$result=$this->user_model->getArray($tbl_arry[$i]);
 			if($result!=false){
@@ -157,109 +157,42 @@ class Trip extends CI_Controller {
 			$data[$tbl_arry[$i]]='';
 			}
 	}
-	$customer_types=$data['customer_types'];
+	/*$customer_types=$data['customer_types'];
 	$trip_models=$data['trip_models'];
 	$booking_sources=$data['booking_sources'];
 	$vehicle_types=$data['vehicle_types'];
 	$vehicle_beacon_light_options=$data['vehicle_beacon_light_options'];
 	$vehicle_seating_capacity=$data['vehicle_seating_capacity'];
 	$vehicle_ac_types=$data['vehicle_ac_types'];
-	$vehicles=$this->trip_booking_model->getVehiclesArray($condition='');
-	
+	$vehicles=$this->trip_booking_model->getVehiclesArray($condition='');*/
+
 	$drivers=$this->driver_model->getDriversArray($condition='');
+
 	
 	$conditon = array('id'=>$trip_id);
 	$result=$this->trip_booking_model->getDetails($conditon);
 	$result=$result[0];
 	$data1['trip_id']=$result->id;
 	
-	$dbdata=array('id'=>$result->customer_id);	
-	$customer 	=	$this->customers_model->getCustomerDetails($dbdata);
-	$customer=$customer[0];
-	$data1['customer']				=	$customer['name'];
-	$data1['email']					=	$customer['email'];
-	$data1['mobile']				=	$customer['mobile'];
-	$data1['address']				=	$customer['address'];
-	$data1['customer_type']			=	$customer_types[$customer['customer_type_id']];
-	
-	$data1['booking_source']			=	$booking_sources[$result->booking_source_id];	
-	$data1['source']					=	$result->source;
-	$data1['booking_date']				=	$result->booking_date;	
-	$data1['booking_time']				=	$result->booking_time;
-	$data1['trip_model']				=	$trip_models[$result->trip_model_id];
-	
-	$drop='';
-	$pickup='';
-	$via='';
-	if($result->pick_up_landmark!=''){
-	$pickup=$result->pick_up_landmark;
-	}
-	if($pickup!=''){
-	$pickup.=','.$result->pick_up_area;
-	}else{
-	$pickup=$result->pick_up_area;
-	}
-	if($pickup!=''){
-	$pickup.=','.$result->pick_up_city;
-	}else{
-	$pickup=$result->pick_up_city;
-	}
-	$data1['pickuploc']				=	$pickup;
-	
-	if($result->via_landmark!=''){
-	$via=$result->via_landmark;
-	}
-	if($via!=''){
-	$via.=','.$result->via_area;
-	}else{
-	$via=$result->via_area;
-	}
-	if($via!=''){
-	$via.=','.$result->via_city;
-	}else{
-	$via=$result->via_city;
-	}
-	$data1['vialoc']				=	$via;
+	//$dbdata=array('id'=>$result->customer_id);	
 
-	if($result->drop_landmark!=''){
-	$drop=$result->drop_landmark;
-	}
-	if($drop!=''){
-	$drop.=','.$result->drop_area;
-	}else{
-	$drop=$result->drop_area;
-	}
-	if($drop!=''){
-	$drop.=','.$result->drop_city;
-	}else{
-	$drop=$result->drop_city;
-	}
-	$data1['droploc']				=	$drop;
+	//$customer 	=	$this->customers_model->getCustomerDetails($dbdata);
+	//$customer=$customer[0];
+
 
 	$data1['pick_up_date']		=	$result->pick_up_date;
-	$data1['drop_date']		=	$result->drop_date;
+	//$data1['drop_date']		=	$result->drop_date;
 	$data1['pick_up_time']		=	$result->pick_up_time;
-	$data1['drop_time']		=	$result->drop_time;
+	//$data1['drop_time']		=	$result->drop_time;
 	
-	$data1['vehicle_type']			=	$vehicle_types[$result->vehicle_type_id];
-	$data1['vehicle_ac_type']		=	$vehicle_ac_types[$result->vehicle_ac_type_id];
-	if($result->vehicle_seating_capacity_id!=gINVALID){
-	$data1['vehicle_seating_capacity']		=$vehicle_seating_capacity[$result->vehicle_seating_capacity_id];
-	}else{
-	$data1['vehicle_seating_capacity']		='';
-	}
-	if($result->vehicle_seating_capacity_id!=gINVALID){
-	$data1['vehicle_beacon_light']		=	$vehicle_beacon_light_options[$result->vehicle_beacon_light_option_id];		
-	}else{
-	$data1['vehicle_beacon_light']		='';
-	}
+	//$data1['vehicle_type']			=	$vehicle_types[$result->vehicle_type_id];
+	//$data1['vehicle_ac_type']		=	$vehicle_ac_types[$result->vehicle_ac_type_id];
 
-	$data1['vehicle']				=	$vehicles[$result->vehicle_id];
+
+	//$data1['vehicle']				=	$vehicles[$result->vehicle_id];
 	$data1['driver']				=	$drivers[$result->driver_id];
-	/*echo "<pre>";
-	print_r($data1);
-	echo "</pre>";*/
-		$page='user-pages/trip';
+	
+		$page='front-desk/trips';
 		$data1['title']="Trip | ".PRODUCT_NAME;  
 		$this->load_templates($page,$data1);
 		}else{

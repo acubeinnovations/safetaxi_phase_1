@@ -118,21 +118,10 @@ class user_model extends CI_Model {
 	
 	$flag=0;
 	if($tbl=='drivers'){
-	$query='SELECT * FROM drivers WHERE drivers.id NOT IN(SELECT driver_id FROM vehicle_drivers WHERE organisation_id='.$org_id.' and to_date="9999-12-30"';
+	$query='SELECT * FROM drivers';
 	$qry=$this->db->query($query);
 	}
-	elseif($tbl=='devices'){
-	$query='SELECT * FROM devices WHERE devices.id NOT IN(SELECT device_id FROM vehicle_devices WHERE organisation_id='.$org_id.' and to_date="9999-12-30"';
-	$qry=$this->db->query($query);
-	$flag=1;
-	}elseif($tbl=='available_vehicles'){
-	$query='SELECT * FROM vehicles';
-	$qry=$this->db->query($query);
-	$flag=2;
-	}elseif($tbl=='available_drivers'){
-	$query='SELECT * FROM drivers order by name ASC';
-	$qry=$this->db->query($query);
-	}
+	
 	else{
 		//$qry=$this->db->where('organisation_id',$org_id);
 		$qry=$this->db->order_by("name", "Asc"); 
@@ -147,9 +136,7 @@ class user_model extends CI_Model {
 			$values[$l[$i]['id']]=$l[$i]['name'];
 			}
 			else if($flag==1){
-			$values[$l[$i]['id']]=$l[$i]['imei'];
-			}else if($flag==2){
-			$values[$l[$i]['id']]=$l[$i]['registration_number'];
+			$values[$l[$i]['id']]=$l[$i]['name'];
 			}
 			}
 			if(!empty($values)){
@@ -160,7 +147,7 @@ class user_model extends CI_Model {
 			}
 			
 	}
-   
+  
 	
 	public function getAll_tarrifDetails(){
 	$qry=$this->db->get('tariffs');

@@ -16,7 +16,7 @@ public function getDriverDetails($data){
 	
 	}
 	public function getCurrentStatuses($id){ 
-	$qry='SELECT * FROM trips WHERE CONCAT(pick_up_date," ",pick_up_time) <= "'.date("Y-m-d H:i").'" AND CONCAT(drop_date," ",drop_time) >= "'.date("Y-m-d H:i").'" AND driver_id="'.$id.'" AND organisation_id = '.$this->session->userdata('organisation_id').' AND trip_status_id='.TRIP_STATUS_CONFIRMED;
+	$qry='SELECT * FROM trips WHERE CONCAT(pick_up_date," ",pick_up_time) <= "'.date("Y-m-d H:i").'"  AND driver_id="'.$id.'"';
 	$results=$this->db->query($qry);
 	$results=$results->result_array();
 	if(count($results)>0){
