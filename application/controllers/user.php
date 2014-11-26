@@ -448,80 +448,107 @@ class User extends CI_Controller {
 			$result=$this->trip_booking_model->getDetails($conditon);
 			/* search condition starts */
 				//for search
-	   if(isset($_REQUEST['trip_search'])){ 
+	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
+
+	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,C.name as customername,C.mobile as mob,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
+	$condition="";	
+	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
 	$param2='0';
 	}
-	$qry=" SELECT D.id
-			FROM drivers AS D  LEFT JOIN trips as T ON D.id= T.driver_id"; 
+
+
+	
+	//from date
 	if($_REQUEST['trip_pick_date']!=null ){
 	$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
-	$date_now=date('Y-m-d H:i:s');
-	$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
+	//$date_now=date('Y-m-d');
 	
-			$qry.='AND CONCAT( T.pick_up_date, " ", T.pick_up_time ) <= "'.$date_now.'"';
+	$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date >= "'.$_REQUEST['trip_pick_date'].'"';
+
+
+
+
+	}else{
+		//$condition.=' AND T.pick_up_date >= "'.$date_now.'"';
+	}
+	
 	} 
-	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!="-1" ){
+	//from date ends
+
+
+
+	//to date starts
+	if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
+	$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	//$date_now=date('Y-m-d H');
+
+	$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+
+
+
+
+	}else{
+		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+	}
+	
+	} 
+	//to date ends
+
+
+
+
+
+//
+	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
+	$data['driver_id']=$_REQUEST['drivers'];
+	
+	$where_arry['driver_id']=$_REQUEST['drivers'];
+	if($condition==""){
+		$condition =' WHERE T.driver_id = '.$data['driver_id'];
+	}else{
+		$condition.=' AND T.driver_id = '.$data['driver_id'];
+	}
+	}
+
+	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
 	$data['status_id']=$_REQUEST['trip_status_id'];
 	//$date_now=date('Y-m-d H:i:s');
 	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
-	$qry='AND T.trip_status_id='.$data['status_id'];
+
+	if($condition==""){
+		$condition =' WHERE T.trip_status_id='.$data['status_id'];
+	}else{
+		$condition.=' AND T.trip_status_id='.$data['status_id'];
 	}
-	if($_REQUEST['drivers']!=null){
-	$data['drivers']=$_REQUEST['drivers'];
-	$qry.=' AND D.id = T.driver_id';//newly added
-	$like_arry['name']=$_REQUEST['drivers'];
 	}
-	echo $qry;
+
+
 	
-if(isset($where_arry) || isset($like_arry)){
-				$this->mysession->set('condition',array("where"=>$where_arry,"like"=>$like_arry));
-				}
+	echo $qry.'<br>';
+	echo $condition.'<br>';
+
 	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
 	} 
-	else if($this->mysession->get('condition')!=''){ 
-				$condition=$this->mysession->get('condition');
-				if(isset($condition['where']['dstatus']) || isset($condition['like']['name']) || isset($condition['like']['district']) ){
-				
-				if(isset($condition['where']['dstatus']) && $condition['where']['dstatus']!=-1 ){
-				$data['status_id']=$condition['where']['dstatus'];
-				$date_now=date('Y-m-d H:i:s');
-				//$where_arry['status']=$_REQUEST['status'];
-				$qry=' SELECT D.id
-				FROM drivers AS D  LEFT JOIN trips as T ON D.id= T.driver_id 
-				AND CONCAT( T.pick_up_date, " ", T.pick_up_time ) <= "'.$date_now.'"
-				AND T.driver_id = D.id
-				AND T.trip_status_id = '.TRIP_STATUS_CONFIRMED;
-				
-				}	
-				if(isset($condition['where']['dstatus'])&& $condition['where']['dstatus']==0){
-				$data['status_id']=$condition['where']['dstatus'];
-				$date_now=date('Y-m-d H:i:s');
-				//$where_arry['status_id']=$_REQUEST['status'];
-				$qry='SELECT D.id FROM drivers D';
-				
-				}
-				if(isset($condition['like']['name'])){
-				
-				$data['driver_name']=$condition['like']['name'];
-				$qry.=' AND D.name LIKE "%'.$condition['like']['name'].'%" ';
-				}
-				
-				
-				
-			}
-			}
+
+
+	//echo "hellow";
 	/*if(is_null($this->mysession->get('condition'))){
 	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
 	}*/
 	//$tbl="drivers";
 	$baseurl=base_url().'front-desk/list-driver/';
 	$uriseg ='4';
+	//echo $param2; exit;
 	//echo $qry;//exit;
-	$p_res=$this->mypage->paging($tbl='',$per_page="",$param2,$baseurl,$uriseg,$custom='yes',$qry="");
-	print_r($p_res);
-	//$data['values']=$p_res['values'];
-	$data['values']='';
+	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	//print_r($p_res);
+	$data['values']=$p_res['values'];
+	//$data['values']='';
 	//print_r($data['values']);exit;
 	$driver_trips='';
 	$driver_statuses='';
@@ -543,6 +570,8 @@ if(isset($where_arry) || isset($like_arry)){
 	if(empty($data['values'])){
 				$data['result']="No Results Found !";
 	}
+	$data['trips']=$data['values'];
+
 	
 			/* search condition ends*/
 			$data['title']="Trips | ".PRODUCT_NAME;  
@@ -843,146 +872,10 @@ public function profile() {
 	$data['title']='List Driver| '.PRODUCT_NAME;
 	$page='user-pages/driverList';
 	$this->load_templates($page,$data);	
+	}
 
 	/////////////////////////////////////////for search
-		   if(isset($_REQUEST['search'])){
-	if($param2==''){
-	$param2='0';
-	}
-	if($_REQUEST['status']!=null && $_REQUEST['status']!=-1 ){
-	$data['status_id']=$_REQUEST['status'];
-	$date_now=date('Y-m-d H:i:s');
-	$where_arry['dstatus']=$_REQUEST['status'];
-	$qry=' SELECT D.id
-			FROM drivers AS D  LEFT JOIN trips as T ON D.id= T.driver_id 
-			AND CONCAT( T.pick_up_date, " ", T.pick_up_time ) <= "'.$date_now.'"
-			AND T.driver_id = D.id
-			AND T.trip_status_id = '.TRIP_STATUS_CONFIRMED;
-	}
-	if($_REQUEST['status']!=null && $_REQUEST['status']==0 ){
-	$data['status_id']=$_REQUEST['status'];
-	$date_now=date('Y-m-d H:i:s');
-	$where_arry['dstatus']=$_REQUEST['status'];
-	$qry='SELECT D.id FROM drivers D';
-	}
-	if($_REQUEST['driver_name']!=null){
-	$data['driver_name']=$_REQUEST['driver_name'];
-	$qry.=' AND D.name LIKE "%'.$_REQUEST['driver_name'].'%" ';
-	$like_arry['name']=$_REQUEST['driver_name'];
-	}
-	
-	if($_REQUEST['driver_city']!=null){
-	$data['driver_city']=$_REQUEST['driver_city'];
-	$like_arry['district']=$_REQUEST['driver_city'];
-	$qry.=' AND D.district LIKE "%'.$_REQUEST['driver_city'].'%" ';
-	}
-if(isset($where_arry) || isset($like_arry)){
-				$this->mysession->set('condition',array("where"=>$where_arry,"like"=>$like_arry));
-				}
-	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
-	} 
-	else if($this->mysession->get('condition')!=''){ 
-				$condition=$this->mysession->get('condition');
-				if(isset($condition['where']['dstatus']) || isset($condition['like']['name']) || isset($condition['like']['district']) ){
-				
-				if(isset($condition['where']['dstatus']) && $condition['where']['dstatus']!=-1 ){
-				$data['status_id']=$condition['where']['dstatus'];
-				$date_now=date('Y-m-d H:i:s');
-				//$where_arry['status']=$_REQUEST['status'];
-			$qry=' SELECT D.id
-			FROM drivers AS D  LEFT JOIN trips as T ON D.id= T.driver_id 
-			AND CONCAT( T.pick_up_date, " ", T.pick_up_time ) <= "'.$date_now.'"
-			AND T.driver_id = D.id
-			AND T.trip_status_id = '.TRIP_STATUS_CONFIRMED;
-				
-				}	
-				if(isset($condition['where']['dstatus'])&& $condition['where']['dstatus']==0){
-				$data['status_id']=$condition['where']['dstatus'];
-				$date_now=date('Y-m-d H:i:s');
-				//$where_arry['status_id']=$_REQUEST['status'];
-				$qry='SELECT D.id FROM drivers D';
-				
-				}
-				if(isset($condition['like']['name'])){
-				
-				$data['driver_name']=$condition['like']['name'];
-				$qry.=' AND D.name LIKE "%'.$condition['like']['name'].'%" ';
-				}
-				if(isset($condition['like']['district'])){
-				$data['driver_city']=$condition['like']['district'];
-				$qry.=' AND D.district LIKE "%'.$condition['like']['district'].'%" ';
-				}
-				
-				
-			}
-			}
-	/*if(is_null($this->mysession->get('condition'))){
-	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
-	}*/
-	//$tbl="drivers";
-	$baseurl=base_url().'front-desk/list-driver/';
-	$uriseg ='4';
-		//echo $qry;//exit;
-	   $p_res=$this->mypage->paging($tbl='',$per_page,$param2,$baseurl,$uriseg,$custom='yes',$qry);
 
-	$data['values']=$p_res['values'];
-	
-	//print_r($data['values']);exit;
-	$driver_trips='';
-	$driver_statuses='';
-	for($i=0;$i<count($data['values']);$i++){
-		$id=$data['values'][$i]['id'];
-		$availability=$this->driver_model->getCurrentStatuses($id);
-		if($availability==false){
-		$driver_statuses[$id]='Available';
-		$driver_trips[$id]=gINVALID;
-		}else{
-		$driver_statuses[$id]='OnTrip';
-		$driver_trips[$id]=$availability[0]['id'];
-		}
-	}
-	$data['driver_statuses']=$driver_statuses;
-	$data['driver_trips']=$driver_trips;
-	if(empty($data['values'])){
-				$data['result']="No Results Found !";
-				}
-	
-	for ($i=0;$i<count($data['values']);$i++){
-	$driverid=$data['values'][$i]['id'];
-	$driver_details[$driverid]=$this->user_model->getVehicleDetails($driverid);
-	
-	$drivers=$this->vehicle_model->getDriversInfo();
-	if($drivers!=false){
-	$data['drivers']=$drivers;
-	}else{
-	$data['drivers']='';
-	}
-	}
-	if(!empty($driver_details)){
-		$data['v_details']=$driver_details;
-	}
-	
-	
-	
-	$data['v_models']=$this->user_model->getArray('vehicle_models');
-	$data['v_makes']=$this->user_model->getArray('vehicle_makes');
-	$vehicles=$this->vehicle_model->getVehicles();
-	if($vehicles!=false){
-	$data['vehicles']=$vehicles;
-	}else{
-	$data['vehicles']='';
-	}
-	
-	$data['page_links']=$p_res['page_links']; 
-	$data['title']='List Driver| '.PRODUCT_NAME;
-	$page='user-pages/driverList';
-	$this->load_templates($page,$data);	
-	
-	
-	}
-	else{
-	$this->notAuthorized();
-	}
 	}
 	///for search
 	

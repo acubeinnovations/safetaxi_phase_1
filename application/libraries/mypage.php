@@ -28,7 +28,7 @@ function paging($tbl,$per_page,$offset='',$baseurl,$Uriseg,$custom='',$qry=''){
 }
 
 
-function get_paging($page = 0, $per_page = 2){
+/*function get_paging($page = 0, $per_page = 2){
 		$this->load->helper('url');
         $this->load->library('table');
         $this->load->library('pagination');
@@ -52,6 +52,6 @@ function get_paging($page = 0, $per_page = 2){
         $data['page'] = $page;        
         
         
-   } 
+   } */
 }
 ?>
