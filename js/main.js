@@ -1036,7 +1036,18 @@ $.post(base_url+"/user/getNotifications",
 		 });
 
 }
+$('.search-ico').click(function(){
+var pickuplat=$('.pickuplat').val();
+var pickuplng=$('.pickuplng').val();
+if(pickuplat!='' && pickuplng!=''){
 
+$('.search').trigger('click');
+}else{
+
+alert("cant search due to entered pick up loc is not valid");
+}
+
+});
 //trip_bookig page-js end
 
 //trips paje js start

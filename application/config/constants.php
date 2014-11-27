@@ -49,6 +49,9 @@ define('CUSTOMER_UNDER_PROCESSING',2);
 define('INSTANT_TRIP', 1);
 define('FUTURE_TRIP', 2);
 
+define('DAY_TRIP', 1);
+define('NIGHT_TRIP', 2);
+
 define('DRIVER_STATUS_ACTIVE', 1);
 define('DRIVER_STATUS_ENGAGED', 2);
 define('DRIVER_STATUS_DISMISSED', 3);

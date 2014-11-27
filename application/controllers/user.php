@@ -346,6 +346,7 @@ class User extends CI_Controller {
 	}else if($trip_id!=''){
 	$condition=array('id'=>$trip_id);
 	$values=$this->trip_booking_model->getDetails($condition);
+	if($values!=false){
 	$data['id']=$trip_id;
 	if($values[0]->customer_id!=gINVALID){
 	$condition=array('id'=>$values[0]->customer_id);
@@ -374,10 +375,28 @@ class User extends CI_Controller {
 	$data['trip_to_lng']=$values[0]->trip_to_lng;
 	$data['driver_id']=$values[0]->driver_id;
 	$data['trip_status_id']=$values[0]->trip_status_id;
+	$data['driver_id']=$values[0]->driver_id;
 	
 	
 	}else{
 	$data['id']=gINVALID;
+	$data['driver_id']=gINVALID;
+	$data['name']='';
+	$data['mobile']='';
+	$data['trip_from']='';
+	$data['trip_to']='';
+	$data['trip_from_landmark']='';
+	$data['trip_to_landmark']='';
+	$data['pick_up_date']=date('Y-m-d');;
+	$data['pick_up_time']='';	
+	$data['trip_from_lat']='';	
+	$data['trip_to_lat']='';
+	$data['trip_from_lng']='';
+	$data['trip_to_lng']='';
+	}
+	}else{
+	$data['id']=gINVALID;
+	$data['driver_id']=gINVALID;
 	$data['name']='';
 	$data['mobile']='';
 	$data['trip_from']='';
@@ -406,7 +425,12 @@ class User extends CI_Controller {
 	$orderby = ' CONCAT(pick_up_date,pick_up_time) ASC';
 	$data['notification']=$this->trip_booking_model->getDetails($conditon,$orderby);
 	$data['customers_array']=$this->customers_model->getArray();
-	//print_r($data['notification']);
+	if($data['id']!=gINVALID){
+		$data['list_of_drivers']=$this->trip_booking_model->getNotifiedListOfDrivers($data['id']);
+
+	}else{
+		$data['list_of_drivers']='';
+	}
 	$data['title']="Trip Booking | ".PRODUCT_NAME;  
 	
 	$page='user-pages/trip-booking';

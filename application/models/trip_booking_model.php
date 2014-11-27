@@ -52,7 +52,7 @@ class Trip_booking_model extends CI_Model {
 
 	function getDriverDetails($id){
 
-	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id;
+	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id.' AND T.trip_status_id='.TRIP_STATUS_ACCEPTED;
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){
@@ -71,7 +71,18 @@ class Trip_booking_model extends CI_Model {
 
 	}
 
-	function setNotifications($data){
+	function setNotifications($data,$trip_update){
+		if($data['notification_type_id']==NOTIFICATION_TYPE_NEW_TRIP && $trip_update==FALSE){
+		if($this->checkInNotifications($data['app_key'],$data['trip_id'])){
+			$insert=false;
+		}else{
+
+			$insert=true;
+		}
+		}else{
+			$insert=true;
+		}
+		if($insert==true){
 		$this->db->set('created', 'NOW()', FALSE);
 		$this->db->set('user_id', $this->session->userdata('id'), FALSE);
 		$this->db->insert('notifications',$data);
@@ -80,10 +91,33 @@ class Trip_booking_model extends CI_Model {
 		}else{
 			return false;
 		}
+		}else{
+			return false;
+		}
 
 
 	}
-	
+	function checkInNotifications($app_key,$trip_id){
+		$qry = "SELECT * FROM notifications WHERE app_key= ".mysql_real_escape_string($app_key)." AND trip_id=".mysql_real_escape_string($trip_id);
+		$result=$this->db->query($qry);	
+		$num = $result->num_rows();
+		if($num>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	function getNotifiedListOfDrivers($id){
+		$qry = "SELECT DISTINCT D.id,D.vehicle_registration_number,D.name,D.mobile FROM notifications AS N LEFT JOIN drivers AS D ON D.app_key=N.app_key WHERE N.trip_id=".mysql_real_escape_string($id)." AND N.notification_type_id=".NOTIFICATION_TYPE_NEW_TRIP;
+		$result=$this->db->query($qry);	
+		$result=$result->result_array();
+		if(count($result)>0){
+			return $result;
+		}else{
+			return false;
+		}
+
+	}
 	function getAvailableVehicles($data){
 	
 	$qry = sprintf("SELECT DISTINCT VL.app_key,VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians('%s') ) * cos( radians(VL.lat ) ) * cos( radians( VL.lng) - radians('%s') ) + sin( radians('%s') ) * sin( radians( VL.lat ) ) ) ) AS distance FROM vehicle_locations_logs AS VL LEFT JOIN drivers AS D ON D.app_key = VL.app_key WHERE D.driver_status_id ='".DRIVER_STATUS_ACTIVE."'  HAVING distance < '%s'  order by VL.created DESC",
@@ -91,7 +125,7 @@ class Trip_booking_model extends CI_Model {
   mysql_real_escape_string($data['center_lng']),
   mysql_real_escape_string($data['center_lat']),
   mysql_real_escape_string($data['radius']));
-	
+	echo $qry;exit;
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){
@@ -99,6 +133,13 @@ class Trip_booking_model extends CI_Model {
 	}else{
 	return false;
 	}
+	
+	}
+
+	function engageAllDrivers(){
+	
+	$qry = "UPDATE drivers as D LEFT JOIN trips as T ON T.driver_id=D.id  SET D.driver_status_id = ".DRIVER_STATUS_ENGAGED." WHERE  TIMEDIFF(CONCAT(T.pick_up_date,' ',T.pick_up_time), NOW() ) <= '00:30:00' AND T.trip_status_id='".TRIP_STATUS_ACCEPTED."' AND D.driver_status_id!= '".DRIVER_STATUS_DISMISSED."'  AND D.driver_status_id !='".DRIVER_STATUS_SUSPENDED."'";
+	$result=$this->db->query($qry);
 	
 	}
 

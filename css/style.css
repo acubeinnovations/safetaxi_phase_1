@@ -731,6 +731,24 @@ label[for=name_error],label[for=mobile_error]{
 color: #F56954 !important;
 display:none;
 }
+.margin-left-10-px{
+	margin-left: 10px;
+}
+.margin-left-3-px{
+	margin-left: 3px;
+}
+.search-ico{
+line-height:2;
+}
+.no-padding{
+
+padding:0 !important;
+}
+
+.search-ico{
+width:145px;
+font-size:11px;
+}
 /* trips safe-taxi end*/
 
 
