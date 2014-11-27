@@ -52,7 +52,7 @@ class Trip_booking_model extends CI_Model {
 
 	function getDriverDetails($id){
 
-	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id;
+	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id.' AND T.trip_status_id='.TRIP_STATUS_ACCEPTED;
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){
@@ -125,7 +125,7 @@ class Trip_booking_model extends CI_Model {
   mysql_real_escape_string($data['center_lng']),
   mysql_real_escape_string($data['center_lat']),
   mysql_real_escape_string($data['radius']));
-	
+	echo $qry;exit;
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){

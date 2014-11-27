@@ -342,6 +342,7 @@ class User extends CI_Controller {
 	}else if($trip_id!=''){
 	$condition=array('id'=>$trip_id);
 	$values=$this->trip_booking_model->getDetails($condition);
+	if($values!=false){
 	$data['id']=$trip_id;
 	if($values[0]->customer_id!=gINVALID){
 	$condition=array('id'=>$values[0]->customer_id);
@@ -373,6 +374,22 @@ class User extends CI_Controller {
 	$data['driver_id']=$values[0]->driver_id;
 	
 	
+	}else{
+	$data['id']=gINVALID;
+	$data['driver_id']=gINVALID;
+	$data['name']='';
+	$data['mobile']='';
+	$data['trip_from']='';
+	$data['trip_to']='';
+	$data['trip_from_landmark']='';
+	$data['trip_to_landmark']='';
+	$data['pick_up_date']=date('Y-m-d');;
+	$data['pick_up_time']='';	
+	$data['trip_from_lat']='';	
+	$data['trip_to_lat']='';
+	$data['trip_from_lng']='';
+	$data['trip_to_lng']='';
+	}
 	}else{
 	$data['id']=gINVALID;
 	$data['driver_id']=gINVALID;

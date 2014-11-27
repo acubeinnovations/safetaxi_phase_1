@@ -108,7 +108,7 @@
 								<div class="input-group margin-10-px ">
                                         <input name="radius" class="form-control width-30-percent float-left height-27-px" value=1 type="text">
                                         <span class="input-group-addon float-left width-20-percent height-27-px">KM</span>
-										<?php if($id!=gINVALID){ ?><i class="fa fa-fw fa-search btn btn-info btn-sm margin-left-3-px no-padding search-ico"></i> <div class="hide-me"> <input  class="btn btn-info btn-sm search " name="search" type="submit" ></div> <?php } ?>
+										<?php if($id!=gINVALID && $driver_id==gINVALID){ ?><i class="fa fa-fw btn btn-info btn-sm margin-left-3-px no-padding search-ico">SEARCH AND NOTIFY</i> <div class="hide-me"> <input  class="btn btn-info btn-sm search" name="search" type="submit" ></div> <?php } ?>
                                     </div>
 							</td>
 							
@@ -165,9 +165,12 @@
 												for($index=0;$index<count($list_of_drivers);$index++){
 													if($driver_id!=gINVALID){
 													if($list_of_drivers[$index]['id']!=$driver_id){ $reject='<span class="badge bg-red">+</span>';$awarded=''; }else{ $awarded='<span class="badge bg-green">+</span>';$reject='';}
-															} ?>
+															}else{
+																	$reject='';$awarded='';
+
+																} ?>
 						                            <tr>
-						                                <td></td>
+						                                <td><?php echo $index+1; ?></td>
 														<td><?php echo $list_of_drivers[$index]['vehicle_registration_number']; ?></td>
 														<td><?php echo $list_of_drivers[$index]['name']; ?></td>
 						                                <td><?php echo $list_of_drivers[$index]['mobile']; ?></td>
