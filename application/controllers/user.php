@@ -49,9 +49,13 @@ class User extends CI_Controller {
 
 		$this->ShowBookTrip($param2);
 		}elseif($param1=='trips'){
-
 		$this->Trips($param2);
-		}elseif($param1=='customer'){
+
+		}elseif($param1=='driver-payments'){
+		$this->DriverPayments($param2);
+		}
+
+		elseif($param1=='customer'){
 
 		$this->Customer($param2);
 
@@ -454,6 +458,178 @@ class User extends CI_Controller {
 	
 
 	}
+
+////////////////////////////////////////////////////////////////////////////////
+	public function DriverPayments($param2){
+		if($this->session_check()==true) {
+			/* */
+			$trip_id=$param2;
+			$tbl_arry=array('drivers','trip_statuses');
+			for ($i=0;$i<count($tbl_arry);$i++){
+					$result=$this->user_model->getArray($tbl_arry[$i]);
+					if($result!=false){
+					$data[$tbl_arry[$i]]=$result;
+					}
+					else{
+					$data[$tbl_arry[$i]]='';
+					}
+			}	
+			// print_r($data);exit;
+			//$conditon = array('id'=>$trip_id); print_r($condition); exit;
+			$drivers=$this->driver_model->getDetails($condition=''); //print_r($drivers); 
+			$conditon = array('id'=>$trip_id);
+			$result=$this->trip_booking_model->getDetails($conditon);
+			/* search condition starts */
+				//for search
+	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
+
+	$qry="SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount,VT.name as vouchertype,DP.date as date,DP.period as Period,D.name as Drivername,D.driver_status_id as Driverstatus_id FROM driver_payment AS DP LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_type VT ON VT.id=DP.voucher_type_id WHERE D.id=1 GROUP BY DP.date";
+	$condition="";	
+	if(isset($_REQUEST['trip_search'])){ 
+	if($param2==''){
+	$param2='0';
+	}
+
+	//driver search
+	if($_REQUEST['vehicle_number']!=null){
+	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
+	if($condition==""){
+	$condition=' WHERE D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
+}
+	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
+	} 
+
+
+
+	
+	//from date
+	if($_REQUEST['trip_pick_date']!=null ){
+	$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
+	//$date_now=date('Y-m-d');
+	
+	$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date >= "'.$_REQUEST['trip_pick_date'].'"';
+
+
+
+
+	}else{
+		//$condition.=' AND T.pick_up_date >= "'.$date_now.'"';
+	}
+	
+	} 
+	//from date ends
+
+
+
+	//to date starts
+	if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
+	$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	//$date_now=date('Y-m-d H');
+
+	$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+
+
+
+
+	}else{
+		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+	}
+	
+	} 
+	//to date ends
+
+
+
+
+
+//
+	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
+	$data['driver_id']=$_REQUEST['drivers'];
+	
+	$where_arry['driver_id']=$_REQUEST['drivers'];
+	if($condition==""){
+		$condition =' WHERE T.driver_id = '.$data['driver_id'];
+	}else{
+		$condition.=' AND T.driver_id = '.$data['driver_id'];
+	}
+	}
+
+	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
+	$data['status_id']=$_REQUEST['trip_status_id'];
+	//$date_now=date('Y-m-d H:i:s');
+	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
+
+	if($condition==""){
+		$condition =' WHERE T.trip_status_id='.$data['status_id'];
+	}else{
+		$condition.=' AND T.trip_status_id='.$data['status_id'];
+	}
+	}
+
+
+	
+	echo $qry.'<br>';
+	echo $condition.'<br>';
+
+	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	} 
+
+
+	//echo "hellow";
+	/*if(is_null($this->mysession->get('condition'))){
+	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	}*/
+	//$tbl="drivers";
+	$baseurl=base_url().'front-desk/list-driver/';
+	$uriseg ='4';
+	//echo $param2; exit;
+	//echo $qry;//exit;
+	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	//print_r($p_res);
+	$data['values']=$p_res['values'];
+	//$data['values']='';
+	//print_r($data['values']);exit;
+	$driver_trips='';
+	$driver_statuses='';
+	for($i=0;$i<count($data['values']);$i++){
+		//$id=$data['values'][$i]['id'];
+		//print_r($data['values']);exit;
+		$id=1;
+		$availability=$this->driver_model->getCurrentStatuses($id);
+		if($availability==false){
+		$driver_statuses[$id]='Available';
+		$driver_trips[$id]=gINVALID;
+		}else{
+		$driver_statuses[$id]='OnTrip';
+		$driver_trips[$id]=$availability[0]['id'];
+		}
+	}
+	$data['driver_statuses']=$driver_statuses;
+	$data['driver_trips']=$driver_trips;
+	if(empty($data['values'])){
+				$data['result']="No Results Found !";
+	}
+	$data['trips']=$data['values'];
+
+	
+			/* search condition ends*/
+			$data['title']="Trips | ".PRODUCT_NAME;  
+			$page='user-pages/driver-payments';
+		    $this->load_templates($page,$data);
+		    }else{
+				$this->notAuthorized();
+			}
+		
+	}	
+////////////////////////////////////////////////////////////////////////////////	
+
+
+
+
 	public function Trips($param2){
 		if($this->session_check()==true) {
 			/* */
@@ -476,12 +652,22 @@ class User extends CI_Controller {
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
-	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,C.name as customername,C.mobile as mob,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
+	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from, T.trip_to AS trip_to,C.name as customer_name,C.mobile as mob,D.name as drivername,D.vehicle_registration_number as vehiclenumber,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
 	$condition="";	
 	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
 	$param2='0';
 	}
+
+	//driver search
+	if($_REQUEST['vehicle_number']!=null){
+	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
+	if($condition==""){
+	$condition=' WHERE D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
+}
+	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
+	} 
+
 
 
 	

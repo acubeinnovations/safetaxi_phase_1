@@ -42,7 +42,7 @@ $trip_sl_no=$page;
     <div class="box-body1">
 <div class="page-outer">    
 	<fieldset class="body-border">
-		<legend class="body-head">Trips</legend>
+		<legend class="body-head">Driver Payments</legend>
 		<div class="box-body table-responsive no-padding">
 			
 			<?php echo form_open(base_url()."front-desk/trips"); ?>
@@ -62,7 +62,8 @@ $trip_sl_no=$page;
 						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
 					    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
-					<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
+					<td><?php echo form_button('print-trip','Generate Invoice',"class='btn btn-primary print-trip'"); ?></td>
+					
 						
 					</tr>
 				</tbody>
@@ -78,24 +79,23 @@ echo form_close();?></td>
 					<tr>	
 						
 					    <th style="width:2%">Sl no: </th>
-					    <th style="width:9%">Trip id</th>
+					    <th style="width:19%">Driver</th>
 						<!--<th style="width:15%">Customer</th>-->
 					   
-					    <th style="width:25%">Pickup</th>
-					    
-					    <th  style="width:20%">Source</th>
-					    <th  style="width:20%">Destination</th>
-					    <th  style="width:33%">Driver</th>
-						<th style="width:19%">Customer Name</th>
-						<th style="width:11%">Phone Number</th>						
-						 <th style="width:11%">Status</th>
+					    <th style="width:15%">Period</th>
+					    <th style="width:15%">Date</th>
+					    <th  style="width:12%">Amount (Cr)</th>
+					    <th  style="width:12%">Amount (Dr)</th>
+
+						<th style="width:11%">Status</th>						
+						 <th style="width:11%">Print</th>
 					</tr>
 					<?php
 					
 					$trip_sl_no=1;
 					for($trip_index=0;$trip_index<count($trips);$trip_index++){
 						
-						$pickdate=$trips[$trip_index]['pickup_date'];
+						$pickdate=$trips[$trip_index]['Period'];
 						//$dropdate=$trips[$trip_index]['drop_date'];
 
 						$date1 = date_create($pickdate);
@@ -105,21 +105,41 @@ echo form_close();?></td>
 					?>
 					<tr>
 						<td><?php echo $trip_sl_no;?></td>
-						<td><?php echo $trips[$trip_index]['trip_id'];?></td>
+						<td><?php echo $trips[$trip_index]['Drivername'];?></td>
 					   	
-					   	<td><?php echo $trips[$trip_index]['pickup_date'].' - '.$trips[$trip_index]['pickuptime'];?></td>
-					   	
-					   	<td><?php echo $trips[$trip_index]['trip_from'];?></td>
-					   	<td><?php echo $trips[$trip_index]['trip_to'];?></td>
-					   	<td><?php echo $trips[$trip_index]['drivername'].' - '.$trips[$trip_index]['vehiclenumber'];?></td>
-					   	<td><?php echo $trips[$trip_index]['customer_name'];?></td>
-					   	<td><?php echo $trips[$trip_index]['mob'];?></td>
-					   	<td><?php echo $trips[$trip_index]['tripstatus'];?></td>
+					   	<td><?php echo $trips[$trip_index]['Period'];?></td>
+					   	<td><?php echo $trips[$trip_index]['date'];?></td>
+					   	<td><?php echo $trips[$trip_index]['Creditamount'];?></td>
+					   	<td><?php echo $trips[$trip_index]['Debitamount'];?></td>
+					   	<td><?php echo $trips[$trip_index]['Driverstatus_id'];?></td>
+					   	<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
 					</tr>
+
 					<?php 
 						$trip_sl_no++;
 						}
 					?>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+						<?php for($trip_index=0;$trip_index<count($trips);$trip_index++){
+						$value=$trips[$trip_index]['Creditamount'];
+						echo $value;
+						}
+						?>
+						</td>
+						<td><?php for($trip_index=0;$trip_index<count($trips);$trip_index++){
+							$value=$trips[$trip_index]['Debitamount'];
+							echo $value;
+
+						}
+						?></td>
+						<td></td>
+						<td></td>
+					</tr>
 				</tbody>
 			</table><?php //echo $page_links;?>
 		</div>

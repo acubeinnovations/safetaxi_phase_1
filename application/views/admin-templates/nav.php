@@ -45,7 +45,7 @@
                             <ul class="treeview-menu">
                                
                                 <li><a href=" <?php echo base_url().'front-desk/list-driver';?>"><i class="fa fa-angle-double-right"></i>Manage Drivers</a></li>
-                                
+                                 <li><a href="<?php echo base_url().'front-desk/driver-payments';?>"><i class="fa fa-angle-double-right"></i>Driver Payment</a></li>
                             </ul>
                         </li>
 						

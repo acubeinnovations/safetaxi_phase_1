@@ -87,6 +87,26 @@ public function getDriverDetails($data){
 
 	}
 
+
+	function getDetails($conditon ='',$orderby=''){
+
+	$this->db->from('drivers');
+	if($conditon!=''){
+		$this->db->where($conditon);
+	}
+	
+	if($orderby!=''){
+		$this->db->order_by($orderby);
+	}
+ 	$results = $this->db->get()->result();//return $this->db->last_query();exit;
+		if(count($results)>0){
+		return $results;
+
+		}else{
+			return false;
+		}
+	}
+
 	public function UpdateDriverdetails($data,$id){
 	$arry=array('id'=>$id,'organisation_id'=>$data['organisation_id']);
 	$this->db->set('updated', 'NOW()', FALSE);
