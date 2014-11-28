@@ -21,6 +21,7 @@
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
          <b>Alert!</b><br><?php
 		echo $this->session->userdata('dbError').br();
+		$this->session->set_userdata(array('dbError'=>''));
 	?>
       </div> 
 	<?php    } ?>
@@ -31,6 +32,8 @@
 		<!--trip-booking-area-first-col -start-->
 		<div class="trip-booking-area-first-col">
 				<!--trip-booking -start-->
+			<fieldset class="body-border">
+			<legend class="body-head">Trips</legend>
 				<div class="trip-booking">
 					<?php	
 						$attributes = array('autocomplete'=>'off','id'=>'trip-form');
@@ -106,7 +109,7 @@
 							</td>
 							<td>
 								<div class="input-group margin-10-px ">
-                                        <input name="radius" class="form-control width-30-percent float-left height-27-px" value=1 type="text">
+                                        <input name="radius" class="form-control width-30-percent float-left height-27-px" value="<?php echo $radius; ?>" type="text">
                                         <span class="input-group-addon float-left width-20-percent height-27-px">KM</span>
 										<?php if($id!=gINVALID && $driver_id==gINVALID){ ?><i class="fa fa-fw btn btn-info btn-sm margin-left-3-px no-padding search-ico">SEARCH AND NOTIFY</i> <div class="hide-me"> <input  class="btn btn-info btn-sm search" name="search" type="submit" ></div> <?php } ?>
                                     </div>
@@ -192,9 +195,10 @@
 
 				</div>
 				<!--trip-booking-info -end-->
+			</fieldset>
 		</div>
 		<!--trip-booking-area-first-col -end-->
-
+	
 		<!--trip-booking-area-second-col -start-->
 		<div class="trip-booking-area-second-col">
 
@@ -208,7 +212,7 @@
 		if(count($notification)>0 && $notification!=''){
 		for($notification_index=0;$notification_index<count($notification);$notification_index++){?>
 		<a href="<?php echo base_url().'front-desk/trip-booking/'.$notification[$notification_index]->id;?>" class="notify-link">
-		<div class="callout callout-warning no-right-padding">
+		<div class="callout callout-warning no-right-padding width-45-percent float-left">
 		<div class="notification<?php echo $notification_index; ?>">
 			<table style="width:100%;" class="font-size-12-px">
 				<tr>

@@ -315,6 +315,8 @@ var cityLat = place.geometry.location.lat();
 var cityLng = place.geometry.location.lng();
 $('.pickuplat').attr('value',cityLat);
 $('.pickuplng').attr('value',cityLng);
+$("#pickup").attr('value',place.name+','+place.address_components[0].short_name);
+
 
 
 });
@@ -325,6 +327,7 @@ var cityLat = place.geometry.location.lat();
 var cityLng = place.geometry.location.lng();
 $('.droplat').attr('value',cityLat);
 $('.droplng').attr('value',cityLng);
+$("#drop").attr('value',place.name+','+place.address_components[0].short_name);
 });
 
 
@@ -1030,7 +1033,7 @@ $.post(base_url+"/user/getNotifications",
 
 				callout_class="callout-warning";
 			}
-			notify_content=notify_content+'<a href="'+base_url+'/organization/front-desk/trip-booking/'+data["notifications"][i].id+'" class="notify-link"><div class="callout '+callout_class+' no-right-padding"><div class="notification'+i+'"><table style="width:100%;" class="font-size-12-px"><tr><td class="notification-trip-id">Trip ID :</td><td>'+data["notifications"][i].id+'</td></tr><tr><td class="notification-pickup-city">Cust :</td><td>'+data["customers"][data["notifications"][i].customer_id]+'</td></tr><tr><td class="notification-trip-id">Pick up :</td><td>'+data["notifications"][i].trip_from+'</td></tr><tr><td class="notification-pickup-city">Date :</td><td>'+data["notifications"][i].pick_up_date+' '+data["notifications"][i].pick_up_time+'</td></tr></table></div></div></a>';
+			notify_content=notify_content+'<a href="'+base_url+'/front-desk/trip-booking/'+data["notifications"][i].id+'"  class="notify-link"><div class="callout width-45-percent float-left '+callout_class+' no-right-padding"><div class="notification'+i+'"><table style="width:100%;" class="font-size-12-px"><tr><td class="notification-trip-id">Trip ID :</td><td>'+data["notifications"][i].id+'</td></tr><tr><td class="notification-pickup-city">Cust :</td><td>'+data["customers"][data["notifications"][i].customer_id]+'</td></tr><tr><td class="notification-trip-id">Pick up :</td><td>'+data["notifications"][i].trip_from+'</td></tr><tr><td class="notification-pickup-city">Date :</td><td>'+data["notifications"][i].pick_up_date+' '+data["notifications"][i].pick_up_time+'</td></tr></table></div></div></a>';
 			}
 			$('.ajax-notifications').html(notify_content);
 		 });

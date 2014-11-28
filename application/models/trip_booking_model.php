@@ -52,7 +52,7 @@ class Trip_booking_model extends CI_Model {
 
 	function getDriverDetails($id){
 
-	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id.' AND T.trip_status_id='.TRIP_STATUS_ACCEPTED;
+	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id.' AND T.trip_status_id='.TRIP_STATUS_DRIVER_CANCELLED;
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){
@@ -120,12 +120,23 @@ class Trip_booking_model extends CI_Model {
 	}
 	function getAvailableVehicles($data){
 	
-	$qry = sprintf("SELECT DISTINCT VL.app_key,VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians('%s') ) * cos( radians(VL.lat ) ) * cos( radians( VL.lng) - radians('%s') ) + sin( radians('%s') ) * sin( radians( VL.lat ) ) ) ) AS distance FROM vehicle_locations_logs AS VL LEFT JOIN drivers AS D ON D.app_key = VL.app_key WHERE D.driver_status_id ='".DRIVER_STATUS_ACTIVE."'  HAVING distance < '%s'  order by VL.created DESC",
+	$qry = sprintf("SELECT VL.app_key, VL.created, VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) ) AS distance
+FROM vehicle_locations_logs AS VL
+LEFT JOIN drivers AS D ON D.app_key = VL.app_key
+WHERE VL.id
+IN (
+SELECT max( id )
+FROM vehicle_locations_logs
+GROUP BY app_key
+)
+AND D.driver_status_id = '".DRIVER_STATUS_ACTIVE."'
+HAVING distance < '%s'  
+ORDER BY VL.created DESC",
   mysql_real_escape_string($data['center_lat']),
   mysql_real_escape_string($data['center_lng']),
   mysql_real_escape_string($data['center_lat']),
-  mysql_real_escape_string($data['radius']));
-	echo $qry;exit;
+  mysql_real_escape_string($data['radius'])); 
+	//echo $qry;exit;
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){
@@ -135,6 +146,11 @@ class Trip_booking_model extends CI_Model {
 	}
 	
 	}
+
+
+	
+
+
 
 	function engageAllDrivers(){
 	
