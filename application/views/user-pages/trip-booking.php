@@ -188,7 +188,7 @@
 		                           	 	</div>
                                     </div><!-- /.tab-pane -->
                                     <div class="tab-pane" id="tab_2">
-                                       
+                                       <div id="map_canvas"></div>
                                     </div><!-- /.tab-pane -->
                                 </div><!-- /.tab-content -->
                             </div>
@@ -212,25 +212,18 @@
 		if(count($notification)>0 && $notification!=''){
 		for($notification_index=0;$notification_index<count($notification);$notification_index++){?>
 		<a href="<?php echo base_url().'front-desk/trip-booking/'.$notification[$notification_index]->id;?>" class="notify-link">
-		<div class="callout callout-warning no-right-padding width-45-percent float-left">
+		<div class="callout callout-warning no-right-padding width-100-percent float-left">
 		<div class="notification<?php echo $notification_index; ?>">
 			<table style="width:100%;" class="font-size-12-px">
 				<tr>
 					<td class='notification-trip-id'>
-						Trip ID :
+						Trip ID :<?php echo $notification[$notification_index]->id; ?>
 					</td>
 					<td>
-						<?php echo $notification[$notification_index]->id; ?>
+						Cust :	<?php echo $customers_array[$notification[$notification_index]->customer_id]; ?>
 					</td>
 				</tr>
-				<tr>
-					<td class='notification-pickup-city'>
-						Cust :
-					</td>
-					<td>
-						<?php echo $customers_array[$notification[$notification_index]->customer_id]; ?>
-					</td>
-				</tr>
+				
 				<tr>
 					<td class='notification-trip-id'>
 						Pick up :

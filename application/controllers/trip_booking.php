@@ -277,7 +277,7 @@ class Trip_booking extends CI_Controller {
 				if(isset($data['id']) && $data['id']>0){
 				$res = $this->trip_booking_model->updateTrip($dbdata,$data['id']);
 				if($res==true){
-					$driver=$this->trip_booking_model->getDriverDetails($data['id']);print_r($driver);
+					$driver=$this->trip_booking_model->getDriverDetails($data['id']);
 					if($driver!=false ){
 												
 							$app_key=$driver[0]['app_key'];
@@ -311,9 +311,8 @@ class Trip_booking extends CI_Controller {
 					$data_locations['center_lat']=$dbdata['trip_from_lat'];
 					$data_locations['center_lng']=$dbdata['trip_from_lng'];
 					$data_locations['radius']=$data['radius'];
-					print_r($data_locations);
 					
-					$drivers=$this->searchVehicles($data_locations);print_r($drivers);echo count($drivers);
+					$drivers=$this->searchVehicles($data_locations);
 					if($drivers!=false){
 						for($i=0;$i<count($drivers);$i++){
 							$app_key=$drivers[$i]['app_key'];
