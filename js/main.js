@@ -315,6 +315,8 @@ var cityLat = place.geometry.location.lat();
 var cityLng = place.geometry.location.lng();
 $('.pickuplat').attr('value',cityLat);
 $('.pickuplng').attr('value',cityLng);
+$("#pickup").attr('value',place.name+','+place.address_components[0].short_name);
+
 
 
 });
@@ -325,6 +327,7 @@ var cityLat = place.geometry.location.lat();
 var cityLng = place.geometry.location.lng();
 $('.droplat').attr('value',cityLat);
 $('.droplng').attr('value',cityLng);
+$("#drop").attr('value',place.name+','+place.address_components[0].short_name);
 });
 
 
@@ -1030,7 +1033,7 @@ $.post(base_url+"/user/getNotifications",
 
 				callout_class="callout-warning";
 			}
-			notify_content=notify_content+'<a href="'+base_url+'/organization/front-desk/trip-booking/'+data["notifications"][i].id+'" class="notify-link"><div class="callout '+callout_class+' no-right-padding"><div class="notification'+i+'"><table style="width:100%;" class="font-size-12-px"><tr><td class="notification-trip-id">Trip ID :</td><td>'+data["notifications"][i].id+'</td></tr><tr><td class="notification-pickup-city">Cust :</td><td>'+data["customers"][data["notifications"][i].customer_id]+'</td></tr><tr><td class="notification-trip-id">Pick up :</td><td>'+data["notifications"][i].trip_from+'</td></tr><tr><td class="notification-pickup-city">Date :</td><td>'+data["notifications"][i].pick_up_date+' '+data["notifications"][i].pick_up_time+'</td></tr></table></div></div></a>';
+			notify_content=notify_content+'<a href="'+base_url+'/front-desk/trip-booking/'+data["notifications"][i].id+'"  class="notify-link"><div class="callout width-100-percent float-left '+callout_class+' no-right-padding"><div class="notification'+i+'"><table style="width:100%;" class="font-size-12-px"><tr><td class="notification-trip-id">Trip ID :'+data["notifications"][i].id+'</td><td class="notification-pickup-city">Cust :'+data["customers"][data["notifications"][i].customer_id]+'</td></tr><tr><td class="notification-trip-id">Pick up :</td><td>'+data["notifications"][i].trip_from+'</td></tr><tr><td class="notification-pickup-city">Date :</td><td>'+data["notifications"][i].pick_up_date+' '+data["notifications"][i].pick_up_time+'</td></tr></table></div></div></a>';
 			}
 			$('.ajax-notifications').html(notify_content);
 		 });
@@ -1048,6 +1051,65 @@ alert("cant search due to entered pick up loc is not valid");
 }
 
 });
+/*
+var map;
+var global_markers = [];    
+var markers = [[10.001678, 76.303590, 'palarivattom']];
+
+var infowindow = new google.maps.InfoWindow({});
+
+function initialize() {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(10.001678,76.303589);
+    var myOptions = {
+        zoom: 20,
+        center: latlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    addMarker();
+}
+
+function addMarker() {
+    for (var i = 0; i < markers.length; i++) {
+        // obtain the attribues of each marker
+        var lat = parseFloat(markers[i][0]);
+        var lng = parseFloat(markers[i][1]);
+        var trailhead_name = markers[i][2];
+
+        var myLatlng = new google.maps.LatLng(lat, lng);
+
+        var contentString = "<html><body><div><p><h2>" + trailhead_name + "</h2></p></div></body></html>";
+
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: "Coordinates: " + lat + " , " + lng + " | Trailhead name: " + trailhead_name
+        });
+
+        marker['infowindow'] = contentString;
+
+        global_markers[i] = marker;
+
+        google.maps.event.addListener(global_markers[i], 'click', function() {
+            infowindow.setContent(this['infowindow']);
+            infowindow.open(map, this);
+        });
+    }
+}
+
+window.onload = initialize;
+
+*/
+
+
+$('#trip-form').on("keyup keypress", function(e) {
+  var code = e.keyCode || e.which; 
+  if (code  == 13) {               
+    e.preventDefault();
+    return false;
+  }
+});
 //trip_bookig page-js end
 
 //trips paje js start
@@ -1061,6 +1123,8 @@ $(document).keydown(function(e) {
  }   // esc
 
 });
+
+
 
 
 //trips page js end

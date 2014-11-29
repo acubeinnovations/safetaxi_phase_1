@@ -124,7 +124,7 @@ class Trip_booking extends CI_Controller {
 					$data_locations['radius']=$this->input->post('radius');	
 					$id=$this->input->post('id');
 					$drivers=$this->searchVehicles($data_locations);
-					if(count($drivers)>0){
+					if($drivers!=false){
 						for($i=0;$i<count($drivers);$i++){
 							$app_key=$drivers[$i]['app_key'];
 							$notification_data['notification_type_id']=NOTIFICATION_TYPE_NEW_TRIP;
@@ -148,7 +148,7 @@ class Trip_booking extends CI_Controller {
 		}
 	}
 
-	function saveTrip($revoke=false){
+	function saveTrip($revoke){
 
 		if(isset($_REQUEST['id']) && $_REQUEST['id']!=gINVALID){
 					$data['id']=$this->input->post('id');
@@ -172,6 +172,7 @@ class Trip_booking extends CI_Controller {
 				
 				$data['mobile']				=	$this->input->post('mobile');
 				$data['radius']				=	$this->input->post('radius');
+				$data['driver_id']				=	$this->input->post('driver_id');
 				
 				$data['trip_from']			=	$this->input->post('trip_from');
 				$data['trip_from_lat']		=	$this->input->post('trip_from_lat');
@@ -203,8 +204,8 @@ class Trip_booking extends CI_Controller {
 		
 			$tripdatetime							=$data['pick_up_date'].' '.$data['pick_up_time'];
 			$dbdata['trip_type_id']					=$this->checkFutureOrInstantTrip($tripdatetime);
-	
-			if($data['id']!=gINVALID && $revoke==true ){
+				
+			if(trim($data['id'])!=gINVALID && trim($revoke)==true ){//echo $data['id'];echo $revoke;exit;
 				$canceltripbydriver['trip_status_id']			= TRIP_STATUS_DRIVER_CANCELLED;
 				$res = $this->trip_booking_model->updateTrip($canceltripbydriver,$data['id']);
 				$driver=$this->trip_booking_model->getDriverDetails($data['id']);
@@ -219,9 +220,14 @@ class Trip_booking extends CI_Controller {
 							$notification_data['trip_id']=$data['id'];
 							$trip_update=TRUE;
 							$this->trip_booking_model->setNotifications($notification_data,$trip_update);
-							if($dbdata['trip_type_id']==INSTANT_TRIP){
+							$conditon =array('id'=>$data['id']);
+							$cancelledtrips=$this->trip_booking_model->getDetails($conditon ='',$orderby='');
+							
+							$tripdatetime							= $cancelledtrips[0]->pick_up_date.' '.$cancelledtrips[0]->pick_up_time;;
+							$canecellled_trip_type_id				= $this->checkFutureOrInstantTrip($tripdatetime);
+							if($canecellled_trip_type_id==INSTANT_TRIP){
 								$driver_data['driver_status_id']=DRIVER_STATUS_ACTIVE;
-								$this->changeDriverstatus($driver_id,$driver_data);
+								$this->trip_booking_model->changeDriverstatus($driver_id,$driver_data);
 							}
 					}
 				$data['id']							= gINVALID;
@@ -271,7 +277,7 @@ class Trip_booking extends CI_Controller {
 				if(isset($data['id']) && $data['id']>0){
 				$res = $this->trip_booking_model->updateTrip($dbdata,$data['id']);
 				if($res==true){
-					$driver=$this->trip_booking_model->getDriverDetails($data['id']);print_r($driver);
+					$driver=$this->trip_booking_model->getDriverDetails($data['id']);
 					if($driver!=false ){
 												
 							$app_key=$driver[0]['app_key'];
@@ -307,7 +313,7 @@ class Trip_booking extends CI_Controller {
 					$data_locations['radius']=$data['radius'];
 					
 					$drivers=$this->searchVehicles($data_locations);
-					if(count($drivers)>0){
+					if($drivers!=false){
 						for($i=0;$i<count($drivers);$i++){
 							$app_key=$drivers[$i]['app_key'];
 							$notification_data['notification_type_id']=NOTIFICATION_TYPE_NEW_TRIP;
