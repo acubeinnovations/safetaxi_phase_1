@@ -54,6 +54,9 @@ class User extends CI_Controller {
 		}elseif($param1=='driver-payments'){
 		$this->DriverPayments($param2);
 		}
+		elseif($param1=='drivers-payments'){
+		$this->DriversPayments($param2);
+		}
 
 		elseif($param1=='customer'){
 
@@ -461,6 +464,175 @@ class User extends CI_Controller {
 	public function DriverPayments($param2){
 		if($this->session_check()==true) {
 			/* */
+			$driver_id=$param2; 
+			$tbl_arry=array('drivers','trip_statuses');
+			for ($i=0;$i<count($tbl_arry);$i++){
+					$result=$this->user_model->getArray($tbl_arry[$i]);
+					if($result!=false){
+					$data[$tbl_arry[$i]]=$result;
+					}
+					else{
+					$data[$tbl_arry[$i]]='';
+					}
+			}	
+			// print_r($data);exit;
+			//$conditon = array('id'=>$trip_id); print_r($condition); exit;
+			$drivers=$this->driver_model->getDetails($condition=''); //print_r($drivers); 
+			$conditon = array('id'=>$driver_id);
+			$result=$this->trip_booking_model->getDetails($conditon);
+			/* search condition starts */
+				//for search
+	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
+
+	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount,VT.name as vouchertype,DP.voucher_number as voucher_number,DP.date as date,DP.period as Period,D.name as Drivername,D.driver_status_id as Driverstatus_id FROM driver_payment AS DP LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_type VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" GROUP BY DP.date ORDER BY DP.period DESC';
+	$condition="";	
+	if(isset($_REQUEST['trip_search'])){ 
+	if($param2==''){
+	$param2='0';
+	}
+
+	//driver search
+	if($_REQUEST['vehicle_number']!=null){
+	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
+	if($condition==""){
+	$condition=' WHERE D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
+}
+	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
+	} 
+
+
+
+	
+
+
+
+
+	//to date starts
+	if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
+	$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	//$date_now=date('Y-m-d H');
+
+	$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+
+
+
+
+	}else{
+		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+	}
+	
+	} 
+	//to date ends
+
+
+
+
+
+//
+	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
+	$data['driver_id']=$_REQUEST['drivers'];
+	
+	$where_arry['driver_id']=$_REQUEST['drivers'];
+	if($condition==""){
+		$condition =' WHERE T.driver_id = '.$data['driver_id'];
+	}else{
+		$condition.=' AND T.driver_id = '.$data['driver_id'];
+	}
+	}
+
+//Search period
+	if($_REQUEST['periods']!=null && $_REQUEST['periods']!=gINVALID){
+	$data['period']=$_REQUEST['periods'];
+	
+	$where_arry['period']=$_REQUEST['drivers'];
+	if($condition==""){
+		$condition =' WHERE DP.period = '.$data['period'];
+	}else{
+		$condition.=' AND DP.period = '.$data['period'];
+	}
+	}
+//Search period ends
+
+
+
+
+
+
+	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
+	$data['status_id']=$_REQUEST['trip_status_id'];
+	//$date_now=date('Y-m-d H:i:s');
+	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
+
+	if($condition==""){
+		$condition =' WHERE T.trip_status_id='.$data['status_id'];
+	}else{
+		$condition.=' AND T.trip_status_id='.$data['status_id'];
+	}
+	}
+
+
+	
+	echo $qry.'<br>';
+	echo $condition.'<br>';
+
+	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	} 
+
+
+	//echo "hellow";
+	/*if(is_null($this->mysession->get('condition'))){
+	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	}*/
+	//$tbl="drivers";
+	$baseurl=base_url().'front-desk/list-driver/';
+	$uriseg ='4';
+	//echo $param2; exit;
+	//echo $qry;//exit;
+	$p_res=$this->mypage->paging($tbl='',$per_page=10,$offset=0,$baseurl,$uriseg,$custom='yes',$qry);
+	//print_r($p_res);
+	$data['values']=$p_res['values'];
+	//$data['values']='';
+	//print_r($data['values']);exit;
+	$driver_trips='';
+	$driver_statuses='';
+	for($i=0;$i<count($data['values']);$i++){
+		//$id=$data['values'][$i]['id'];
+		//print_r($data['values']);exit;
+		$id=1;
+		$availability=$this->driver_model->getCurrentStatuses($id);
+		if($availability==false){
+		$driver_statuses[$id]='Available';
+		$driver_trips[$id]=gINVALID;
+		}else{
+		$driver_statuses[$id]='OnTrip';
+		$driver_trips[$id]=$availability[0]['id'];
+		}
+	}
+	$data['driver_statuses']=$driver_statuses;
+	$data['driver_trips']=$driver_trips;
+	if(empty($data['values'])){
+				$data['result']="No Results Found !";
+	}
+	$data['trips']=$data['values'];
+
+	
+			/* search condition ends*/
+			$data['title']="Trips | ".PRODUCT_NAME;  
+			$page='user-pages/driver-payments';
+		    $this->load_templates($page,$data);
+		    }else{
+				$this->notAuthorized();
+			}
+		
+	}	
+////////////////////////////////////////////////////////////////////////////////	
+
+	////////////////////////////////////////////////////////////////////////////////
+	public function DriversPayments($param2){
+		if($this->session_check()==true) {
+			/* */
 			$trip_id=$param2;
 			$tbl_arry=array('drivers','trip_statuses');
 			for ($i=0;$i<count($tbl_arry);$i++){
@@ -481,7 +653,7 @@ class User extends CI_Controller {
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
-	$qry="SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount,VT.name as vouchertype,DP.date as date,DP.period as Period,D.name as Drivername,D.driver_status_id as Driverstatus_id FROM driver_payment AS DP LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_type VT ON VT.id=DP.voucher_type_id WHERE D.id=1 GROUP BY DP.date";
+	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name,SUM(DP.cr_amount) as current,SUM(DP.dr_amount) as debit ,SUM(DP.cr_amount+DP.dr_amount) as total FROM drivers as D LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id WHERE DP.period<='11' AND DP.year='2014' GROUP BY D.id DESC";
 	$condition="";	
 	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
@@ -550,9 +722,9 @@ class User extends CI_Controller {
 	
 	$where_arry['driver_id']=$_REQUEST['drivers'];
 	if($condition==""){
-		$condition =' WHERE T.driver_id = '.$data['driver_id'];
+		$condition =' AND D.id = '.$data['driver_id'];
 	}else{
-		$condition.=' AND T.driver_id = '.$data['driver_id'];
+		$condition.=' AND D.id = '.$data['driver_id'];
 	}
 	}
 
@@ -562,7 +734,7 @@ class User extends CI_Controller {
 	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
 
 	if($condition==""){
-		$condition =' WHERE T.trip_status_id='.$data['status_id'];
+		$condition =' AND T.trip_status_id='.$data['status_id'];
 	}else{
 		$condition.=' AND T.trip_status_id='.$data['status_id'];
 	}
@@ -616,7 +788,7 @@ class User extends CI_Controller {
 	
 			/* search condition ends*/
 			$data['title']="Trips | ".PRODUCT_NAME;  
-			$page='user-pages/driver-payments';
+			$page='user-pages/drivers-payments';
 		    $this->load_templates($page,$data);
 		    }else{
 				$this->notAuthorized();
@@ -624,6 +796,7 @@ class User extends CI_Controller {
 		
 	}	
 ////////////////////////////////////////////////////////////////////////////////	
+
 
 
 

@@ -42,32 +42,16 @@ $trip_sl_no=$page;
     <div class="box-body1">
 <div class="page-outer">    
 	<fieldset class="body-border">
-		<legend class="body-head">Driver Payments</legend>
+		<legend class="body-head">Drivers Payments</legend>
 		<div class="box-body table-responsive no-padding">
 			
-			<?php echo form_open(base_url()."front-desk/driver-payments"); ?>
+			<?php echo form_open(base_url()."front-desk/drivers-payments"); ?>
 			<table class="table list-trip-table no-border">
 				<tbody>
 					<tr>
 
 						<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-AB-1234','value'=>"",'id'=>'c_name')); ?></td>
-					    <td>
-							<select name="periods" class="customer form-control">
-							<option value="-1" disabled="disabled" selected="selected"  >--Select--</option>
-							<option value="1">January</option>
-							<option value="2">February</option>
-							<option value="3">March</option>
-							<option value="4">April</option>
-							<option value="5">May</option>
-							<option value="6">June</option>
-							<option value="7">July</option>
-							<option value="8">August</option>
-							<option value="9">September</option>
-							<option value="10">October</option>
-							<option value="11">November</option>
-							<option value="12">December</option>
-							</select>
-						</td>
+					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'From Date','value'=>$trip_pick_date)); ?></td>
 					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>$trip_drop_date)); ?></td>
 						 
 						 <td><?php $class="form-control";
@@ -78,7 +62,7 @@ $trip_sl_no=$page;
 						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
 					    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
-					<td><?php echo form_button('print-trip','Generate Invoice',"class='btn btn-primary print-trip'"); ?></td>
+					
 					
 						
 					</tr>
@@ -98,39 +82,36 @@ echo form_close();?></td>
 					    <th style="width:19%">Driver</th>
 						<!--<th style="width:15%">Customer</th>-->
 					   
-					    <th style="width:15%">Period</th>
-					    <th style="width:15%">Date</th>
-					    <th  style="width:12%">Amount (Cr)</th>
-					    <th  style="width:12%">Amount (Dr)</th>
-					    <th style="width:11%">Voucher no:</th>
-										
-						 <th style="width:11%">Print</th>
+					    <th style="width:15%">Status</th>
+					    <th style="width:15%">Trips</th>
+					    <th  style="width:12%">Outstanding</th>
+					    <th  style="width:12%">Current</th>
+
+						<th style="width:11%">Closing</th>						
+						
 					</tr>
 					<?php
 					
 					$trip_sl_no=1;
 					for($trip_index=0;$trip_index<count($trips);$trip_index++){
 						
-						$pickdate=$trips[$trip_index]['Period'];
+						//$pickdate=$trips[$trip_index]['Period'];
 						//$dropdate=$trips[$trip_index]['drop_date'];
 
-						$date1 = date_create($pickdate);
+						//$date1 = date_create($pickdate);
 						//$date2 = date_create($dropdate);
 						
 						
 					?>
 					<tr>
 						<td><?php echo $trip_sl_no;?></td>
-						<td><?php echo $trips[$trip_index]['Drivername'];?></td>
-						<?php $int=$trips[$trip_index]['Period'];?>
-					   	
-					   	<td><?php echo date('F', strtotime("2012-$int-01"));?></td>
-					   	<td><?php echo $trips[$trip_index]['date'];?></td>
-					   	<td><?php echo $trips[$trip_index]['Creditamount'];?></td>
-					   	<td><?php echo $trips[$trip_index]['Debitamount'];?></td>
-					   	<td><?php echo $trips[$trip_index]['voucher_number'];?></td>
+						<td><a href="<?php echo base_url()."front-desk/driver-payments/".$trips[$trip_index]['driverid'];?>"><?php echo $trips[$trip_index]['name'];?></a></td>
+					   	<td><?php echo $trips[$trip_index]['driverstatus'];?></td>
+					   	<td>0</td>
+					   	<td><?php echo $trips[$trip_index]['debit'];?></td>
+					   	<td><?php echo $trips[$trip_index]['current'];?></td>
+					   	<td><?php echo $trips[$trip_index]['total'];?></td>
 					   
-					   	<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
 					</tr>
 
 					<?php 
@@ -141,59 +122,13 @@ echo form_close();?></td>
 						<td></td>
 						<td></td>
 						<td></td>
-						<td></td>
-						<td>
-						<?php $value=0;
-						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$value+=$trips[$trip_index]['Creditamount'];
 						
-						
-						}
-						echo $value;
-						?>
-						</td>
-						<td>
-						<?php $value=0;
-						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$value+=$trips[$trip_index]['Debitamount'];
-						
-						
-						}
-						echo $value;
-						?>	
-						</td>
 						<td></td>
 						<td></td>
-						
+
+						<td></td>
+						<td></td>
 					</tr>
-					<!-- -->
-					<tr>
-						<td>
-							
-						</td>
-						<td>
-							
-						</td>
-						<td>
-							
-						</td>
-						<td>
-							
-						</td>	
-						<td>
-						
-						</td>
-						<td>
-						
-						</td>
-						<td>
-							
-						</td>
-						<td>
-							
-						</td>
-					</tr>
-					<!-- -->
 				</tbody>
 			</table><?php //echo $page_links;?>
 		</div>

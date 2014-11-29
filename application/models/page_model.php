@@ -66,7 +66,7 @@ function getCount($tbl){
 	
 	function getCustomCount($qry){
 	$result=$this->db->query($qry);
-	$result=$result->result_array();
+	$result=$result->result_array(); 
 	if(count($result)>0){
 		return count($result);
 	}else{
@@ -76,7 +76,7 @@ function getCount($tbl){
 	}
 	
 
-	function getCustomDetails($num,$offset,$qry) {
+	function getCustomDetails($num,$offset,$qry) { 
 	
 	if($offset==''){
 		$qry.=' LIMIT '.$num;
@@ -84,7 +84,7 @@ function getCount($tbl){
 	 $qry.=' LIMIT '.$offset.','.$num;
 	}
 	$result=$this->db->query($qry);
-	$result=$result->result_array();//echo $this->db->last_query();exit;
+	$result=$result->result_array(); 
 	if(count($result)>0){
 		return $result;
 	}else{

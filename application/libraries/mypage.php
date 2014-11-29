@@ -14,15 +14,16 @@ function paging($tbl,$per_page,$offset='',$baseurl,$Uriseg,$custom='',$qry=''){
 			$count=$CI->page_model->getCount($tbl);
 			$config['total_rows'] =$count;
 			$data['values']=$CI->page_model->getDetails($tbl,$config['per_page'],$offset,$qry);
-		}else if($tbl=='' && $custom=='yes' && $qry!='' ) {
+		}else if($tbl=='' && $custom=='yes' && $qry!='' ) { 
 		
-			$count=$CI->page_model->getCustomCount($qry);
-			$config['total_rows'] =$count;
+			$count=$CI->page_model->getCustomCount($qry); 
+			$config['total_rows'] =$count;  //echo $offset;exit;
 			$data['values']=$CI->page_model->getCustomDetails($config['per_page'],$offset,$qry);
 
 		}
 		$CI->pagination->initialize($config);
 		$data['page_links']=$CI->pagination->create_links();
+		//print_r($data['page_links']);exit;
 		return $data;
 		
 }
