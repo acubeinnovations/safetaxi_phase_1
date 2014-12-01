@@ -6,6 +6,7 @@ class Driver extends CI_Controller {
 		$this->load->model("driver_model");
 		$this->load->model('account_model');
 		$this->load->helper('my_helper');
+		$this->load->model('driver_payment_model');
 		no_cache();
 
 		}
@@ -145,4 +146,48 @@ class Driver extends CI_Controller {
 	return true;
 	}	
 	}
+
+
+//
+	public function DriverPayments(){
+	
+	if(isset($_REQUEST['payment-submit'])){
+
+	$data['voucher_type_id']=$this->input->post('payment_type'); 	
+	if($this->input->post('payment_type')==INVOICE){
+		$data['dr_amount']=$this->input->post('amount');
+		$data['voucher_number']="INV".$i;
+	}elseif ($this->input->post('payment_type')==PAYMENT){
+		$data['cr_amount']=$this->input->post('amount');
+		$data['voucher_number']="PYMNT".$i;
 	}	
+	}//for loop
+	$data['date']=$this->input->post('payment_date');
+	$data['driver_id']=$this->input->post('driver_id'); 
+	$year = explode('-', $this->input->post('payment_date'));
+	$data['year']=$year[0];
+	$month = explode('-', $this->input->post('payment_date'));
+	$data['period']=$month[1];
+	$res=$this->driver_payment_model->addDriverpayment($data); 
+	
+	if($res==true){
+		$this->session->set_userdata(array('dbSuccess'=>' Added Succesfully..!'));
+		$this->session->set_userdata(array('dbError'=>''));
+		redirect(base_url().'front-desk/driver-payments/'.$data['driver_id']);
+	}
+	
+	else{
+			$this->notAuthorized();
+			}
+	
+
+
+
+
+}
+
+
+
+		
+
+}

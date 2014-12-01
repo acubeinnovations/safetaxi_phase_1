@@ -1,4 +1,16 @@
-<?php    if($this->session->userdata('dbSuccess') != '') { ?>
+<?php    
+$amount="";
+$payment_date="";
+$payment_type="";
+
+
+ if($this->mysession->get('post')!=null){
+$amount=$data['amount'];
+$payment_date=$data['payment_date'];
+$payment_type=$data['periods'];
+}
+
+if($this->session->userdata('dbSuccess') != '') { ?>
         <div class="success-message">
             <div class="alert alert-success alert-dismissable">
                 <i class="fa fa-check"></i>
@@ -45,7 +57,7 @@ $trip_sl_no=$page;
 		<legend class="body-head">Driver Payments</legend>
 		<div class="box-body table-responsive no-padding">
 			
-			<?php echo form_open(base_url()."front-desk/driver-payments"); ?>
+			<?php echo form_open(base_url()."front-desk/driver-payments/".$driver_id); ?>
 			<table class="table list-trip-table no-border">
 				<tbody>
 					<tr>
@@ -95,7 +107,7 @@ echo form_close();?></td>
 					<tr>	
 						
 					    <th style="width:2%">Sl no: </th>
-					    <th style="width:19%">Driver</th>
+					    <th style="width:19%">Type</th>
 						<!--<th style="width:15%">Customer</th>-->
 					   
 					    <th style="width:15%">Period</th>
@@ -121,7 +133,7 @@ echo form_close();?></td>
 					?>
 					<tr>
 						<td><?php echo $trip_sl_no;?></td>
-						<td><?php echo $trips[$trip_index]['Drivername'];?></td>
+						<td><?php echo $trips[$trip_index]['voucher_number'];?></td>
 						<?php $int=$trips[$trip_index]['Period'];?>
 					   	
 					   	<td><?php echo date('F', strtotime("2012-$int-01"));?></td>
@@ -139,7 +151,7 @@ echo form_close();?></td>
 					?>
 					<tr>
 						<td></td>
-						<td></td>
+						<td>Closing</td>
 						<td></td>
 						<td></td>
 						<td>
@@ -153,13 +165,13 @@ echo form_close();?></td>
 						?>
 						</td>
 						<td>
-						<?php $value=0;
+						<?php $value2=0;
 						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$value+=$trips[$trip_index]['Debitamount'];
+						$value2+=$trips[$trip_index]['Debitamount'];
 						
 						
 						}
-						echo $value;
+						echo $value2;
 						?>	
 						</td>
 						<td></td>
@@ -172,7 +184,7 @@ echo form_close();?></td>
 							
 						</td>
 						<td>
-							
+							Balance Outstanding
 						</td>
 						<td>
 							
@@ -181,10 +193,25 @@ echo form_close();?></td>
 							
 						</td>	
 						<td>
-						
+						<?php 
+							$total=$value-$value2;
+							if($total < 0){
+								echo $total;
+							}else{
+								echo "0";
+							}
+							
+						?>
 						</td>
 						<td>
-						
+							<?php
+							if($total < 0){
+								echo "0";
+							}else{
+								echo '+'.$total;
+								
+							}
+							?>
 						</td>
 						<td>
 							
@@ -199,9 +226,46 @@ echo form_close();?></td>
 		</div>
 		<?php } ?>
 	</fieldset>
+	<div class="width-30-percent-with-margin-left-20-Driver-View"><!-- Add Driver Payment-->
+		<fieldset class="body-border">
+			<legend class="body-head">Add Payments</legend>
+				<div class="box-body table-responsive no-padding trips-table"><!-- Responsive Table-->
+					
+					<?php// echo $value; exit;?>
+					<?php  echo form_open(base_url()."driver/DriverPayments/".$driver_id);?>
+					<div class='hide-me'><?php echo form_input(array('name'=>'driver_id','class'=>'form-control','value'=>$driver_id));?></div>
+				        <div class="form-group">
+						<?php echo form_label('Enter Amount','usernamelabel'); ?>
+				           <?php echo form_input(array('name'=>'amount','class'=>'form-control','placeholder'=>'Enter Amount','value'=>"$amount")); ?>
+					   
+				        </div>
+				        <!-- -->
+				        <div class="form-group">
+				        	<?php echo form_label('Payment Type','usernamelabel'); ?>
+				        	<select name="payment_type" class="customer form-control">
+								<option value="-1" disabled="disabled" selected="selected">--Select--</option>
+								<option value="1">Invoice</option>
+								<option value="2">Payment</option>
+							</select>
+				        </div>
+				        <!-- -->
+				        <div class="form-group">
+				        	<?php echo form_label('Select Date','usernamelabel'); ?>
+				        	<?php  echo form_input(array('name'=>'payment_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'Date','value'=>$payment_date)); ?>
+				        </div>
+
+				        <?php echo form_submit("payment-submit","Add Payment","class='btn btn-primary'"); ?>  
+				</div><!-- Responsive Table-->
+			</legend>
+		</fieldset>	
+	</div>	<!-- Add Driver Payment-->	
 </div>
 
 </div><!-- /.box-body -->
+
+
+
+
    
 	<div class='overlay-container'>
    		<div class="overlay modal"></div>
