@@ -23,14 +23,42 @@ class User extends CI_Controller {
 		} else {
 		return false;
 		}
-	}   
+	}  
+
+	public function permission_for_all() {
+	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK) && ($this->session->userdata('permission')==PERMISSION_FOR_ALL)) {
+		return true;
+		} else {
+		return false;
+		}
+	}
+
+	public function permission_for_trip_booking() {
+	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK) && ($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING || $this->session->userdata('permission')==PERMISSION_FOR_ALL)) {
+		return true;
+		} else {
+		return false;
+		}
+	}
+	public function permission_for_view_trips() {
+	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK) && ($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS || $this->session->userdata('permission')==PERMISSION_FOR_ALL)) {
+		return true;
+		} else {
+		return false;
+		}
+	}
+ 
 	public function index(){
 		$param1=$this->uri->segment(2);
 		$param2=$this->uri->segment(3);
 		$param3=$this->uri->segment(4);
        	if($param1==''){
 		if($this->session_check()==true) {
-		$this->home();
+		if($this->permission_for_all()==true) {
+			$this->home();
+		}else{
+			$this->notAuthorized();
+		}
 		}else{
 
 		$this->checking_credentials();
@@ -44,63 +72,125 @@ class User extends CI_Controller {
 		$this->changePassword();
 		}
 		elseif($param1=='settings'){
-		$this->settings();
+		
+		if($this->permission_for_all()==true) {
+			$this->settings();
+		}else{
+			$this->notAuthorized();
+		}
 		}elseif($param1=='trip-booking'){
 
-		$this->ShowBookTrip($param2);
+		if($this->permission_for_all()==true) {
+			$this->ShowBookTrip($param2);
+		}else if($this->permission_for_trip_booking()==true) {
+			$this->ShowBookTrip($param2);
+		
+		}else{
+			$this->notAuthorized();
+		}
 		}elseif($param1=='trips'){
-		$this->Trips($param2);
+		if($this->permission_for_all()==true) {
+			$this->Trips($param2);
+		}else if($this->permission_for_view_trips()==true) {
+			$this->Trips($param2);
+		
+		}else{
+			$this->notAuthorized();
+		}
 
 		}elseif($param1=='driver-payments'){
-		$this->DriverPayments($param2);
+		
+		if($this->permission_for_all()==true) {
+			$this->DriverPayments($param2);
+		}else{
+			$this->notAuthorized();
+		}
 		}
 		elseif($param1=='drivers-payments'){
-		$this->DriversPayments($param2);
+		
+		if($this->permission_for_all()==true) {
+			$this->DriversPayments($param2);
+		}else{
+			$this->notAuthorized();
+		}
 		}
 
 		elseif($param1=='customer'){
 
-		$this->Customer($param2);
+		
+		if($this->permission_for_all()==true) {
+			$this->Customer($param2);
+		}else{
+			$this->notAuthorized();
+		}
 
 		}elseif($param1=='customers'){
-
-		$this->Customers($param2);
-
-		}elseif($param1=='device'){
-
-		$this->Device($param2);
+		if($this->permission_for_all()==true) {
+			$this->Customers($param2);
+		}else{
+			$this->notAuthorized();
+		}
+		
 
 		}elseif($param1=='setup_dashboard'){
 
-		$this->setup_dashboard();
+		
+		if($this->permission_for_all()==true) {
+			$this->setup_dashboard();
+		}else{
+			$this->notAuthorized();
+		}
+		
 
 		}elseif($param1=='getNotifications'){
+			
+			if($this->permission_for_all()==true) {
 			$this->getNotifications();
-		}elseif($param1=='tripvouchers'){
-			$this->tripVouchers($param2);
+		}else if($this->permission_for_trip_booking()==true) {
+			
+		$this->getNotifications();
+		}else{
+			$this->notAuthorized();
 		}
-
-		elseif($param1=='tarrif-masters'&& ($param2== ''|| is_numeric($param2))){
-		$this->tarrif_masters($param1,$param2);
+		
+		}elseif($param1=='tarrif-masters'&& ($param2== ''|| is_numeric($param2))){
+		
+		if($this->permission_for_all()==true) {
+			$this->tarrif_masters($param1,$param2);
+		}else{
+			$this->notAuthorized();
+		}
 		}elseif($param1=='tarrif'&& ($param2== ''|| is_numeric($param2))){
-		$this->tarrif($param1,$param2);
-
+	
+		if($this->permission_for_all()==true) {
+				$this->tarrif($param1,$param2);
+		}else{
+			$this->notAuthorized();
+		}
 		}
 		elseif($param1=='driver'){
 
-		$this->ShowDriverView($param2);
-		}elseif($param1=='list-driver'&&($param2== ''|| is_numeric($param2))){
-		$this->ShowDriverList($param1,$param2);
-		}elseif($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
-		$this->ShowDriverProfile($param1,$param2);
-		}
-		elseif($param1=='vehicle' && ($param2!= ''|| is_numeric($param2)||$param2== '') &&($param3== ''|| is_numeric($param3))){
-
-		$this->ShowVehicleView($param1,$param2,$param3);
-		}
 		
-		elseif($param1=='list-vehicle'&&($param2== ''|| is_numeric($param2)) && ($param3== ''|| is_numeric($param3))){
-		$this->ShowVehicleList($param1,$param2,$param3);
+		if($this->permission_for_all()==true) {
+				$this->ShowDriverView($param2);
+		}else{
+			$this->notAuthorized();
+		}
+		}elseif($param1=='list-driver'&&($param2== ''|| is_numeric($param2))){
+		
+		
+		if($this->permission_for_all()==true) {
+				$this->ShowDriverList($param1,$param2);
+		}else{
+			$this->notAuthorized();
+		}
+		}elseif($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
+		
+		if($this->permission_for_all()==true) {
+				$this->ShowDriverProfile($param1,$param2);
+		}else{
+			$this->notAuthorized();
+		}
 		}else{
 			$this->notFound();
 		}
@@ -140,7 +230,14 @@ class User extends CI_Controller {
 		       	 $this->user_model->clearLoginAttempts($username);
 				 }
 				 if($this->session->userdata('type')==FRONT_DESK){
-				 redirect(base_url().'front-desk');
+					 if($this->session->userdata('permission')==PERMISSION_FOR_ALL){
+					 redirect(base_url().'front-desk');
+					}else  if($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){
+
+						 redirect(base_url().'front-desk/trip-booking');
+					}else  if($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS){
+						 redirect(base_url().'front-desk/trips');
+					}	
 				 }
 				 
 		        

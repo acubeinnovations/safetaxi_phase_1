@@ -24,6 +24,11 @@ define('SYSTEM_ADMINISTRATOR',1);
 define('FRONT_DESK',2);
 define('SYSTEM_EMAIL','safetaxi@safetaxi.com');
 
+
+define('PERMISSION_FOR_ALL',1);
+define('PERMISSION_FOR_TRIP_BOOKING',2);
+define('PERMISSION_FOR_VIEW_TRIPS',3);
+
 define('USER_STATUS_ACTIVE',1);
 define('USER_STATUS_SUSPENDED',2);
 define('USER_STATUS_DISABLED',3);
