@@ -185,7 +185,7 @@ class Trip_booking extends CI_Controller {
 				$data['trip_to_landmark']	=	$this->input->post('trip_to_landmark');
 				$data['pick_up_date']		=	$this->input->post('pick_up_date');
 				$data['pick_up_time']		=	$this->input->post('pick_up_time');
-				
+				//$data['distance_from_web']	=	$this->input->post('distance_from_web'); NEED TO REMOVE COMMENT
 				
 				
 			if($this->form_validation->run()==false){
@@ -238,10 +238,12 @@ class Trip_booking extends CI_Controller {
 				$dbdata['booking_time']					= date('H:i');
 				$dbdata['driver_id']					= gINVALID;
 				$dbdata['trip_status_id']				= TRIP_STATUS_PENDING;
-
-				//DONT FORGET TO INSERT TARIFF HERE
+				//$dbdata['tariff_id']					= $this->trip_booking_model->getLatestTariff(); NEED TO REMOVE COMMENT
 			}
 			
+			//$dbdata['distance_from_web'] 				= $data['distance_from_web'];// NEED TO REMOVE COMMENT
+
+
 			$dbdata['pick_up_date']					=date("Y-m-d", strtotime($data['pick_up_date']));
 			$dbdata['pick_up_time']					=$data['pick_up_time'];
 			
@@ -252,9 +254,6 @@ class Trip_booking extends CI_Controller {
 				$dbdata['trip_day_night_type_id']		= NIGHT_TRIP;
 			}
 		
-			
-			
-
 			$dbdata['trip_from']					=$data['trip_from'];
 			$dbdata['trip_from_lat']				=$data['trip_from_lat'];
 			$dbdata['trip_from_lng']				=$data['trip_from_lng'];
@@ -341,7 +340,7 @@ class Trip_booking extends CI_Controller {
 		}
 
 	}
-
+	
 	function searchVehicles($data_locations){
 		$this->trip_booking_model->engageAllDrivers();
 		return $this->trip_booking_model->getAvailableVehicles($data_locations);

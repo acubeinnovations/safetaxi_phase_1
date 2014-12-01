@@ -5,6 +5,7 @@ class Maps extends CI_Controller {
 		parent::__construct();
 		
 		$this->load->helper('my_helper');
+		$this->load->model('trip_booking_model');
 		no_cache();
 
 		}
@@ -21,7 +22,11 @@ class Maps extends CI_Controller {
 		}else if($param1=='get-latlng'){
 
 			$this->getLatLng();
+		}else if($param1=='get-markers'){
+
+			$this->getMarkers();
 		}
+		
 		
 	}else{
 			echo 'you are not authorized access this page..';
@@ -29,14 +34,13 @@ class Maps extends CI_Controller {
 	}
 		
 		public function getDistance(){
-		if(isset($_REQUEST['url']) && $_REQUEST['via']=='NO') {
+		if(isset($_REQUEST['url'])) {
 		$target_url=$_REQUEST['url'];
 			$data=file_get_contents($target_url);
 			$decode = json_decode($data);//print_r($data);exit;
 			if(isset($decode->rows[0]->elements[0]->status) && $decode->rows[0]->elements[0]->status!='NOT_FOUND') {
 			$jsondata['distance']=$decode->rows[0]->elements[0]->distance->text;
 			$jsondata['duration']=$decode->rows[0]->elements[0]->duration->text;
-			$jsondata['via']='NO';
 			$jsondata['No_Data']='false';
 			echo json_encode($jsondata);
 			}
@@ -44,26 +48,34 @@ class Maps extends CI_Controller {
 			$jsondata['No_Data']='true';
 			echo json_encode($jsondata);
 		}
-		}elseif(isset($_REQUEST['url']) && $_REQUEST['via']=='YES'){
-			$target_url=$_REQUEST['url'];
-			$data=file_get_contents($target_url);
-			$decode = json_decode($data);//print_r($decode);exit;
-			if(isset($decode->rows[0]->elements[0]->status) && $decode->rows[0]->elements[0]->status!='NOT_FOUND' && isset($decode->rows[0]->elements[1]->status) && $decode->rows[0]->elements[1]->status!='NOT_FOUND') {
-			$jsondata['first_distance']=$decode->rows[0]->elements[0]->distance->text;
-			$jsondata['first_duration']=$decode->rows[0]->elements[0]->duration->text;
-			$jsondata['second_distance']=$decode->rows[1]->elements[1]->distance->text;
-			$jsondata['second_duration']=$decode->rows[1]->elements[1]->duration->text;
-			$jsondata['via']='YES';
-			$jsondata['No_Data']='false';
-			echo json_encode($jsondata);
-		}else{
-			$jsondata['No_Data']='true';
-			echo json_encode($jsondata);
 		}
+		}
+		public function getMarkers(){
+			if(isset($_REQUEST['trip_id'])){
+			$trip_id=$_REQUEST['trip_id'];
+			$vehicles=$this->trip_booking_model->getNotifiedVehiclesCurrentPositions($trip_id);
+			
+			for($index=0;$index<count($vehicles);$index++){
+				$lat=$vehicles[$index]['lat'];
+				$lng=$vehicles[$index]['lng'];
+				$driver_name=$vehicles[$index]['name'];
+				$target_url="https://maps.googleapis.com/maps/api/geocode/json?latlng=".$lat.",".$lng."&key=".API_KEY;
 
+				$data=file_get_contents($target_url);
+				$decode = json_decode($data);//print_r($decode->results[0]);
+				//$markers.='['.$lat.','.$lng.',Location :'.$decode->results[0]->formatted_address.',Driver : '.$driver_name.']';
+				$markers[$index][0]=$lat;
+				$markers[$index][1]=$lng;
+				$markers[$index][2]='Location :'.$decode->results[0]->formatted_address.',Driver : '.$driver_name;
+				
+				
+			}
+
+			echo json_encode($markers);
+
+
+			}
 		}
-		}
-		
 		public function getPlaces(){
 			if(isset($_REQUEST['url']) && isset($_REQUEST['insert_to'])) {
 			$target_url=$_REQUEST['url'];

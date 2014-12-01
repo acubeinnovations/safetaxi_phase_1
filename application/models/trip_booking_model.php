@@ -24,6 +24,18 @@ class Trip_booking_model extends CI_Model {
 	}
 	}
 
+	function getLatestTariff(){
+	$qry = "SELECT id FROM tariffs  WHERE to_date='999-12-30'";
+		$result=$this->db->query($qry);	
+		$result=$result->result_array();
+		if(count($result)>0){
+			return $result;
+		}else{
+			return false;
+		}
+
+	}
+
 	function getTripDriver($id){
 
 	$this->db->from('trips');
@@ -118,6 +130,20 @@ class Trip_booking_model extends CI_Model {
 		}
 
 	}
+	
+	function getNotifiedVehiclesCurrentPositions($id){
+			$qry = "SELECT DISTINCT VL.id,VL.lat,VL.lng,VL.app_key,D.name FROM vehicle_locations_logs AS VL LEFT JOIN notifications AS N ON N.app_key=VL.app_key LEFT JOIN drivers AS D ON D.app_key=VL.app_key WHERE N.trip_id=".mysql_real_escape_string($id)." AND N.notification_type_id=".NOTIFICATION_TYPE_NEW_TRIP." AND VL.id IN (
+SELECT max( id ) FROM vehicle_locations_logs GROUP BY app_key ) ORDER BY VL.created DESC";
+		$result=$this->db->query($qry);	
+		$result=$result->result_array();
+		if(count($result)>0){
+			return $result;
+		}else{
+			return false;
+		}
+
+	}
+
 	function getAvailableVehicles($data){
 	
 	$qry = sprintf("SELECT VL.app_key, VL.created, VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) ) AS distance

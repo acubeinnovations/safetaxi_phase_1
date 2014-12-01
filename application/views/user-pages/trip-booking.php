@@ -69,7 +69,7 @@
 									<?php echo form_label('Pickup','pickuplabel'); ?>
 									<?php echo form_input(array('name'=>'trip_from','class'=>'form-control height-27-px','placeholder'=>'Enter Pick Up','value'=>$trip_from,'id'=>'pickup')); ?>
 									<?php echo $this->form_functions->form_error_session('trip_from', '<p class="text-red">', '</p>'); ?>
-									<div class="hide-me"> <input class="pickuplat" name="trip_from_lat" type="text" value="<?php echo $trip_from_lat; ?>"><input class="pickuplng" name="trip_from_lng" type="text" value="<?php echo $trip_from_lng; ?>"></div>
+									<div class="hide-me"> <input class="pickuplat" name="trip_from_lat" type="text" value="<?php echo $trip_from_lat; ?>"><input class="pickuplng" name="trip_from_lng" type="text" value="<?php echo $trip_from_lng; ?>"><input class="distance_from_web" name="distance_from_web" class="distance_from_web" type="text" value="<?php echo $distance_from_web; ?>"></div>
 								</div>
 							</td>
 							<td>
@@ -135,7 +135,7 @@
 							<td>
 								<div class="form-group margin-10-px margin-top-less-12"><?php if($id!=gINVALID){ $saveandsearch="SAVE"; }else{ $saveandsearch="SAVE AND SEARCH";}?> 
 									<input class="btn btn-success btn-sm 	search-vehicles" name="book_trip" type="submit" value="<?php echo $saveandsearch; ?>">
-									<?php if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"><div class="hide-me"> <input name="id" class="" value="<?php echo $id; ?>" type="text"></div>  <?php } ?>
+									<?php if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"><div class="hide-me"> <input name="id" class="id" value="<?php echo $id; ?>" type="text"></div>  <?php } ?>
 								</div>
 							</td>
 					</tr>

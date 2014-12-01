@@ -74,6 +74,7 @@ class user_model extends CI_Model {
                 'email'=>$this->details->email,
 				'username'=>$this->details->username,
 				'type'=>$this->details->user_type_id,
+				'permission'=>$this->details->user_permission_id,
                 'isLoggedIn'=>true,
 		'token_pass' =>$this->details->password
             )
