@@ -574,7 +574,7 @@ var mobile=$('#mobile').val();
 
 	});
 
-
+/*
 function getDistance(){
 
 var pickupcity=$("#pickupcity").val();//alert(pickupcity);
@@ -674,8 +674,34 @@ $('.estimated-time-of-journey').html('');
 
 }
 }
+*/
+$("#pickup,#drop").blur(function(){
 
+getDistance();
 
+});
+function getDistance(){
+
+var pickup=Trim($("#pickup").val());//alert(pickupcity);
+var drop=Trim($("#drop").val());
+pickup = pickup.replace(/\s+/g, '');
+drop = drop.replace(/\s+/g, '');
+if(pickup!='' && drop!=''){
+var url='https://maps.googleapis.com/maps/api/distancematrix/json?origins='+pickup+'&destinations='+drop+'&mode=driving&language=en&key='+API_KEY;
+
+$.post(base_url+'/maps/get-distance',{
+	url:url
+	},function(data){
+data=jQuery.parseJSON(data);
+if(data.No_Data=='false'){
+
+var tot_distance = data.distance.replace(/\km\b/g, '');
+$('.distance_from_web').attr('value',tot_distance);
+
+}
+});
+}
+}
 
 function replaceCommas(place){ 
 	 var placeArray = place.split(','); 
@@ -1051,32 +1077,50 @@ alert("cant search due to entered pick up loc is not valid");
 }
 
 });
-/*
+
 var map;
-var global_markers = [];    
-var markers = [[10.001678, 76.303590, 'palarivattom']];
+var  global_markers=[];
 
 var infowindow = new google.maps.InfoWindow({});
 
 function initialize() {
     geocoder = new google.maps.Geocoder();
-    var latlng = new google.maps.LatLng(10.001678,76.303589);
+
+	var center_lat=$('.pickuplat').val();
+	var center_lng=$('.pickuplng').val();
+	
+    var latlng = new google.maps.LatLng(center_lat,center_lng);
     var myOptions = {
-        zoom: 20,
+        zoom: 13,
         center: latlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    addMarker();
+	
+	var trip_id=$('.id').val();
+	if(trip_id!=-1) {
+	$.post(base_url+"/maps/get-markers",
+			  {
+				trip_id:trip_id
+			  },function(data){
+
+			 addMarker(data);
+	});
+	}
+   
 }
 
-function addMarker() {
+
+
+function addMarker(markers) {
+markers=jQuery.parseJSON(markers);
+
     for (var i = 0; i < markers.length; i++) {
         // obtain the attribues of each marker
         var lat = parseFloat(markers[i][0]);
         var lng = parseFloat(markers[i][1]);
-        var trailhead_name = markers[i][2];
-
+        var trailhead_name = markers[i][2];alert(trailhead_name);
+		
         var myLatlng = new google.maps.LatLng(lat, lng);
 
         var contentString = "<html><body><div><p><h2>" + trailhead_name + "</h2></p></div></body></html>";
@@ -1100,7 +1144,6 @@ function addMarker() {
 
 window.onload = initialize;
 
-*/
 
 
 $('#trip-form').on("keyup keypress", function(e) {

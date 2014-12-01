@@ -494,6 +494,7 @@ class User extends CI_Controller {
 	$data['trip_from_lng']='';
 	$data['trip_to_lng']='';
 	$data['radius']=1;
+	$data['distance_from_web']='';
 	}
 	}else{
 	$data['id']=gINVALID;
@@ -511,6 +512,7 @@ class User extends CI_Controller {
 	$data['trip_from_lng']='';
 	$data['trip_to_lng']='';
 	$data['radius']=1;
+	$data['distance_from_web']='';
 	}
 	$tbl_arry=array();
 	
