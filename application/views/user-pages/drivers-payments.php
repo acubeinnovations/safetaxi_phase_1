@@ -110,7 +110,7 @@ echo form_close();?></td>
 					   	<td>0</td>
 					   	<td><?php echo $trips[$trip_index]['debit'];?></td>
 					   	<td><?php echo $trips[$trip_index]['current'];?></td>
-					   	<td><?php echo $trips[$trip_index]['total'];?></td>
+					   	<td><?php echo $total=$trips[$trip_index]['debit']-$trips[$trip_index]['current'] ;?></td>
 					   
 					</tr>
 

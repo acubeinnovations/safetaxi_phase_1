@@ -153,16 +153,37 @@ class Driver extends CI_Controller {
 	
 	if(isset($_REQUEST['payment-submit'])){
 
+	//Newly Added	
+	//$res=$this->driver_payment_model->getAllDriverpayment();
+	//print_r($res);
+	/*for($index=0; $index<count($res);$index++){
+		$id=$res[$index]['id'];
+		$voucher_type_id=$res[$index]['year'];
+		
+		$month = explode('-', $this->input->post('payment_date'));
+		$data['period']=$month[1];
+		if($data['period']==$month){
+			echo "same month"; 
+		} else{
+			echo "not same";
+		}
+
+	}*/	//
+
+
+
+	//Newly Added ends
 	$data['voucher_type_id']=$this->input->post('payment_type'); 	
-	if($this->input->post('payment_type')==INVOICE){
+	if($this->input->post('payment_type')==RECEIPT){
 		$data['dr_amount']=$this->input->post('amount');
-		$data['voucher_number']="INV".$i;
+		$data['voucher_number']="RECEIPT";
 	}elseif ($this->input->post('payment_type')==PAYMENT){
 		$data['cr_amount']=$this->input->post('amount');
 		$data['voucher_number']="PYMNT".$i;
 	}	
+	
 	}//for loop
-	$data['date']=$this->input->post('payment_date');
+	$data['payment_date']=$this->input->post('payment_date');
 	$data['driver_id']=$this->input->post('driver_id'); 
 	$year = explode('-', $this->input->post('payment_date'));
 	$data['year']=$year[0];

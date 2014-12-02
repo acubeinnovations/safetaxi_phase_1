@@ -17,6 +17,17 @@ class Driver_payment_model extends CI_Model {
 	$this->db->update($tbl,$data);
 	return true;
 	}
+	public function getAllDriverpayment(){ 
+	$qry='SELECT * FROM driver_payment';
+	$results=$this->db->query($qry);
+	$results=$results->result_array();
+	if(count($results)>0){
+	
+		return $results;
+	}else{
+		return false;
+	}
+	}
 	
 	}
 	?>
