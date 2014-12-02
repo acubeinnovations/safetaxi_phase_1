@@ -14,6 +14,7 @@ class User extends CI_Controller {
     $this->load->model('tarrif_model');
 	$this->load->model('device_model');
 	 $this->load->model('vehicle_model');
+
 	no_cache();
 
 	}
@@ -585,7 +586,7 @@ class User extends CI_Controller {
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
-	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount,VT.name as vouchertype,DP.voucher_number as voucher_number,DP.date as date,DP.period as Period,D.name as Drivername,D.driver_status_id as Driverstatus_id FROM driver_payment AS DP LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_type VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" GROUP BY DP.date ORDER BY DP.period DESC';
+	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount,VT.name as vouchertype,DP.voucher_number as voucher_number,DP.date as date,DP.period as Period,D.name as Drivername,D.driver_status_id as Driverstatus_id FROM driver_payment AS DP LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_type VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" GROUP BY DP.date ORDER BY DP.date DESC';
 	$condition="";	
 	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
@@ -693,7 +694,7 @@ class User extends CI_Controller {
 	//echo $qry;//exit;
 	$p_res=$this->mypage->paging($tbl='',$per_page=10,$offset=0,$baseurl,$uriseg,$custom='yes',$qry);
 	//print_r($p_res);
-	$data['values']=$p_res['values'];
+	$data['values']=$p_res['values']; //print_r($data['values']); exit;
 	//$data['values']='';
 	//print_r($data['values']);exit;
 	$driver_trips='';
@@ -722,6 +723,7 @@ class User extends CI_Controller {
 			/* search condition ends*/
 			$data['title']="Trips | ".PRODUCT_NAME;  
 			$page='user-pages/driver-payments';
+			$data['driver_id']=$driver_id;
 		    $this->load_templates($page,$data);
 		    }else{
 				$this->notAuthorized();
@@ -754,7 +756,17 @@ class User extends CI_Controller {
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
-	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name,SUM(DP.cr_amount) as current,SUM(DP.dr_amount) as debit ,SUM(DP.cr_amount+DP.dr_amount) as total FROM drivers as D LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id WHERE DP.period<='11' AND DP.year='2014' GROUP BY D.id DESC";
+	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name,
+	SUM(DP.cr_amount) as current,SUM(DP.dr_amount) as debit ,SUM(DP.cr_amount+DP.dr_amount) as total FROM drivers as D 
+	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id 
+	LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id 
+	WHERE DP.period<='11' AND DP.year='2014' GROUP BY D.id DESC";
+
+
+	
+
+
+
 	$condition="";	
 	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
