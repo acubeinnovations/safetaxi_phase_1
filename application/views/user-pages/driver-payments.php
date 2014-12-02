@@ -90,7 +90,7 @@ $trip_sl_no=$page;
 						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
 					    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
-					<td><?php echo form_button('print-trip','Generate Invoice',"class='btn btn-primary print-trip'"); ?></td>
+					
 					
 						
 					</tr>
@@ -112,11 +112,11 @@ echo form_close();?></td>
 					   
 					    <th style="width:15%">Period</th>
 					    <th style="width:15%">Date</th>
-					    <th  style="width:12%">Amount (Cr)</th>
 					    <th  style="width:12%">Amount (Dr)</th>
-					    <th style="width:11%">Voucher no:</th>
+					    <th  style="width:12%">Amount (Cr)</th>
+					   
 										
-						 <th style="width:11%">Print</th>
+						
 					</tr>
 					<?php
 					
@@ -138,11 +138,12 @@ echo form_close();?></td>
 					   	
 					   	<td><?php echo date('F', strtotime("2012-$int-01"));?></td>
 					   	<td><?php echo $trips[$trip_index]['date'];?></td>
-					   	<td><?php echo $trips[$trip_index]['Creditamount'];?></td>
 					   	<td><?php echo $trips[$trip_index]['Debitamount'];?></td>
-					   	<td><?php echo $trips[$trip_index]['voucher_number'];?></td>
+					   	<td><?php echo $trips[$trip_index]['Creditamount'];?></td>
+					   	
 					   
-					   	<td><?php echo form_button('print-trip','Print',"class='btn btn-primary print-trip'"); ?></td>
+					   
+					  
 					</tr>
 
 					<?php 
@@ -157,7 +158,7 @@ echo form_close();?></td>
 						<td>
 						<?php $value=0;
 						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$value+=$trips[$trip_index]['Creditamount'];
+						$value+=$trips[$trip_index]['Debitamount'];
 						
 						
 						}
@@ -167,15 +168,15 @@ echo form_close();?></td>
 						<td>
 						<?php $value2=0;
 						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$value2+=$trips[$trip_index]['Debitamount'];
+						$value2+=$trips[$trip_index]['Creditamount'];
 						
 						
 						}
 						echo $value2;
 						?>	
 						</td>
-						<td></td>
-						<td></td>
+						
+						
 						
 					</tr>
 					<!-- -->
@@ -195,7 +196,7 @@ echo form_close();?></td>
 						<td>
 						<?php 
 							$total=$value-$value2;
-							if($total < 0){
+							if($total > 0){
 								echo $total;
 							}else{
 								echo "0";
@@ -206,19 +207,16 @@ echo form_close();?></td>
 						<td>
 							<?php
 							if($total < 0){
-								echo "0";
-							}else{
-								echo '+'.$total;
+								echo $total;
 								
+							}else{
+								
+								echo "0";
 							}
 							?>
 						</td>
-						<td>
-							
-						</td>
-						<td>
-							
-						</td>
+						
+						
 					</tr>
 					<!-- -->
 				</tbody>
@@ -228,7 +226,7 @@ echo form_close();?></td>
 	</fieldset>
 	<div class="width-30-percent-with-margin-left-20-Driver-View"><!-- Add Driver Payment-->
 		<fieldset class="body-border">
-			<legend class="body-head">Add Payments</legend>
+			<legend class="body-head">Add Vouchers</legend>
 				<div class="box-body table-responsive no-padding trips-table"><!-- Responsive Table-->
 					
 					<?php// echo $value; exit;?>
@@ -244,7 +242,7 @@ echo form_close();?></td>
 				        	<?php echo form_label('Payment Type','usernamelabel'); ?>
 				        	<select name="payment_type" class="customer form-control">
 								<option value="-1" disabled="disabled" selected="selected">--Select--</option>
-								<option value="1">Invoice</option>
+								<option value="3">Receipt</option>
 								<option value="2">Payment</option>
 							</select>
 				        </div>
