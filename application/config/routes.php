@@ -40,7 +40,7 @@
 
 $route['default_controller'] = "home";
 $route['404_override'] = 'my404';
-//$route['/admin/organization/(:any)'] = 'admin/organization/$0';
+$route['admin/front-desk/(:any)'] = 'admin/front_desk/$0';
 $route['front-desk/download_xl/(:any)'] = 'download_xl/index';
 $route['front-desk'] = 'user/index';
 $route['front-desk/(:any)'] = 'user/index';
@@ -53,6 +53,7 @@ $route['general/(:any)'] = 'general/$0';
 $route['trip-booking/(:any)'] = 'trip_booking/index/$0';
 $route['customers/(:any)'] = 'customers/$0';
 $route['maps/(:any)'] = 'maps/$0';
+$route['cron_tarrif/(:any)'] = 'cron_tarrif/$0';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

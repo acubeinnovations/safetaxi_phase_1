@@ -1,7 +1,7 @@
  <div class="change-password-body">
 		<fieldset class="body-border">
-	   		<legend class="body-head">Organization Reset Password</legend>
-		<?php echo form_open(base_url().'organization/admin/front-desk/'.$user.'/password-reset');?>
+	   		<legend class="body-head">User Reset Password</legend>
+		<?php echo form_open(base_url().'admin/front-desk/'.$user.'/password-reset');?>
         <div class="form-group">
 			<?php echo form_label('New Password','passwordlabel'); ?>
             <?php echo form_password(array('name'=>'password','class'=>'form-control','placeholder'=>'Enter password','value'=>$password)); ?>

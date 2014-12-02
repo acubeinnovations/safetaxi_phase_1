@@ -49,22 +49,29 @@ class admin_model extends CI_Model {
     }
 
  function  insertUser($fname,$lname,$addr,$uname,$pwd,$mail,$phn) {
-	$org_id=$this->session->userdata('organisation_id');
-	if($org_id){
+	
 	$data=array('username'=>$uname,'password'=>md5($pwd),'first_name'=>$fname,'last_name'=>$lname,'phone'=>$phn,'address'=>$addr,'user_status_id'=>USER_STATUS_ACTIVE,'user_type_id'=>FRONT_DESK,'email'=>$mail,'organisation_id'=>$org_id);
 
 	$this->db->set('created', 'NOW()', FALSE);
 	$this->db->insert('users',$data);
 	return true;
-	  }
+	  
     }
 
+	function updateUser($data){
+		
+		$userdbdata = array('first_name'=>$data['firstname'],'last_name'=>$data['lastname'],'address'=>$data['address'],'email'=>$data['email'],'phone'=>$data['phone'],'user_status_id'=>$data['status'],'user_permission_id'=>$data['user_permission_id']);
+		$this->db->where('id',$data['id']);
+		$succesuser=$this->db->update('users',$userdbdata);
+		if($succesuser>0){
+		return true;
+		}else{
+		return false;
+		}
+		
+	}
 
-
-    function getOrg(){
-	$query=$this->db->get('organisations');
-	return $query->result_array();
-    }
+   
 	function getProfile(){
 	$this->db->from('users');
 	$this->db->where('id',$this->session->userdata('id'));
@@ -149,7 +156,6 @@ class admin_model extends CI_Model {
 	function resetUserPassword($data) {
 			$dbdata = array('password'=>$data['password']);
 			$this->db->where('id',$data['id'] );
-			$this->db->where('organisation_id',$this->session->userdata('organisation_id'));
 			$succes=$this->db->update('users',$dbdata);
 			if($succes > 0) {
 			$this->session->set_userdata(array('dbSuccess'=>'User Password changed Successfully'));
