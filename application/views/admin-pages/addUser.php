@@ -1,12 +1,12 @@
 
 		<?php if(isset($id) && $id > 0){
 
-		$url='organization/admin/front-desk/'.$username;
+		$url='admin/front-desk/'.$username;
 		$page_cap='Update User';
 		
 		}else{
 
-		$url='organization/admin/front-desk/new';
+		$url='admin/front-desk/new';
 		$page_cap='Add User';
  		}
 		 ?>
@@ -38,7 +38,6 @@
 				</div>
 				<?php }else{
 				echo form_hidden('id',$id);
-				echo form_hidden('fa_account',$fa_account);
 				echo form_hidden('husername',$username);
 				} ?>
 				<div class="form-group">
@@ -56,12 +55,22 @@
 				<?php 
 				 $class="form-control";
 				 $selected=$status;
+					echo form_label('Status','statuslabel');
 				 echo $this->form_functions->populate_dropdown('status',$user_status,$selected,$class);
 				 ?>
 				</div>
 				<?php }  ?>
+				<div class="form-group">
+				<?php 
+				 $class="form-control";
+					echo form_label('Permission','permissonlabel');
+				 echo $this->form_functions->populate_dropdown('user_permission_id',$user_permissions,$user_permission_id,$class);
+				 ?>
+				</div>
+			
 				</div>
 				<div class="div-with-50-percent-width-with-margin-10">
+				
 				<div class="form-group">
 					<?php echo form_label('Email','emaillabel'); ?>
 				    <?php echo form_input(array('name'=>'email','class'=>'form-control','placeholder'=>'Enter email','value'=>$email)); 
@@ -75,8 +84,13 @@
 					<?php echo form_error('phone', '<p class="text-red">', '</p>'); ?>
 				</div>
 				<div class="form-group">
-					<?php echo form_label('Address','addresslabel'); ?>
-				    <?php echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address)); ?>
+					<?php echo form_label('Address','addresslabel');
+					if(isset($id)){
+					$row_address=5;
+					}	else{
+					$row_address=9;
+					}			
+				 echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address, 'rows'  => $row_address,'cols' => '10')); ?>
 					<?php echo form_error('address', '<p class="text-red">', '</p>'); ?>
 				</div>
 		   		<div class="box-footer">

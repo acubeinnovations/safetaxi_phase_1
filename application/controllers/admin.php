@@ -31,8 +31,10 @@ class Admin extends CI_Controller {
 	
     }
 	
-    public function front_desk($action ='',$secondaction = '') {
-		 if ($action =='new' && $secondaction == ''){
+    public function front_desk() {
+		$action=$this->uri->segment(3);
+		$secondaction=$this->uri->segment(4);
+		if ($action =='new' && $secondaction == ''){
       
 	if(isset($_REQUEST['user-profile-add'])) {		   
 		    $firstname = trim($this->input->post('firstname'));
@@ -45,7 +47,8 @@ class Admin extends CI_Controller {
 	        
 		$this->form_validation->set_rules('firstname','First Name','trim|required|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('lastname','Last Name','trim|required|min_length[2]|xss_clean');
-		$this->form_validation->set_rules('address','Address','trim|required|min_length[10]|xss_clean');
+		$this->form_validation->set_rules('address','Address','trim|xss_clean');
+		$this->form_validation->set_rules('user_permission_id','Permission','trim|required|xss_clean');
 		$this->form_validation->set_rules('username','Username','trim|required|min_length[4]|max_length[15]|xss_clean|is_unique[users.username]');
 		$this->form_validation->set_rules('password','Password','trim|required|min_length[5]|max_length[12]|matches[cpassword]|xss_clean');
 		$this->form_validation->set_rules('cpassword','Confirmation','trim|required|min_length[5]|max_length[12]|xss_clean');
@@ -76,7 +79,7 @@ class Admin extends CI_Controller {
 	}
 		}
 			else if($this->session_check()==true){
-			$data=array('title'=>'Add New User |'.PRODUCT_NAME,'firstname'=>'','lastname'=>'','username'=>'','password'=>'','address'=>'','email'=>'','phone'=>'');
+			$data=array('title'=>'Add New User |'.PRODUCT_NAME,'firstname'=>'','lastname'=>'','username'=>'','password'=>'','address'=>'','email'=>'','phone'=>'','user_permission_id'=>'');
 				$this->showAddUser($data);
 		} 
 		
@@ -191,12 +194,14 @@ class Admin extends CI_Controller {
 			$data['phone']    = $this->input->post('phone');
 			$data['id']		  = $this->input->post('id');
 			$data['status']   =   $this->input->post('status');
+			$data['user_permission_id']=$this->input->post('user_permission_id');
 			
 			
 	        
 			$this->form_validation->set_rules('firstname','First Name','trim|required|min_length[2]|xss_clean');
 			$this->form_validation->set_rules('lastname','Last Name','trim|required|min_length[2]|xss_clean');
-			$this->form_validation->set_rules('address','Address','trim|required|min_length[10]|xss_clean');
+			$this->form_validation->set_rules('address','Address','trim|xss_clean');
+			$this->form_validation->set_rules('user_permission_id','Permission','trim|required|xss_clean');
 			//$this->form_validation->set_rules('username','Username','trim|required|min_length[5]|max_length[20]|xss_clean|is_unique[users.username]');
 		if($this->input->post('email')==$this->input->post('hmail')){
 			$this->form_validation->set_rules('email','Email','trim|required|valid_email|xss_clean');
@@ -223,22 +228,24 @@ class Admin extends CI_Controller {
 		    redirect(base_url().'admin/front_desk/list');
 		}
 		}else{
-		$data['user_status']=$this->organization_model->getUserStatus();
+		$data['user_status']=$this->admin_model->getUserStatus();
+		$data['user_permission_id']='';
 		$this->showAddUser($data);
 
 		}
 		} else {
-		$data['user_status']=$this->organization_model->getUserStatus();
+		$data['user_status']=$this->admin_model->getUserStatus();
 		$data['title']='User Profile Update | '.PRODUCT_NAME;
 		$data['id']=$result['id'];
 		$data['username']=$result['username'];
 		$data['firstname']=$result['first_name'];
-		$data['fa_account']=$result['fa_account'];
+		
 		$data['lastname']=$result['last_name'];
 		$data['address']=$result['address'];
 		$data['email']=$result['email'];
 		$data['phone']=$result['phone'];
 		$data['status']=$result['user_status_id'];
+		$data['user_permission_id']=$result['user_permission_id'];
 		$this->showAddUser($data);
 		}
 		}
@@ -273,7 +280,7 @@ class Admin extends CI_Controller {
 			$this->form_validation->set_rules('email','Email','trim|required|valid_email|xss_clean|is_unique[users.email]');
 			}
 			$this->form_validation->set_rules('phone','Phone','trim|required|regex_match[/^[0-9]{10}$/]|numeric|xss_clean');
-			$this->form_validation->set_rules('address','Address','trim|required|min_length[10]|xss_clean');
+			$this->form_validation->set_rules('address','Address','trim|xss_clean');
 			$dbdata['username']  = $this->input->post('username');
 		   	$dbdata['first_name'] = $this->input->post('firstname');
 			$dbdata['last_name']  = $this->input->post('lastname');
@@ -354,6 +361,7 @@ class Admin extends CI_Controller {
    public function showAddUser($data){
 	   if($this->session_check()==true) {
 		$page='admin-pages/addUser';
+		$data['user_permissions']=array('1'=>'Permission For All','2'=>'Permission For Trips Booking','3'=>'Permission For View Trips' );
 		$this->load_templates($page,$data);
 		}
 	   else{

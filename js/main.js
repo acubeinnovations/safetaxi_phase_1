@@ -682,8 +682,8 @@ getDistance();
 });
 function getDistance(){
 
-var pickup=Trim($("#pickup").val());//alert(pickupcity);
-var drop=Trim($("#drop").val());
+var pickup=$("#pickup").val();//alert(pickupcity);
+var drop=$("#drop").val();
 pickup = pickup.replace(/\s+/g, '');
 drop = drop.replace(/\s+/g, '');
 if(pickup!='' && drop!=''){
@@ -1119,7 +1119,7 @@ markers=jQuery.parseJSON(markers);
         // obtain the attribues of each marker
         var lat = parseFloat(markers[i][0]);
         var lng = parseFloat(markers[i][1]);
-        var trailhead_name = markers[i][2];alert(trailhead_name);
+        var trailhead_name = markers[i][2];
 		
         var myLatlng = new google.maps.LatLng(lat, lng);
 
@@ -1168,7 +1168,41 @@ $(document).keydown(function(e) {
 });
 
 
+$('.pickupdate,.pickuptime').blur(function(){
+checkPastDate();
+});
 
+$('.book_trip').click(function(){
+if(checkPastDate()==true){
+$('.book_trip_submit').trigger('click');
+
+}else{
+
+return false;
+}
+
+});
+
+function checkPastDate(){
+var selectedDate = $('.pickupdate').val();
+var selectedTime = $('.pickuptime').val();
+if(selectedTime==''){
+selectedTime='00:00';
+}
+if(selectedDate!='' && selectedTime!=''){
+selectedDate=selectedDate.split('-');
+
+var newd=new Date(selectedDate[1]+'/'+selectedDate[2]+'/'+selectedDate[0]+' '+selectedTime);
+var now = new Date();
+if (newd < now) {
+  alert('Please Check The pickup date time');
+	return false;
+}else{
+	return true;
+}
+}
+
+}
 
 //trips page js end
 
@@ -1183,7 +1217,7 @@ $(document).keydown(function(e) {
 	//trips page js start
 
 	$('.initialize-date-picker').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-	$('.initialize-time-picker').datetimepicker({datepicker:false,format:'H:i',step:5});
+	$('.initialize-time-picker').datetimepicker({datepicker:false,format:'H:i',step:15});
 
 
 //for next previous button

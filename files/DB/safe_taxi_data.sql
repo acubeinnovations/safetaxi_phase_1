@@ -35,8 +35,9 @@ INSERT INTO `customer_statuses` (`id`, `name`, `description`, `value`, `user_id`
 
 INSERT INTO `driver_statuses` (`id`, `name`, `description`, `value`, `user_id`, `created`, `updated`) VALUES
 (1, 'Active', 'Driver Active', 0, 1, '2014-11-14 05:22:09', '0000-00-00 00:00:00'),
-(2, 'Suspended', 'Driver Suspended', 0, 1, '2014-11-14 05:22:09', '0000-00-00 00:00:00'),
-(3, 'Dismissed', 'Driver Dismissed', 0, 1, '2014-11-14 05:22:09', '0000-00-00 00:00:00');
+(2, 'Engaged', 'Driver Engaged', 0, 1, '2014-11-14 05:22:09', '0000-00-00 00:00:00'),
+(3, 'Dismissed', 'Driver Dismissed', 0, 1, '2014-11-14 05:22:09', '0000-00-00 00:00:00'),
+(4, 'Suspended', 'Driver Suspended', 0, 1, '2014-12-02 08:06:31', '0000-00-00 00:00:00');
 
 --
 -- Dumping data for table `notification_statuses`
@@ -80,11 +81,11 @@ INSERT INTO `statuses` (`id`, `name`, `description`) VALUES
 INSERT INTO `trip_statuses` (`id`, `name`, `description`, `value`, `user_id`, `created`, `updated`) VALUES
 (1, 'Pending', 'Trip Pending', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
 (2, 'Accepted', 'Trip Accepted', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
-(3, 'On Trip', 'On Trip', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
-(4, 'Trip Completed', 'Trip Completed', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
-(5, 'Cancelled', 'Trip Cancelled', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
-(6, 'Driver Canceled', 'Trip Canceled By Driver', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
-(7, 'Customer Canceled', 'Trip Canceled By Customer', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00');
+(3, 'Trip Completed', 'Trip Completed', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
+(4, 'Cancelled', 'Trip Cancelled', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
+(5, 'Driver Canceled', 'Trip Canceled By Driver', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
+(6, 'Customer Canceled', 'Trip Canceled By Customer', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00'),
+(7, 'Invoice Generated', 'Trip Invoice Generated', 0, 1, '2014-11-14 05:27:34', '0000-00-00 00:00:00');
 
 --
 -- Dumping data for table `trip_types`

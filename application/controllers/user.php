@@ -478,6 +478,7 @@ class User extends CI_Controller {
 	$data['trip_status_id']=$values[0]->trip_status_id;
 	$data['driver_id']=$values[0]->driver_id;
 	$data['radius']=1;
+	$data['distance_in_km_from_web']=$values[0]->distance_in_km_from_web;
 	
 	}else{
 	$data['id']=gINVALID;
@@ -495,7 +496,7 @@ class User extends CI_Controller {
 	$data['trip_from_lng']='';
 	$data['trip_to_lng']='';
 	$data['radius']=1;
-	$data['distance_from_web']='';
+	$data['distance_in_km_from_web']='';
 	}
 	}else{
 	$data['id']=gINVALID;
@@ -513,7 +514,7 @@ class User extends CI_Controller {
 	$data['trip_from_lng']='';
 	$data['trip_to_lng']='';
 	$data['radius']=1;
-	$data['distance_from_web']='';
+	$data['distance_in_km_from_web']='';
 	}
 	$tbl_arry=array();
 	

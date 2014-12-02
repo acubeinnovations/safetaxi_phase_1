@@ -28,6 +28,7 @@ define('SYSTEM_EMAIL','safetaxi@safetaxi.com');
 
 define('INVOICE', 1);
 define('PAYMENT', 2);
+define('RECEIPT', 3);
 
 define('PERMISSION_FOR_ALL',1);
 define('PERMISSION_FOR_TRIP_BOOKING',2);
@@ -50,6 +51,7 @@ define('TRIP_STATUS_TRIP_COMPLETED',3);
 define('TRIP_STATUS_CANCELLED',4);
 define('TRIP_STATUS_DRIVER_CANCELLED',5);
 define('TRIP_STATUS_CUSTOMER_CANCELLED',6);
+define('TRIP_STATUS_INVOICE_GENERATED',7);
 
 
 define('CUSTOMER_ACTIVE',1);
