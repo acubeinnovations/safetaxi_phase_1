@@ -592,6 +592,9 @@ class User extends CI_Controller {
 	LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_types VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" 
 	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.created DESC';
 
+
+	
+
 	$condition="";	
 	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
