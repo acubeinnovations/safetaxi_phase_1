@@ -54,11 +54,13 @@ class Cron_tarrif extends CI_Controller {
 		$data=array('total_amount' => $total_trip_amount,'trip_status_id' => TRIP_STATUS_INVOICE_GENERATED);
 		$this->trip_booking_model->updateTrip($data,$trip_id);
 
+		$percentage=$total_trip_amount*10/100;//percentage calulation for commission
+
 		if(isset($payments[$driver_id])){
-			$payments[$driver_id]=$payments[$driver_id]+$total_trip_amount;
+			$payments[$driver_id]=$payments[$driver_id]+$percentage;
 
 		}else{
-			$payments[$driver_id]=$total_trip_amount;
+			$payments[$driver_id]=$percentage;
 		}
 	} 
 		foreach ($payments as $key => $value) {
