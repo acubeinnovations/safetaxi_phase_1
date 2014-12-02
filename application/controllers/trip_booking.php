@@ -239,6 +239,9 @@ class Trip_booking extends CI_Controller {
 				$dbdata['driver_id']					= gINVALID;
 				$dbdata['trip_status_id']				= TRIP_STATUS_PENDING;
 				$dbdata['tariff_id']					= $this->trip_booking_model->getLatestTariff(); //NEED TO REMOVE COMMENT
+				if($dbdata['tariff_id']== false){
+					$dbdata['tariff_id']=gINVALID;
+				}
 			}
 			
 			$dbdata['distance_in_km_from_web'] 				= $data['distance_in_km_from_web'];// NEED TO REMOVE COMMENT
