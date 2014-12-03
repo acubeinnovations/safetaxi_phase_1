@@ -69,7 +69,7 @@
 									<?php echo form_label('Pickup','pickuplabel'); ?>
 									<?php echo form_input(array('name'=>'trip_from','class'=>'form-control height-27-px','placeholder'=>'Enter Pick Up','value'=>$trip_from,'id'=>'pickup')); ?>
 									<?php echo $this->form_functions->form_error_session('trip_from', '<p class="text-red">', '</p>'); ?>
-									<div class="hide-me"> <input class="pickuplat" name="trip_from_lat" type="text" value="<?php echo $trip_from_lat; ?>"><input class="pickuplng" name="trip_from_lng" type="text" value="<?php echo $trip_from_lng; ?>"><input class="distance_from_web" name="distance_in_km_from_web"" type="text" value="<?php echo $distance_in_km_from_web; ?>"></div>
+									<div class="hide-me"> <input class="pickuplat" name="trip_from_lat" type="text" value="<?php echo $trip_from_lat; ?>"><input class="pickuplng" name="trip_from_lng" type="text" value="<?php echo $trip_from_lng; ?>"><input class="distance_from_web" name="distance_in_km_from_web" type="text" value="<?php echo $distance_in_km_from_web; ?>"></div>
 								</div>
 							</td>
 							<td>
@@ -129,11 +129,14 @@
 								<div class="form-group margin-10-px margin-top-less-12">
 									<?php echo form_label('Pickup Time','pickuptimelabel'); ?>
 									<?php echo form_input(array('name'=>'pick_up_time','class'=>'form-control height-27-px pickuptime initialize-time-picker','placeholder'=>'Enter Pickup Time','value'=>$pick_up_time)); ?>
+									<?php if($id!=gINVALID && $driver_id==gINVALID){ ?>
+									<div class="hide-me"><?php echo form_input(array('name'=>'pick_up_time_update','class'=>'form-control height-27-px pick_up_time_update','value'=>$pick_up_time)); ?><?php echo form_input(array('name'=>'pick_up_date_update','class'=>'form-control height-27-px  pick_up_date_update','value'=>$pick_up_date)); ?></div>
+									<?php } ?>
 									<?php echo $this->form_functions->form_error_session('pick_up_time', '<p class="text-red">', '</p>'); ?>
 								</div>
 							</td>
 							<td>
-								<div class="form-group margin-10-px margin-top-less-12"><?php if($id!=gINVALID){ $saveandsearch="SAVE"; }else{ $saveandsearch="SAVE AND SEARCH";}?> 
+								<div class="form-group margin-10-px margin-top-less-12"><?php if($id!=gINVALID){ $saveandsearch="UPDATE"; }else{ $saveandsearch="SAVE AND SEARCH";}?> 
 									<input class="btn btn-success btn-sm 	search-vehicles book_trip" name="book_trip_button" type="button" value="<?php echo $saveandsearch; ?>"><div class="hide-me"><input class="btn book_trip_submit" name="book_trip" type="submit"></div>
 									<?php if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"><div class="hide-me"> <input name="id" class="id" value="<?php echo $id; ?>" type="text"></div>  <?php } ?>
 								
