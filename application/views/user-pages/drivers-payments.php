@@ -105,12 +105,13 @@ echo form_close();?></td>
 					?>
 					<tr>
 						<td><?php echo $trip_sl_no;?></td>
-						<td><a href="<?php echo base_url()."front-desk/driver-payments/".$trips[$trip_index]['driverid'];?>"><?php echo $trips[$trip_index]['name'];?></a></td>
-					   	<td><?php echo $trips[$trip_index]['driverstatus'];?></td>
+						<td><a href="<?php echo base_url()."front-desk/driver-payments/".$trips[$trip_index]['driverid'];?>"><?php echo $trips[$trip_index]['Drivername'];?></a></td>
+					   	<td><?php //echo $trips[$trip_index]['driverstatus'];?></td>
 					   	<td>0</td>
-					   	<td><?php echo $trips[$trip_index]['debit'];?></td>
-					   	<td><?php echo $trips[$trip_index]['current'];?></td>
-					   	<td><?php echo $total=$trips[$trip_index]['debit']-$trips[$trip_index]['current'] ;?></td>
+					   	
+					   	<td><?php echo $Current = $trips[$trip_index]['Total']-$trips[$trip_index]['Outstanding']?></td>
+					   	<td><?php echo $trips[$trip_index]['Outstanding'];?></td>
+					   	<td><?php //echo $total=$trips[$trip_index]['debit']-$trips[$trip_index]['current'] ;?></td>
 					   
 					</tr>
 

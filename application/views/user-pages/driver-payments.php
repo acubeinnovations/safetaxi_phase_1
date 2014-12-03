@@ -224,6 +224,74 @@ echo form_close();?></td>
 		</div>
 		<?php } ?>
 	</fieldset>
+
+	<!-- Receipt Entry -->
+
+	<fieldset class="body-border">
+		<legend class="body-head">Driver Receipt</legend>
+		
+	
+	<div class="msg"> <?php 
+			if (isset($result)){ echo $result;} else {?></div>
+
+
+		
+		<div class="box-body table-responsive no-padding trips-table">
+			<table class="table table-hover table-bordered">
+				<tbody>
+					<tr>	
+						
+					    <th style="width:2%">Sl no: </th>
+					    <th style="width:19%">Type</th>
+						<!--<th style="width:15%">Customer</th>-->
+					   
+					   
+					    <th style="width:15%">Date</th>
+					    <th  style="width:12%">Amount</th>
+				
+					   
+										
+						
+					</tr>
+					<?php
+					
+					$trip_sl_no=1;
+					for($trip_index=0;$trip_index<count($val);$trip_index++){
+						
+					
+						
+					
+					?>
+					<tr>
+						<td><?php echo $trip_sl_no;?></td>
+						<td><?php echo "RECEIPT";?></td>
+
+					   	<td><?php echo $val[$trip_index]['Created_date'];?></td>
+					   	<td><?php echo $val[$trip_index]['Receipt'];?></td>
+					
+					   	
+					   
+					   
+					  
+					</tr>
+
+					<?php 
+						$trip_sl_no++;
+						}
+					?>
+			
+					<!-- -->
+			
+					<!-- -->
+				</tbody>
+			</table><?php //echo $page_links;?>
+		</div>
+		<?php } ?>
+	</fieldset>
+
+	<!-- Receipt Entry Ends-->
+
+
 	<div class="width-30-percent-with-margin-left-20-Driver-View"><!-- Add Driver Payment-->
 		<fieldset class="body-border">
 			<legend class="body-head">Add Vouchers</legend>

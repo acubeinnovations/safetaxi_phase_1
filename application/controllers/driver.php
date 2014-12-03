@@ -148,7 +148,7 @@ class Driver extends CI_Controller {
 	}
 
 
-//
+
 	public function DriverPayments(){
 	
 	if(isset($_REQUEST['payment-submit'])){

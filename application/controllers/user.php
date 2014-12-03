@@ -14,6 +14,7 @@ class User extends CI_Controller {
     $this->load->model('tarrif_model');
 	$this->load->model('device_model');
 	 $this->load->model('vehicle_model');
+	 $this->load->model('driver_payment_model');
 
 	no_cache();
 
@@ -707,6 +708,9 @@ class User extends CI_Controller {
 	//print_r($data['values']);exit;
 	$driver_trips='';
 	$driver_statuses='';
+	$res=$this->driver_payment_model->getDriverpaymentReceipt($param2);
+	//$data['values']=$res['values']; print_r($data['values']); exit;
+	//echo "<pre>"; print_r($res);echo "<pre>"; exit;
 	for($i=0;$i<count($data['values']);$i++){
 		//$id=$data['values'][$i]['id'];
 		//print_r($data['values']);exit;
@@ -732,6 +736,7 @@ class User extends CI_Controller {
 			$data['title']="Driver Payments | ".PRODUCT_NAME;  
 			$page='user-pages/driver-payments';
 			$data['driver_id']=$driver_id;
+			$data['val']=$res; //print_r($data['val']);exit;
 		    $this->load_templates($page,$data);
 		    }else{
 				$this->notAuthorized();
@@ -760,15 +765,26 @@ class User extends CI_Controller {
 			$drivers=$this->driver_model->getDetails($condition=''); //print_r($drivers); 
 			$conditon = array('id'=>$trip_id);
 			$result=$this->trip_booking_model->getDetails($conditon);
+			$res=$this->driver_payment_model->getDriversCurrentDebt(); 
 			/* search condition starts */
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
-	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name,
-	SUM(DP.cr_amount) as current,SUM(DP.dr_amount) as debit ,SUM(DP.cr_amount+DP.dr_amount) as total FROM drivers as D 
-	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id 
-	LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id 
-	WHERE DP.period<='12' AND DP.year<='2016' GROUP BY D.id DESC"; 
+	/*$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name,SUM(DP2.dr_amount) as Current_amount, SUM(DP.cr_amount) as current,SUM(DP.dr_amount) as debit ,
+	SUM(DP.cr_amount+DP.dr_amount) as total FROM drivers as D LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id,
+	LEFT JOIN driver_payment AS DP2 ON DP2.driver_id=D.id  
+	LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id WHERE DP.period<month(NOW()) AND DP2.period=month(NOW()) AND DP.year<=year(NOW()) AND 
+	DP.voucher_type_id <> '".RECEIPT."' GROUP BY D.id DESC"; */
+
+
+	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name as Drivername, SUM(DP.dr_amount) as Total, 
+	SUM(CASE WHEN DP.period=month(NOW()) THEN DP.dr_amount ELSE 0 END) AS Outstanding FROM drivers as D 
+	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id 
+	WHERE DP.period<=month(NOW()) AND DP.year<=year(NOW()) AND DP.voucher_type_id <>  '".RECEIPT."'  GROUP BY DP.driver_id DESC";
+
+
+
+
 
 
 	
@@ -906,7 +922,7 @@ class User extends CI_Controller {
 	}
 	$data['trips']=$data['values'];
 
-	
+			$data['vals']=$res; //print_r($data['val']);exit;
 			/* search condition ends*/
 			$data['title']="Trips | ".PRODUCT_NAME;  
 			$page='user-pages/drivers-payments';
