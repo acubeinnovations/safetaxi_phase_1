@@ -317,7 +317,7 @@ $('.pickuplat').attr('value',cityLat);
 $('.pickuplng').attr('value',cityLng);
 $("#pickup").attr('value',place.name+','+place.address_components[0].short_name);
 
-
+//$("#pickup").focus();
 
 });
 
@@ -328,6 +328,8 @@ var cityLng = place.geometry.location.lng();
 $('.droplat').attr('value',cityLat);
 $('.droplng').attr('value',cityLng);
 $("#drop").attr('value',place.name+','+place.address_components[0].short_name);
+
+//$("#drop").focus();
 });
 
 
@@ -675,11 +677,18 @@ $('.estimated-time-of-journey').html('');
 }
 }
 */
+
 $("#pickup,#drop").blur(function(){
 
-getDistance();
+
+setTimeout(function(){ 
+ getDistance();
+  }, 1000);
+//clearTimeout(timeout);
 
 });
+
+
 function getDistance(){
 
 var pickup=$("#pickup").val();//alert(pickupcity);
@@ -702,6 +711,8 @@ $('.distance_from_web').attr('value',tot_distance);
 });
 }
 }
+
+
 
 function replaceCommas(place){ 
 	 var placeArray = place.split(','); 
@@ -1103,8 +1114,9 @@ function initialize() {
 			  {
 				trip_id:trip_id
 			  },function(data){
-
+				if(data){
 			 addMarker(data);
+			}
 	});
 	}
    
@@ -1186,6 +1198,27 @@ return false;
 function checkPastDate(){
 var selectedDate = $('.pickupdate').val();
 var selectedTime = $('.pickuptime').val();
+var pickuptime_update= $('.pick_up_time_update').val();
+var pickupdate_update= $('.pick_up_date_update').val();
+var id=$('.id').val();
+if(id==-1){
+if(selectedTime==''){
+selectedTime='00:00';
+}
+if(selectedDate!='' && selectedTime!=''){
+selectedDate=selectedDate.split('-');
+
+var newd=new Date(selectedDate[1]+'/'+selectedDate[2]+'/'+selectedDate[0]+' '+selectedTime);
+var now = new Date();
+if (newd < now) {
+  alert('Please Check The pickup date time');
+	return false;
+}else{
+	return true;
+}
+}
+}else if(id>-1){
+if(selectedDate!=pickupdate_update || selectedTime!=pickuptime_update){
 if(selectedTime==''){
 selectedTime='00:00';
 }
@@ -1203,7 +1236,8 @@ if (newd < now) {
 }
 
 }
-
+}
+}
 //trips page js end
 
 //add tarrif page js start
@@ -1217,7 +1251,7 @@ if (newd < now) {
 	//trips page js start
 
 	$('.initialize-date-picker').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-	$('.initialize-time-picker').datetimepicker({datepicker:false,format:'H:i',step:15});
+	$('.initialize-time-picker').datetimepicker({datepicker:false,format:'H:i',step:15,validateOnBlur:false});
 
 
 //for next previous button
