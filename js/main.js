@@ -1102,7 +1102,7 @@ function initialize() {
 	
     var latlng = new google.maps.LatLng(center_lat,center_lng);
     var myOptions = {
-        zoom: 13,
+        zoom: 15,
         center: latlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     }
@@ -1122,6 +1122,11 @@ function initialize() {
    
 }
 
+/*
+lastCenter=map.getCenter();
+google.maps.event.trigger(map_canvas, ‘resize’);
+map.setCenter(lastCenter);
+*/
 
 
 function addMarker(markers) {
@@ -1140,7 +1145,11 @@ markers=jQuery.parseJSON(markers);
         var marker = new google.maps.Marker({
             position: myLatlng,
             map: map,
-            title: "Coordinates: " + lat + " , " + lng + " | Trailhead name: " + trailhead_name
+			icon: {
+        		url:base_url+'/img/car_icon_marker.png'
+				
+					},
+			title: "Coordinates: " + lat + " , " + lng + " | Trailhead name: " + trailhead_name
         });
 
         marker['infowindow'] = contentString;
@@ -1154,7 +1163,14 @@ markers=jQuery.parseJSON(markers);
     }
 }
 
-window.onload = initialize;
+$('#map-tab').click(function(){
+if($('#map-tab').attr('loaded')=='false'){
+initialize();
+$('#map-tab').attr('loaded','true');
+}
+});
+
+
 
 
 
@@ -1205,7 +1221,7 @@ if(id==-1){
 if(selectedTime==''){
 selectedTime='00:00';
 }
-if(selectedDate!='' && selectedTime!=''){
+if(selectedDate!='' && selectedTime!=''){alert('l');
 selectedDate=selectedDate.split('-');
 
 var newd=new Date(selectedDate[1]+'/'+selectedDate[2]+'/'+selectedDate[0]+' '+selectedTime);

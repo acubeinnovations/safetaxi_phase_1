@@ -32,8 +32,7 @@
         <script src="<?php echo base_url();?>js/plugins/input-mask/jquery.inputmask.js" type="text/javascript"></script>
         <script src="<?php echo base_url();?>js/plugins/input-mask/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
         <script src="<?php echo base_url();?>js/plugins/input-mask/jquery.inputmask.extensions.js" type="text/javascript"></script>
-		<!--main.js -->
-        <script src="<?php echo base_url();?>js/main.js" type="text/javascript"></script>
+		
 		<!--editable_dropdown.js -->
         <script src="<?php echo base_url();?>js/editable_dropdown.js" type="text/javascript"></script>
 		<script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization',
@@ -41,7 +40,8 @@
 		
 
 		 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places&language=en-AU"></script>
-      
+      	<!--main.js -->
+        <script src="<?php echo base_url();?>js/main.js" type="text/javascript"></script>
 
     </body>
 </html>
