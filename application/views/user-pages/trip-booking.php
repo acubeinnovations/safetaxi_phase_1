@@ -129,7 +129,7 @@
 								<div class="form-group margin-10-px margin-top-less-12">
 									<?php echo form_label('Pickup Time','pickuptimelabel'); ?>
 									<?php echo form_input(array('name'=>'pick_up_time','class'=>'form-control height-27-px pickuptime initialize-time-picker','placeholder'=>'Enter Pickup Time','value'=>$pick_up_time)); ?>
-									<?php if($id!=gINVALID && $driver_id==gINVALID){ ?>
+									<?php if($id!=gINVALID){ ?>
 									<div class="hide-me"><?php echo form_input(array('name'=>'pick_up_time_update','class'=>'form-control height-27-px pick_up_time_update','value'=>$pick_up_time)); ?><?php echo form_input(array('name'=>'pick_up_date_update','class'=>'form-control height-27-px  pick_up_date_update','value'=>$pick_up_date)); ?></div>
 									<?php } ?>
 									<?php echo $this->form_functions->form_error_session('pick_up_time', '<p class="text-red">', '</p>'); ?>
