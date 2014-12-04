@@ -762,7 +762,12 @@ font-size:11px;
 }
 #map_canvas{
     width: 100%;
-    height: 400px;
+    height: 330px;
+}
+.list-notified-vehicles{
+	width: 100%;
+    height: 330px;
+	overflow-y:auto;
 }
 .ajax-notifications{
 min-height:618px;
