@@ -109,7 +109,7 @@ define ('PDF_AUTHOR', 'TCPDF');
 /**
  * Header title.
  */
-define ('PDF_HEADER_TITLE', 'ConnectNCabs');
+define ('PDF_HEADER_TITLE', 'SafeTaxi');
 
 /**
  * Header description string.

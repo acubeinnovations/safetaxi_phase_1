@@ -589,7 +589,7 @@ class User extends CI_Controller {
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
 	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount, VT.name as vouchertype,DP.voucher_number as voucher_number,
-	DP.payment_date as date,DP.period as Period,D.name as Drivername,D.driver_status_id as Driverstatus_id FROM driver_payment AS DP 
+	DP.payment_date as date,DP.period as Period,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.driver_id as Driver_id FROM driver_payment AS DP 
 	LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_types VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" 
 	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.created DESC';
 
@@ -765,7 +765,7 @@ class User extends CI_Controller {
 			$drivers=$this->driver_model->getDetails($condition=''); //print_r($drivers); 
 			$conditon = array('id'=>$trip_id);
 			$result=$this->trip_booking_model->getDetails($conditon);
-			$res=$this->driver_payment_model->getDriversCurrentDebt(); 
+			
 			/* search condition starts */
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
@@ -922,7 +922,7 @@ class User extends CI_Controller {
 	}
 	$data['trips']=$data['values'];
 
-			$data['vals']=$res; //print_r($data['val']);exit;
+			
 			/* search condition ends*/
 			$data['title']="Trips | ".PRODUCT_NAME;  
 			$page='user-pages/drivers-payments';
