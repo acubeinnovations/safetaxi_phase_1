@@ -64,7 +64,7 @@ class Trip_booking_model extends CI_Model {
 
 	function getDriverDetails($id){
 
-	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id.' AND (T.trip_status_id='.TRIP_STATUS_DRIVER_CANCELLED.' OR T.trip_status_id='.TRIP_STATUS_CUSTOMER_CANCELLED.')';
+	$qry='SELECT D.app_key,D.id FROM trips as T LEFT JOIN drivers as D on D.id=T.driver_id where T.id='.$id.' AND (T.trip_status_id='.TRIP_STATUS_DRIVER_CANCELLED.' OR T.trip_status_id='.TRIP_STATUS_CUSTOMER_CANCELLED.' OR T.trip_status_id='.TRIP_STATUS_ACCEPTED.')';
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){

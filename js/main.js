@@ -1221,7 +1221,7 @@ if(id==-1){
 if(selectedTime==''){
 selectedTime='00:00';
 }
-if(selectedDate!='' && selectedTime!=''){alert('l');
+if(selectedDate!='' && selectedTime!=''){
 selectedDate=selectedDate.split('-');
 
 var newd=new Date(selectedDate[1]+'/'+selectedDate[2]+'/'+selectedDate[0]+' '+selectedTime);

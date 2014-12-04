@@ -70,7 +70,7 @@
                             <ul class="treeview-menu">
                                 <li><a href="<?php echo base_url().'front-desk/trip-booking';?>"><i class="fa fa-angle-double-right"></i>New Trip</a></li>
 						<li><a href="<?php echo base_url().'front-desk/trips';?>"><i class="fa fa-angle-double-right"></i>Trip Bookings</a></li>
-                          <li><a href="<?php echo base_url().'front-desk/tripvouchers';?>"><i class="fa fa-angle-double-right"></i>Trip Vouchers</a></li>      
+                         
                                 
                             </ul>
                         </li>
@@ -97,8 +97,7 @@
 		                        
 		                    </ul>
                         	</li>
-							 <li><a href="<?php  echo base_url().'front-desk/device';?>"><i class="fa fa-angle-double-right"></i>Device Settings</a></li>
- </ul>
+							 
                         </li>
 
                         <?php }else if($this->session->userdata('isLoggedIn')==true && $this->session->userdata('type')==FRONT_DESK && $this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){ ?>
