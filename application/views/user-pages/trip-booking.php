@@ -137,8 +137,8 @@
 							</td>
 							<td>
 								<div class="form-group margin-10-px margin-top-less-12"><?php if($id!=gINVALID){ $saveandsearch="UPDATE"; }else{ $saveandsearch="SAVE AND SEARCH";}?> 
-									<input class="btn btn-success btn-sm 	search-vehicles book_trip" name="book_trip_button" type="button" value="<?php echo $saveandsearch; ?>"><div class="hide-me"><input class="btn book_trip_submit" name="book_trip" type="submit"></div>
-									<?php if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"><div class="hide-me"> <input name="id" class="id" value="<?php echo $id; ?>" type="text"></div>  <?php } ?>
+									<input class="btn btn-success btn-sm 	search-vehicles book_trip" name="book_trip_button" type="button" value="<?php echo $saveandsearch; ?>"><div class="hide-me"><input class="btn book_trip_submit" name="book_trip" type="submit"></div><div class="hide-me"> <input name="id" class="id" value="<?php echo $id; ?>" type="text"></div> 
+									<?php  if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"> <?php } ?>
 								
 								</div>
 							</td>
@@ -151,8 +151,8 @@
 				<div class="trip-booking-info">
 						<div class="nav-tabs-custom">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#tab_1" data-toggle="tab">List</a></li>
-                                    <li class=""><a href="#tab_2" data-toggle="tab">Map</a></li>
+                                    <li class="active" id="list-tab"><a href="#tab_1" data-toggle="tab">List</a></li>
+                                    <li class="" id="map-tab" loaded='false'><a href="#tab_2" data-toggle="tab">Map</a></li>
                                    
                                     
                                 </ul>

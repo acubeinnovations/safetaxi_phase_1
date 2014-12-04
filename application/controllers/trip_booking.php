@@ -86,7 +86,7 @@ class Trip_booking extends CI_Controller {
 				$res = $this->trip_booking_model->updateTrip($data,$trip_id);
 				if($res==true){
 		
-					$driver=$this->trip_booking_model->getDriverDetails($trip_id);
+					$driver=$this->trip_booking_model->getDriverDetails($trip_id);exit;
 					if($driver!=false ){
 						$app_key=$driver[0]['app_key'];
 						$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_CANCELLED;
@@ -98,7 +98,7 @@ class Trip_booking extends CI_Controller {
 						$this->trip_booking_model->setNotifications($notification_data,$trip_update);
 						if($trip_type_id==INSTANT_TRIP){
 								$driver_data['driver_status_id']=DRIVER_STATUS_ACTIVE;
-								$this->changeDriverstatus($driver_id,$driver_data);
+								$this->trip_booking_model->changeDriverstatus($driver_id,$driver_data);
 						}
 
 					}
