@@ -1165,8 +1165,12 @@ markers=jQuery.parseJSON(markers);
 
 $('#map-tab').click(function(){
 if($('#map-tab').attr('loaded')=='false'){
+var trip_id=$('.id').val();
+	if(trip_id!=-1) {
 initialize();
 $('#map-tab').attr('loaded','true');
+
+}
 }
 });
 

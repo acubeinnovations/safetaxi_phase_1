@@ -158,7 +158,7 @@
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_1">
-		                                  <div class="box-body">
+		                                  <div class="box-body list-notified-vehicles">
 				                            <table class="table table-bordered">
 						                            <tbody><tr>
 						                                <th style="width: 5%">Sl</th>
