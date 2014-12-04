@@ -114,7 +114,7 @@ echo form_close();?></td>
 					    <th style="width:15%">Date</th>
 					    <th  style="width:12%">Amount (Dr)</th>
 					    <th  style="width:12%">Amount (Cr)</th>
-					   
+					   	<th  style="width:12%">Action</th>
 										
 						
 					</tr>
@@ -140,7 +140,7 @@ echo form_close();?></td>
 					   	<td><?php echo $trips[$trip_index]['date'];?></td>
 					   	<td><?php echo $trips[$trip_index]['Debitamount'];?></td>
 					   	<td><?php echo $trips[$trip_index]['Creditamount'];?></td>
-					   	
+					   	<td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['Period']."/".$trips[$trip_index]['Voucher_type_id']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?></td>
 					   
 					   
 					  
@@ -152,7 +152,7 @@ echo form_close();?></td>
 					?>
 					<tr>
 						<td></td>
-						<td>Closing</td>
+						<td><b>Closing</b></td>
 						<td></td>
 						<td></td>
 						<td>
@@ -162,7 +162,7 @@ echo form_close();?></td>
 						
 						
 						}
-						echo $value;
+						echo "<b>".$value."</b>";
 						?>
 						</td>
 						<td>
@@ -172,10 +172,11 @@ echo form_close();?></td>
 						
 						
 						}
-						echo $value2;
+						echo  "<b>".$value2."</b>";
 						?>	
 						</td>
-						
+						<td>
+						</td>
 						
 						
 					</tr>
@@ -185,7 +186,7 @@ echo form_close();?></td>
 							
 						</td>
 						<td>
-							Balance Outstanding
+							<b>Balance Outstanding</b>
 						</td>
 						<td>
 							
@@ -197,9 +198,9 @@ echo form_close();?></td>
 						<?php 
 							$total=$value-$value2;
 							if($total > 0){
-								echo $total;
+								echo  "<b>".$total."</b>";
 							}else{
-								echo "0";
+								echo "<b>"."0"."</b>";
 							}
 							
 						?>
@@ -207,13 +208,15 @@ echo form_close();?></td>
 						<td>
 							<?php
 							if($total < 0){
-								echo $total;
+								echo "<b>".$total."</b>";
 								
 							}else{
 								
-								echo "0";
+								echo "<b>"."0"."</b>";
 							}
 							?>
+						</td>
+						<td>
 						</td>
 						
 						
@@ -267,7 +270,7 @@ echo form_close();?></td>
 						<td><?php echo "RECEIPT";?></td>
 
 					   	<td><?php echo $val[$trip_index]['Created_date'];?></td>
-					   	<td><?php echo $val[$trip_index]['Receipt'];?></td>
+					   	<td><?php echo "<b>".$val[$trip_index]['Receipt']."</b>";?></td>
 					
 					   	
 					   

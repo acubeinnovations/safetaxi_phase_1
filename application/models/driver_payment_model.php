@@ -42,13 +42,20 @@ class Driver_payment_model extends CI_Model {
 	}
 	}
 
-	public function getDriversCurrentDebt(){
-		$qry='SELECT SUM(DP.dr_amount) as Current_month_debit FROM drivers as D 
-		LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id 
-		WHERE DP.period>=month(NOW()) AND DP.year>=year(NOW()) AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY D.id DESC';
-		
-	$results=$this->db->query($qry); 
+	public function getDriverInvoice($driver_id,$condition){
+		$qry='SELECT D.name as Driver_name,D.address as Driver_address,D.district as Driver_district,D.state as Driver_state,D.pin_code as 
+
+	Driver_pincode,D.mobile as Driver_mobile,D.email as Driver_email,D.license_number as Driver_license,D.vehicle_registration_number as 
+
+	Driver_vehicle_registration,D.dob as Driver_dob,DP.payment_date as Payment_date,DP.period as Driver_payment_period,DP.dr_amount as Driver_debit,DP.cr_amount as 
+
+	Driver_credit,VT.name as Voucher_type FROM drivers D LEFT JOIN driver_payment AS DP ON DP.driver_id = D.id LEFT JOIN voucher_types AS VT ON 
+
+	VT.id=DP.voucher_type_id WHERE DP.driver_id="'.$driver_id.'"  '.$condition;
+		//print_r($qry);
+	$results=$this->db->query($qry); ; 
 	$results=$results->result_array();
+	
 	if(count($results)>0){
 	
 		return $results;

@@ -103,7 +103,7 @@ if (!defined('K_PATH_IMAGES')) {
 if (!defined('PDF_HEADER_LOGO')) {
 	$tcpdf_header_logo = '';
 	if (@file_exists(K_PATH_IMAGES.'connectncabs_logo.jpg')) {
-		$tcpdf_header_logo = 'connectncabs_logo.jpg';
+		$tcpdf_header_logo = '';
 	}
 	define ('PDF_HEADER_LOGO', $tcpdf_header_logo);
 }

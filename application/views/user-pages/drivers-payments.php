@@ -87,7 +87,8 @@ echo form_close();?></td>
 					    <th  style="width:12%">Outstanding</th>
 					    <th  style="width:12%">Current</th>
 
-						<th style="width:11%">Closing</th>						
+						<th style="width:11%">Closing</th>		
+						<th style="width:11%">Action</th>						
 						
 					</tr>
 					<?php
@@ -112,7 +113,7 @@ echo form_close();?></td>
 					   	<td><?php echo $Current = $trips[$trip_index]['Total']-$trips[$trip_index]['Outstanding']?></td>
 					   	<td><?php echo $trips[$trip_index]['Outstanding'];?></td>
 					   	<td><?php echo $total=$Current+$trips[$trip_index]['Outstanding'] ;?></td>
-					   
+					    <td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['driverid']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?></td>
 					</tr>
 
 					<?php 
