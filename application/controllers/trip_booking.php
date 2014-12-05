@@ -89,6 +89,7 @@ class Trip_booking extends CI_Controller {
 					$driver=$this->trip_booking_model->getDriverDetails($trip_id);
 					if($driver!=false ){
 						$app_key=$driver[0]['app_key'];
+						if($app_key!=''){
 						$driver_id=$driver[0]['id'];
 						$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_CANCELLED;
 						$notification_data['notification_status_id']=gINVALID;
@@ -101,13 +102,14 @@ class Trip_booking extends CI_Controller {
 								$driver_data['driver_status_id']=DRIVER_STATUS_ACTIVE;
 								$this->trip_booking_model->changeDriverstatus($driver_id,$driver_data);
 						}
+						}
 
 					}
 					
 
 					$this->session->set_userdata(array('dbSuccess'=>'Trip Cancelled Succesfully..!!'));
 					$this->session->set_userdata(array('dbError'=>''));
-					$this->SendTripCancellation($trip_id,$customer);
+					//$this->SendTripCancellation($trip_id,$customer);
 				}else{
 					$this->session->set_userdata(array('dbError'=>'Trip Cancelled unsuccesfully..!!'));
 					$this->session->set_userdata(array('dbSuccess'=>''));
@@ -339,7 +341,7 @@ class Trip_booking extends CI_Controller {
 					$this->session->set_userdata(array('dbSuccess'=>''));
 				}
 				
-				 redirect(base_url().'front-desk/trip-booking');
+				 redirect(base_url().'front-desk/trip-booking/'.$res);
 			}
 		}
 

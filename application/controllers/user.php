@@ -154,15 +154,7 @@ class User extends CI_Controller {
 		}else{
 			$this->notAuthorized();
 		}
-		
-		}elseif($param1=='tarrif-masters'&& ($param2== ''|| is_numeric($param2))){
-		
-		if($this->permission_for_all()==true) {
-			$this->tarrif_masters($param1,$param2);
-		}else{
-			$this->notAuthorized();
-		}
-		}elseif($param1=='tarrif'&& ($param2== ''|| is_numeric($param2))){
+		}else if($param1=='tarrif'&& ($param2== '' || is_numeric($param2))){
 	
 		if($this->permission_for_all()==true) {
 				$this->tarrif($param1,$param2);
@@ -289,86 +281,98 @@ class User extends CI_Controller {
 			$this->notAuthorized();
 		}
 	}
-	public function tarrif_masters($param1,$param2) {
+	public function tarrif($param1,$param2){
 	if($this->session_check()==true) {
-	$tbl_arry=array('trip_models','vehicle_makes','vehicle_ac_types','vehicle_types');
-	$this->load->model('user_model');
-	for ($i=0;$i<4;$i++){
+	$tbl_arry=array();
+	for ($i=0;$i<count($tbl_arry);$i++){
 	$result=$this->user_model->getArray($tbl_arry[$i]);
 	if($result!=false){
 	$data[$tbl_arry[$i]]=$result;
-	//print_r($result);exit;
-	//echo $result['id'];exit;
+	
 	}
 	else{
 	$data[$tbl_arry[$i]]='';
 	}
 	}
-	
+		//start
 		$condition='';
 	    $per_page=10;
-	    $like_arry='';
-	    
+	   
 	if(isset($_REQUEST['search'])){
-		$title = $this->input->post('search_title');
-		$trip_model_id = $this->input->post('search_trip_model');
-		$vehicle_ac_type_id = $this->input->post('search_ac_type');
-	 if(($title=='')&& ($trip_model_id == -1) && ($vehicle_ac_type_id ==-1)){
-	 $this->session->set_userdata('Required','Search with value !');
-	 redirect(base_url().'front-desk/tarrif-masters');
+		$fdate = $this->input->post('search_from_date');
+		$tdate = $this->input->post('search_to_date');
+		//valid date check
+		/*if(!$this->date_check($fdate)){
+	$this->mysession->set('Err_from_date','Invalid From Date for Tariff Search!');
+	}
+		if(!$this->date_check($tdate)){
+	$this->mysession->set('Err_to_date','Invalid To Date for Tariff Search!');
+	}*/
+		if($fdate!=''&& $tdate==''){
+		$tdate=date('Y-m-d');
+		}
+	 if(($fdate=='')&& ($tdate =='')){
+	 $this->session->set_userdata('Date','Search with value');
+	 redirect(base_url().'front-desk/tarrif');
 		}
 		else {
 		//show search results
 		
-	if((isset($_REQUEST['search_title'])|| isset($_REQUEST['search_trip_model'])||isset($_REQUEST['search_ac_type']))&& isset($_REQUEST['search'])){
+	if((isset($_REQUEST['search_from_date'])|| isset($_REQUEST['search_to_date']))&& isset($_REQUEST['search'])){
 	if($param2==''){
 	$param2='0';
+	} 
+	if(($_REQUEST['search_from_date']>= $tdate)){
+	$this->session->set_userdata('Date_err','Not a valid search');
 	}
+	if($_REQUEST['search_from_date']!=null){
 	
-	if($_REQUEST['search_title']!=null){
+	$where_arry['from_date >=']=$_REQUEST['search_from_date'];
+	}
+	if($_REQUEST['search_to_date']!=null){
+	$where_arry['to_date <=']= $_REQUEST['search_to_date'];
+	}
+	/*else{
+	$where_arry['to_date <=']= $tdate;
+	}*/
 	
-	$like_arry=array('title'=> $_REQUEST['search_title']); 
-	}
-	if($_REQUEST['search_trip_model']>0){
-	$where_arry['trip_model_id']=$_REQUEST['search_trip_model'];
-	}
-	if($_REQUEST['search_ac_type']>0){
-	$where_arry['vehicle_ac_type_id']=$_REQUEST['search_ac_type'];
-	}
-	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	$this->mysession->set('condition',array("where"=>$where_arry));
 	
+	//print_r($where_arry);
 	}
 	}
 	}
 	    
-		$tbl="tariff_masters";
-		if(is_null($this->mysession->get('condition'))){
-		$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+		$tbl="tariffs";
+		if(is_null($this->mysession->get('condition'))){ 
+			if(isset($where_arry)){
+			$this->mysession->set('condition',array("where"=>$where_arry));
+			}
 		}
-		$baseurl=base_url().'front-desk/tarrif-masters/';
+		$baseurl=base_url().'front-desk/tarrif/';
 		$uriseg ='4';
+		
+		
+		$p_res=$this->mypage->paging($tbl,$per_page,$param2,$baseurl,$uriseg,$model='');
 		if($param2==''){
 		$this->mysession->delete('condition');
 		}
-		
-		$p_res=$this->mypage->paging($tbl,$per_page,$param2,$baseurl,$uriseg,$model='');
-		
-		
-	$data['values']=$p_res['values'];
+	
+	$data['values']=$p_res['values'];//print_r($data['values']);exit;	
 	if(empty($data['values'])){
 	$data['result']="No Results Found !";
 	}
 	$data['page_links']=$p_res['page_links'];
-	$data['title']="Tarrif Masters | ".PRODUCT_NAME;  
-	$page='user-pages/tarrif_master';
+	//end
+	//$data['allDetails']=$this->user_model->getAll_tarrifDetails();
+	$data['title']="Tarrif| ".PRODUCT_NAME; 
+	$page='user-pages/tarrif';
 	$this->load_templates($page,$data);
-	
 	
 	}
 	else{
 			$this->notAuthorized();
 		}
-	
 	}
 	
 
@@ -449,6 +453,8 @@ class User extends CI_Controller {
 	$condition=array('id'=>$trip_id);
 	$values=$this->trip_booking_model->getDetails($condition);
 	if($values!=false){
+		if($values[0]->trip_status_id==TRIP_STATUS_PENDING || $values[0]->trip_status_id==TRIP_STATUS_ACCEPTED){
+
 	$data['id']=$trip_id;
 	if($values[0]->customer_id!=gINVALID){
 	$condition=array('id'=>$values[0]->customer_id);
@@ -480,7 +486,24 @@ class User extends CI_Controller {
 	$data['driver_id']=$values[0]->driver_id;
 	$data['radius']=1;
 	$data['distance_in_km_from_web']=$values[0]->distance_in_km_from_web;
-	
+	}else{
+	$data['id']=gINVALID;
+	$data['driver_id']=gINVALID;
+	$data['name']='';
+	$data['mobile']='';
+	$data['trip_from']='';
+	$data['trip_to']='';
+	$data['trip_from_landmark']='';
+	$data['trip_to_landmark']='';
+	$data['pick_up_date']=date('Y-m-d');;
+	$data['pick_up_time']='';	
+	$data['trip_from_lat']='';	
+	$data['trip_to_lat']='';
+	$data['trip_from_lng']='';
+	$data['trip_to_lng']='';
+	$data['radius']=1;
+	$data['distance_in_km_from_web']='';
+	}
 	}else{
 	$data['id']=gINVALID;
 	$data['driver_id']=gINVALID;
