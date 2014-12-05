@@ -125,7 +125,7 @@ echo form_close();?></td>
 					?>
 
 				</tbody>
-			</table><?php //echo $page_links;?>
+			</table><?php echo $page_links;?>
 		</div>
 		<?php } ?>
 	</fieldset>
