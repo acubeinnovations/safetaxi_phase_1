@@ -84,10 +84,11 @@ echo form_close();?></td>
 					   
 					    <th style="width:15%">Status</th>
 					    <th style="width:15%">Trips</th>
-					    <th  style="width:12%">Outstanding</th>
-					    <th  style="width:12%">Current</th>
-
-						<th style="width:11%">Closing</th>		
+					    <th  style="width:12%">Outstanding Balance</th>
+					    <th  style="width:12%">Current Invoice</th>
+					    <th style="width:11%">Current Payment</th>	
+						<th style="width:11%">Closing Balance</th>	
+						
 						<th style="width:11%">Action</th>						
 						
 					</tr>
@@ -110,9 +111,11 @@ echo form_close();?></td>
 					   	<td><?php echo $trips[$trip_index]['driverstatus'];?></td>
 					   	<td>0</td>
 					   	
-					   	<td><?php echo $Current = $trips[$trip_index]['Total']-$trips[$trip_index]['Outstanding']?></td>
-					   	<td><?php echo $trips[$trip_index]['Outstanding'];?></td>
-					   	<td><?php echo $total=$Current+$trips[$trip_index]['Outstanding'] ;?></td>
+					   	<td><?php echo $Outstanding = $trips[$trip_index]['Old_Invoice']-$trips[$trip_index]['Old_Payment']?></td>
+					   	<td><?php echo $Current_Invoice=$trips[$trip_index]['Current_Invoice'];?></td>
+					   	<td><?php echo $Current_Payment=$trips[$trip_index]['Current_Payment'];?></td>
+					   	<td><?php echo $Closing_Balance=$Outstanding+$Current_Invoice-$Current_Payment;?></td>
+					   	
 					    <td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['driverid']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?></td>
 					</tr>
 

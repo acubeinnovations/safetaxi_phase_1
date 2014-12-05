@@ -614,7 +614,7 @@ class User extends CI_Controller {
 	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount, VT.name as vouchertype,DP.voucher_number as voucher_number,
 	DP.payment_date as date,DP.period as Period,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.driver_id as Driver_id FROM driver_payment AS DP 
 	LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_types VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" 
-	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.created DESC';
+	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.period DESC';
 
 
 	
@@ -800,8 +800,12 @@ class User extends CI_Controller {
 	DP.voucher_type_id <> '".RECEIPT."' GROUP BY D.id DESC"; */
 
 
-	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name as Drivername, SUM(DP.dr_amount) as Total, 
-	SUM(CASE WHEN DP.period=month(NOW()) THEN DP.dr_amount ELSE 0 END) AS Outstanding FROM drivers as D 
+	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name as Drivername,
+	SUM(CASE WHEN DP.period=month(NOW()) THEN DP.dr_amount ELSE 0 END) AS Current_Invoice,
+	SUM(CASE WHEN DP.period<month(NOW()) THEN DP.dr_amount ELSE 0 END) AS Old_Invoice,
+	SUM(CASE WHEN DP.period=month(NOW()) THEN DP.cr_amount ELSE 0 END) AS Current_Payment,
+	SUM(CASE WHEN DP.period<month(NOW()) THEN DP.cr_amount ELSE 0 END) AS Old_Payment
+	 FROM drivers as D 
 	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id 
 	WHERE DP.period<=month(NOW()) AND DP.year<=year(NOW()) AND DP.voucher_type_id <>  '".RECEIPT."'  GROUP BY DP.driver_id DESC";
 

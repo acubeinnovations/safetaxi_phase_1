@@ -16,7 +16,7 @@ class Driver_invoice extends CI_Controller {
 			$voucher_type_id=$param3;
 			
 			if ($param2=="" && $param3=="") {
-				$condition = 'AND DP.period<='.date("m"). ' GROUP BY DP.id ORDER BY DP.period DESC';
+				$condition = 'AND DP.voucher_type_id <> "'.PAYMENT.'" AND DP.period<='.date("m"). ' GROUP BY DP.id ORDER BY DP.period DESC';
 			}elseif($param2!="" && $param3!=""){
 				$condition = 'AND DP.period="'.$period.'" AND DP.voucher_type_id="'.$voucher_type_id.'"'.' GROUP BY DP.period DESC';
 			}
@@ -68,6 +68,7 @@ class Driver_invoice extends CI_Controller {
 			$this->notAuthorized();
 		}
 	}
+
 		public function getDescription(){
 		$id=$_REQUEST['id'];
 		$tbl=$_REQUEST['tbl'];
