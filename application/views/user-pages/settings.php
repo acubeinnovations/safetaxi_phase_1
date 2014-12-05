@@ -138,7 +138,7 @@
 	<td style="width:5%;"></td>
 	<td><div class="form-group">
 		<?php echo form_open(base_url()."general/notification_view_statuses");?>
-		<?php echo form_label('Customer Group');?></td>
+		<?php echo form_label('Notification View Statuses');?></td>
 	<td><?php  
 		$class="form-control";
 		$tbl="notification_view_statuses";

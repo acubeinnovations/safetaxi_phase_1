@@ -22,7 +22,7 @@ class Tarrif_model extends CI_Model {
 	return true;
 	}
 	public function addTariff($data){
-	$id=$data['tariff_master_id'];
+	
 	$date=explode("-",$data['from_date']);
 	$year=$date[0];
 	$month=$date[1];
@@ -35,7 +35,7 @@ class Tarrif_model extends CI_Model {
 	$formatted_date = date('Y-m-d', $day_before);
 	$to_date='9999-12-30';
 	$tbl="tariffs";
-	$qry=$this->db->where(array('tariff_master_id'=>$id,'organisation_id'=>$data['organisation_id'],'to_date'=>$to_date));
+	$qry=$this->db->where(array('to_date'=>$to_date));
 	$qry=$this->db->get($tbl);
 	$result=$qry->result_array();
 	$from=$result[0]['from_date'];
