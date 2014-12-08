@@ -95,7 +95,7 @@ class Driver extends CI_Controller {
 
 			
 			$res=$this->driver_model->UpdateDriverdetails($data,$dr_id);
-			
+			print_r($res); exit;
 			if($res==true){
 				//edit driver as supplier in fa 
 				//$this->account_model->edit_fa_supplier($dr_id,"DR");
