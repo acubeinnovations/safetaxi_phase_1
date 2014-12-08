@@ -1,3 +1,4 @@
+
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class User extends CI_Controller {
@@ -1121,13 +1122,17 @@ class User extends CI_Controller {
 	}*/
 	//$tbl="drivers";
 	$baseurl=base_url().'front-desk/trips/';
-	$uriseg ='4';
+	$uriseg ='3';
 	//echo $param2; exit;
 	//echo $qry;//exit;
+
 	$p_res=$this->mypage->paging($tbl='',$per_page=8,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
-	
+	//print_r($p_res);exit;
+
 	$data['values']=$p_res['values'];
 	$data['page_links']=$p_res['page_links'];
+	
+
 	//$data['values']='';
 	//print_r($data['values']);exit;
 	$driver_trips='';

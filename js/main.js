@@ -89,12 +89,13 @@ function drawChart() {
 $('.print-trip').on('click',function(){
 var pickupdatepicker=$('.pickupdatepicker').val();
 var dropdatepicker=$('.dropdatepicker').val();
-var vehicles=$('#vehicles').val();
+//var vehicles=$('#vehicles').val();
 var drivers=$('#drivers').val();
+var customers=$('#customers').val();
 var trip_status=$('#trip-status').val();
-var url=base_url+'/organization/front-desk/download_xl/trips?';
+var url=base_url+'/front-desk/download_xl/trips?';
 
-if(pickupdatepicker!='' || dropdatepicker!='' || vehicles!='-1' || drivers!='-1' || trip_status!='-1' ){
+if(pickupdatepicker!='' || dropdatepicker!='' || drivers!='-1' || customers!='-1' || trip_status!='-1' ){
 if(pickupdatepicker!=''){
 url=url+'pickupdate='+pickupdatepicker;
 
@@ -103,12 +104,13 @@ if(dropdatepicker!=''){
 url=url+'&dropdate='+dropdatepicker;
 
 }
-if(vehicles!='-1'){
-url=url+'&vehicles='+vehicles;
 
-}
 if(drivers!='-1'){
 url=url+'&drivers='+drivers;
+
+}
+if(customers!='-1'){
+url=url+'&customers='+customers;
 
 }
 if(trip_status!='-1'){
@@ -116,15 +118,16 @@ url=url+'&trip_status='+trip_status;
 
 }
 
-window.open(url, '_blank');
+
 }
+window.open(url, '_blank');
 });
 
 
 $('.print-driver').on('click',function(){
 var name=$('#driver_name').val();
 var city=$('#driver_city').val();
-var url=base_url+'/organization/front-desk/download_xl/driver?';
+var url=base_url+'/front-desk/download_xl/driver?';
 
 if(name!=''){
 url=url+'name='+name;
@@ -144,7 +147,7 @@ var reg_num=$('#reg_num').val();
 var vehicle_owner=$('#vehicle-owner').val();
 var vehicle_model=$('#vehicle-model').val();
 var vehicle_ownership=$('#vehicle-ownership').val();
-var url=base_url+'/organization/front-desk/download_xl/vehicle?';
+var url=base_url+'/front-desk/download_xl/vehicle?';
 
 if(reg_num!=''){
 url=url+'reg_num='+reg_num;
@@ -175,7 +178,7 @@ var cust_mobile=$('#mobile').val();
 var cust_type=$('#c_type').val();
 var cust_group=$('#c_group').val();
 //alert("hi");exit;
-var url=base_url+'/organization/front-desk/download_xl/customers?';
+var url=base_url+'/front-desk/download_xl/customers?';
 
 if(cust_name!=''){
 url=url+'cust_name='+cust_name;
