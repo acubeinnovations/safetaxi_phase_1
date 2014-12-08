@@ -60,7 +60,7 @@ echo form_close();?></td>
 		</div>
 	
 	<div class="msg"> <?php 
-			if (isset($result)){ echo $result;} else {?></div>
+			if (isset($result)){ echo $result; } else {?></div>
 
 	
 		<div class="box-body table-responsive no-padding">
@@ -68,7 +68,7 @@ echo form_close();?></td>
 				<tbody>
 					<tr>	
 						 
-					     <th>Customer </th>
+					    <th>Customer </th>
 					    <th>Contact Details</th>
 					    <th>Trip Details</th>	
 						<th>Current Status</th>	
