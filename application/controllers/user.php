@@ -1,3 +1,4 @@
+
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class User extends CI_Controller {
@@ -979,7 +980,7 @@ class User extends CI_Controller {
 		if($this->session_check()==true) {
 			/* */
 			$trip_id=$param2;
-			$tbl_arry=array('drivers','trip_statuses');
+			$tbl_arry=array('customers','drivers','trip_statuses');
 			for ($i=0;$i<count($tbl_arry);$i++){
 					$result=$this->user_model->getArray($tbl_arry[$i]);
 					if($result!=false){
@@ -997,7 +998,11 @@ class User extends CI_Controller {
 				//for search
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
-	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from, T.trip_to AS trip_to,C.name as customer_name,C.mobile as mob,D.name as drivername,D.vehicle_registration_number as vehiclenumber,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
+	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,
+	 T.trip_to AS trip_to,C.name as customer_name,C.mobile as mob,D.name as drivername,D.vehicle_registration_number as vehiclenumber,
+	 TS.name AS tripstatus  FROM trips  AS T 
+	 LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id 
+	 LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
 	$condition="";	
 	if(isset($_REQUEST['trip_search'])){ 
 	if($param2==''){
@@ -1072,6 +1077,24 @@ class User extends CI_Controller {
 	}
 	}
 
+
+
+	if($_REQUEST['customers']!=null && $_REQUEST['customers']!=gINVALID){
+	$data['customer_id']=$_REQUEST['customers'];
+	
+	$where_arry['customer_id']=$_REQUEST['customers'];
+	if($condition==""){
+		$condition =' WHERE T.customer_id = '.$data['customer_id'];
+	}else{
+		$condition.=' AND T.customer_id = '.$data['customer_id'];
+	}
+	}
+
+
+
+
+
+
 	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
 	$data['status_id']=$_REQUEST['trip_status_id'];
 	//$date_now=date('Y-m-d H:i:s');
@@ -1086,8 +1109,8 @@ class User extends CI_Controller {
 
 
 	
-	echo $qry.'<br>';
-	echo $condition.'<br>';
+	//echo $qry.'<br>';
+	//echo $condition.'<br>';
 
 	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
 	} 
@@ -1099,13 +1122,17 @@ class User extends CI_Controller {
 	}*/
 	//$tbl="drivers";
 	$baseurl=base_url().'front-desk/trips/';
-	$uriseg ='4';
+	$uriseg ='3';
 	//echo $param2; exit;
 	//echo $qry;//exit;
+
 	$p_res=$this->mypage->paging($tbl='',$per_page=8,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
-	
+	//print_r($p_res);exit;
+
 	$data['values']=$p_res['values'];
 	$data['page_links']=$p_res['page_links'];
+	
+
 	//$data['values']='';
 	//print_r($data['values']);exit;
 	$driver_trips='';
@@ -1169,115 +1196,7 @@ class User extends CI_Controller {
 
 	}	
 	
-	public function CustomerTrips(){
-	if($this->session_check()==true) {
-		$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from, T.trip_to AS trip_to,C.name as customer_name,C.mobile as mob,D.name as drivername,D.vehicle_registration_number as vehiclenumber,TS.name AS tripstatus  FROM trips  AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
-	$condition="";	
-	if(isset($_REQUEST['trip_search'])){ 
-	if($param2==''){
-	$param2='0';
-	}
 
-	
-	
-	//to date starts
-	if($_REQUEST['from_date']!=null || $_REQUEST['to_date']!=null){
-	$data['from_date']=$_REQUEST['from_date'];
-	$data['to_date']=$_REQUEST['to_date'];
-	
-	$where_arry['from_date']=$_REQUEST['from_date'];
-	$where_arry['to_date']=$_REQUEST['to_date'];
-	if($_REQUEST['from_date']==''){
-		$from=$_REQUEST['from_date'];
-	}
-	if($_REQUEST['to_date']==''){
-		$to= date('t',strtotime($_REQUEST['from_date']));
-	}
-	if($condition==""){
-		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['from_date'].'"';
-
-
-
-
-	}else{
-		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['to_date'].'"';
-	}
-	
-	} 
-	//to date ends
-
-
-
-
-
-//
-	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
-	$data['driver_id']=$_REQUEST['drivers'];
-	
-	$where_arry['driver_id']=$_REQUEST['drivers'];
-	if($condition==""){
-		$condition =' WHERE T.driver_id = '.$data['driver_id'];
-	}else{
-		$condition.=' AND T.driver_id = '.$data['driver_id'];
-	}
-	}
-
-	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
-	$data['status_id']=$_REQUEST['trip_status_id'];
-	//$date_now=date('Y-m-d H:i:s');
-	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
-
-	if($condition==""){
-		$condition =' WHERE T.trip_status_id='.$data['status_id'];
-	}else{
-		$condition.=' AND T.trip_status_id='.$data['status_id'];
-	}
-	}
-
-
-	
-	echo $qry.'<br>';
-	echo $condition.'<br>';
-
-	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
-	} 
-
-
-	//echo "hellow";
-	/*if(is_null($this->mysession->get('condition'))){
-	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
-	}*/
-	//$tbl="drivers";
-	$baseurl=base_url().'front-desk/trips/';
-	$uriseg ='4';
-	//echo $param2; exit;
-	//echo $qry;//exit;
-	$p_res=$this->mypage->paging($tbl='',$per_page=8,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
-	
-	$data['values']=$p_res['values'];
-	$data['page_links']=$p_res['page_links'];
-	//$data['values']='';
-	//print_r($data['values']);exit;
-	$driver_trips='';
-	
-	$data['driver_trips']=$driver_trips;
-	if(empty($data['values'])){
-				$data['result']="No Results Found !";
-	}
-	$data['trips']=$data['values'];
-
-	
-			/* search condition ends*/
-			$data['title']="Trips | ".PRODUCT_NAME;  
-			$page='user-pages/customerTrips';
-		    $this->load_templates($page,$data);
-	    }else{
-			$this->notAuthorized();
-		}
-
-
-
-	}
 
 	public function load_templates($page='',$data=''){
 	if($this->session_check()==true) {

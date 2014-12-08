@@ -160,40 +160,119 @@ class Download_xl extends CI_Controller {
 		//echo $this->input->get('age');
 		
 			
-			if((isset($_REQUEST['pickupdate']) || isset($_REQUEST['dropdate']) || isset($_REQUEST['vehicles'])|| isset($_REQUEST['drivers'])|| isset($_REQUEST['trip_status']))){
-				$qry='SELECT VO.name as ownership,T.customer_id,T.customer_group_id,T.vehicle_model_id,T.driver_id,T.vehicle_id,T.guest_id,V.vehicle_ownership_types_id,T.tariff_id,T.trip_status_id,T.id as trip_id,T.booking_date,T.drop_date,T.drop_time,T.pick_up_date,T.pick_up_time,VM.name as model,V.registration_number,T.pick_up_city,T.pick_up_area,G.name as guest_name,G.mobile as guest_info,T.drop_city,T.drop_area,C.name as customer_name,C.mobile as customer_mobile,CG.name as customer_group,D.name as driver,D.mobile as driver_info FROM trips T LEFT JOIN vehicle_models VM ON VM.id=T.vehicle_model_id LEFT JOIN vehicles V ON V.id=T.vehicle_id LEFT JOIN customers G ON G.id=T.guest_id LEFT JOIN customers C ON C.id=T.customer_id LEFT JOIN customer_groups CG ON CG.id=T.customer_group_id LEFT JOIN drivers D ON D.id=T.driver_id LEFT JOIN vehicle_ownership_types VO ON V.vehicle_ownership_types_id=VO.id where T.organisation_id='.$this->session->userdata('organisation_id');
-				
-				if(isset($_REQUEST['pickupdate']) && isset($_REQUEST['dropdate'])){
-					
-					$qry.=' AND T.pick_up_date BETWEEN "'.$_REQUEST['pickupdate'].'" AND "'.$_REQUEST['dropdate'].'" AND T.drop_date BETWEEN "'.$_REQUEST['pickupdate'].'" AND "'.$_REQUEST['dropdate'].'"';		
-					
-				}else if(isset($_REQUEST['pickupdate'])){
-				
-				$qry.=' AND T.pick_up_date ="'.$_REQUEST['pickupdate'].'"';
-				
-				}else if(isset($_REQUEST['dropdate'])){
-				
-				$qry.=' AND T.drop_date ="'.$_REQUEST['dropdate'].'"';
+			if((isset($_REQUEST['pickupdate']) || isset($_REQUEST['dropdate']) || isset($_REQUEST['customers'])|| isset($_REQUEST['drivers'])|| 
+				isset($_REQUEST['trip_status']))){
+				$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,
+				 T.trip_to AS trip_to,C.name as customer_name,C.mobile as mob,D.name as drivername,D.vehicle_registration_number as vehiclenumber,
+				 TS.name AS tripstatus  FROM trips  AS T 
+				 LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id 
+				 LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
+				$condition="";	
+				if(isset($_REQUEST['trip_search'])){ 
+				if($param2==''){
+				$param2='0';
+				}
 
-				}
-				if(isset($_REQUEST['vehicles']) && $_REQUEST['vehicles']!=gINVALID){
-					
-					$qry.=' AND T.vehicle_id ="'.$_REQUEST['vehicles'].'"';
+				//driver search
+				if($_REQUEST['vehicle_number']!=null){
+				$data['vehiclenumber']= $_REQUEST['vehicle_number'];
+				if($condition==""){
+				$condition=' WHERE D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
+			}
+				$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
+				} 
+
+
+
 				
-				}
-				if(isset($_REQUEST['drivers']) && $_REQUEST['drivers']!=gINVALID){
-					
-					$qry.=' AND T.driver_id ="'.$_REQUEST['drivers'].'"';
-					
-				}
-				if(isset($_REQUEST['trip_status']) && $_REQUEST['trip_status']!=gINVALID){
-					
-					$qry.=' AND T.trip_status_id ="'.$_REQUEST['trip_status'].'"';
+				//from date
+				if($_REQUEST['trip_pick_date']!=null ){
+				$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
+				//$date_now=date('Y-m-d');
 				
-					
+				$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
+				if($condition==""){
+					$condition =' WHERE T.pick_up_date >= "'.$_REQUEST['trip_pick_date'].'"';
+
+
+
+
+				}else{
+					//$condition.=' AND T.pick_up_date >= "'.$date_now.'"';
 				}
+				
+				} 
+				//from date ends
+
+
+
+				//to date starts
+				if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
+				$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
+				//$date_now=date('Y-m-d H');
+
+				$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
+				if($condition==""){
+					$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+
+
+
+
+				}else{
+					$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+				}
+				
+				} 
+				//to date ends
+
+
+
+
+
+			//
+				if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
+				$data['driver_id']=$_REQUEST['drivers'];
+				
+				$where_arry['driver_id']=$_REQUEST['drivers'];
+				if($condition==""){
+					$condition =' WHERE T.driver_id = '.$data['driver_id'];
+				}else{
+					$condition.=' AND T.driver_id = '.$data['driver_id'];
+				}
+				}
+
+
+
+				if($_REQUEST['customers']!=null && $_REQUEST['customers']!=gINVALID){
+				$data['customer_id']=$_REQUEST['customers'];
+				
+				$where_arry['customer_id']=$_REQUEST['customers'];
+				if($condition==""){
+					$condition =' WHERE T.customer_id = '.$data['customer_id'];
+				}else{
+					$condition.=' AND T.customer_id = '.$data['customer_id'];
+				}
+				}
+
+
+
+
+
+
+				if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
+				$data['status_id']=$_REQUEST['trip_status_id'];
+				//$date_now=date('Y-m-d H:i:s');
+				$where_arry['dstatus']=$_REQUEST['trip_status_id'];
+
+				if($condition==""){
+					$condition =' WHERE T.trip_status_id='.$data['status_id'];
+				}else{
+					$condition.=' AND T.trip_status_id='.$data['status_id'];
+				}
+				}
+
 		
-					$qry.=' order by CONCAT(T.pick_up_date," ",T.pick_up_time) ASC';
+				$qry.=' order by CONCAT(T.pick_up_date," ",T.pick_up_time) ASC';
 			
 			
 			$data['trips']=$this->print_model->all_details($qry);
@@ -209,7 +288,7 @@ class Download_xl extends CI_Controller {
 	}
 
 	}
-	
+	}
 	public function load_templates($page='',$data=''){
 	if($this->session_check()==true) {
    	$this->load->view($page,$data);

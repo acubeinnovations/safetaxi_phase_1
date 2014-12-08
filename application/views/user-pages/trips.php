@@ -1,3 +1,4 @@
+
 <?php    if($this->session->userdata('dbSuccess') != '') { ?>
         <div class="success-message">
             <div class="alert alert-success alert-dismissable">
@@ -56,7 +57,14 @@ $trip_sl_no=$page;
 						 
 						 <td><?php $class="form-control";
 							  $id='drivers';
-						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id,$class,$id,$msg="Select Driver");?></td>
+						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id,$class,$id,$msg="Select Driver");?>
+						</td>
+
+						<td><?php $class="form-control";
+							  $id='customers';
+						echo $this->form_functions->populate_dropdown('customers',$customers,$customer_id="",$class,$id,$msg="Select Customer");?>
+						</td>
+
 						<td><?php $class="form-control";
 							  $id='trip-status';
 						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
