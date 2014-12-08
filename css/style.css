@@ -807,3 +807,6 @@ table.gridtable td {
 
 /*Print Driver Payments*/
 
+.width-30-percent-with-margin-left-20-Driver-View .body-head{
+    padding: 0!important;
+}

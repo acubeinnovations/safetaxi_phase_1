@@ -35,7 +35,7 @@
 	$device_sim_number='';
 	$app_key='';
 	$base_location='';
-	$status_description='';
+	//$status_description='';
 	
 
  if($this->mysession->get('post')!=null){
@@ -56,7 +56,7 @@
 	$device_sim_number=$data['device_sim_number'];
 	$app_key=$data['app_key'];
 	$base_location=$data['base_location'];
-	$status_description=$data['status_description'];
+	//$status_description=$data['status_description'];
 
 $this->mysession->delete('post');
 }
@@ -76,7 +76,7 @@ $this->mysession->delete('post');
 	$device_sim_number=$result['device_sim_number'];
 	$app_key=$result['app_key'];
 	$base_location=$result['base_location'];
-	$status_description=$result['status_description'];
+	//$status_description=$result['status_description'];
 
 } 
 ?>
@@ -214,11 +214,11 @@ $this->mysession->delete('post');
 	<?php echo $this->form_functions->form_error_session('base_location', '<p class="text-red">', '</p>'); ?>
     </div>
 
-    <div class="form-group">
-	<?php echo form_label('Status Description','usernamelabel'); ?>
-           <?php echo form_input(array('name'=>'status_description','class'=>'form-control','id'=>'status_description','placeholder'=>'Status Description','value'=>$status_description)); ?>
-	<?php echo $this->form_functions->form_error_session('status_description', '<p class="text-red">', '</p>'); ?>
-    </div>
+    <!--<div class="form-group">
+	<?php //echo form_label('Status Description','usernamelabel'); ?>
+           <?php //echo form_input(array('name'=>'status_description','class'=>'form-control','id'=>'status_description','placeholder'=>'Status Description','value'=>$status_description)); ?>
+	<?php //echo $this->form_functions->form_error_session('status_description', '<p class="text-red">', '</p>'); ?>
+    </div>-->
 
 
 	

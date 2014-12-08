@@ -108,7 +108,8 @@ public function getDriverDetails($data){
 	}
 
 	public function UpdateDriverdetails($data,$id){
-	$arry=array('id'=>$id,'organisation_id'=>$data['organisation_id']);
+
+	$arry=array('id'=>$id);
 	$this->db->set('updated', 'NOW()', FALSE);
 	$qry=$this->db->where($arry);
 	$qry=$this->db->update("drivers",$data);
