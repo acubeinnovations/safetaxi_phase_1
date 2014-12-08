@@ -154,7 +154,7 @@ class User extends CI_Controller {
 		}else{
 			$this->notAuthorized();
 		}
-		}else if($param1=='tarrif'&& ($param2== '' || is_numeric($param2))){
+		}else if($param1=='tariff'&& ($param2== '' || is_numeric($param2))){
 	
 		if($this->permission_for_all()==true) {
 				$this->tarrif($param1,$param2);
@@ -299,8 +299,8 @@ class User extends CI_Controller {
 	    $per_page=10;
 	   
 	if(isset($_REQUEST['search'])){
-		$fdate = $this->input->post('search_from_date');
-		$tdate = $this->input->post('search_to_date');
+		$data['search_from_date']=$fdate = $this->input->post('search_from_date');
+		$data['search_to_date']=$tdate = $this->input->post('search_to_date');
 		//valid date check
 		/*if(!$this->date_check($fdate)){
 	$this->mysession->set('Err_from_date','Invalid From Date for Tariff Search!');
@@ -365,8 +365,8 @@ class User extends CI_Controller {
 	$data['page_links']=$p_res['page_links'];
 	//end
 	//$data['allDetails']=$this->user_model->getAll_tarrifDetails();
-	$data['title']="Tarrif| ".PRODUCT_NAME; 
-	$page='user-pages/tarrif';
+	$data['title']="Tariff | ".PRODUCT_NAME; 
+	$page='user-pages/tariff';
 	$this->load_templates($page,$data);
 	
 	}

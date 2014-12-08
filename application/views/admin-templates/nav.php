@@ -93,7 +93,7 @@
 		                    </a>
 		                    <ul class="treeview-menu">
 		                       
-		                        <li><a href="<?php echo base_url().'front-desk/tarrif';?>"><i class="fa fa-angle-double-right"></i>Tariffs</a></li>
+		                        <li><a href="<?php echo base_url().'front-desk/tariff';?>"><i class="fa fa-angle-double-right"></i>Tariffs</a></li>
 		                        
 		                    </ul>
                         	</li>

@@ -25,7 +25,7 @@ class Trip_booking_model extends CI_Model {
 	}
 
 	function getLatestTariff(){
-	$qry = "SELECT id FROM tariffs  WHERE to_date='9999-12-30'";
+	$qry = "SELECT id FROM tariffs  WHERE ".date('Y-m-d')." between from_date and to_date";
 		$result=$this->db->query($qry);	
 		$result=$result->result_array();
 		if(count($result)>0){

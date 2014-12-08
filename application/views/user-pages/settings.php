@@ -53,7 +53,7 @@
 		<td><div  class="settings-add" ><?php echo nbs(5);?><i class="fa fa-plus-circle"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("add","Add","id=settings-add-id","class=btn");?></div
 		></td>
 	<td><div  class="settings-edit" ><?php echo nbs(5);?><i class="fa fa-edit"></i><?php echo nbs(5);?></div><div class="hide-me xx"><?php echo form_submit("edit","Edit","id=settings-edit-id","class=btn");?></div></td>
-		<td><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></td>
+		<td><div class="hide-me"><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></div></td>
 		<?php echo form_error('name', '<p class="text-red">', '</p>'); ?>
 		<?php echo form_close();?>
 	<td style="width:5%;"></td>
@@ -72,7 +72,7 @@
 		<td><div  class="settings-add" ><?php echo nbs(5);?><i class="fa fa-plus-circle"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("add","Add","id=settings-add-id","class=btn");?></div
 		></td>
 	<td><div  class="settings-edit" ><?php echo nbs(5);?><i class="fa fa-edit"></i><?php echo nbs(5);?></div><div class="hide-me xx"><?php echo form_submit("edit","Edit","id=settings-edit-id","class=btn");?></div></td>
-		<td><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></td>
+		<td><div class="hide-me"><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></div></td>
 		<?php echo form_error('name', '<p class="text-red">', '</p>'); ?>
 		<?php echo form_close();?>
 	</tr>
@@ -92,7 +92,7 @@
 		<td><div  class="settings-add" ><?php echo nbs(5);?><i class="fa fa-plus-circle"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("add","Add","id=settings-add-id","class=btn");?></div
 		></td>
 	<td><div  class="settings-edit" ><?php echo nbs(5);?><i class="fa fa-edit"></i><?php echo nbs(5);?></div><div class="hide-me xx"><?php echo form_submit("edit","Edit","id=settings-edit-id","class=btn");?></div></td>
-		<td><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></td>
+		<td><div class="hide-me"><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></div></td>
 		<?php echo form_error('name', '<p class="text-red">', '</p>'); ?>
 		<?php echo form_close();?>
 	<td style="width:5%;"></td>
@@ -111,7 +111,7 @@
 		<td><div  class="settings-add" ><?php echo nbs(5);?><i class="fa fa-plus-circle"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("add","Add","id=settings-add-id","class=btn");?></div
 		></td>
 	<td><div  class="settings-edit" ><?php echo nbs(5);?><i class="fa fa-edit"></i><?php echo nbs(5);?></div><div class="hide-me xx"><?php echo form_submit("edit","Edit","id=settings-edit-id","class=btn");?></div></td>
-		<td><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></td>
+		<td><div class="hide-me"><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></div></td>
 		<?php echo form_error('name', '<p class="text-red">', '</p>'); ?>
 		<?php echo form_close();?>
 	</tr>
@@ -131,7 +131,7 @@
 		<td><div  class="settings-add" ><?php echo nbs(5);?><i class="fa fa-plus-circle"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("add","Add","id=settings-add-id","class=btn");?></div
 		></td>
 	<td><div  class="settings-edit" ><?php echo nbs(5);?><i class="fa fa-edit"></i><?php echo nbs(5);?></div><div class="hide-me xx"><?php echo form_submit("edit","Edit","id=settings-edit-id","class=btn");?></div></td>
-		<td><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></td>
+		<td><div class="hide-me"><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></div></td>
 		<?php echo form_error('name', '<p class="text-red">', '</p>'); ?>
 		<?php echo form_close();?>
 
@@ -151,7 +151,7 @@
 		<td><div  class="settings-add" ><?php echo nbs(5);?><i class="fa fa-plus-circle"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("add","Add","id=settings-add-id","class=btn");?></div
 		></td>
 	<td><div  class="settings-edit" ><?php echo nbs(5);?><i class="fa fa-edit"></i><?php echo nbs(5);?></div><div class="hide-me xx"><?php echo form_submit("edit","Edit","id=settings-edit-id","class=btn");?></div></td>
-		<td><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></td>
+		<td><div class="hide-me"><div  class="settings-delete" ><?php echo nbs(5);?><i class="fa fa-trash-o"></i><?php echo nbs(5);?></div><div class="hide-me"><?php echo form_submit("delete","Delete","id=settings-delete-id","class=btn");?></div></div></td>
 		<?php echo form_error('name', '<p class="text-red">', '</p>'); ?>
 		<?php echo form_close();?>
 

@@ -41,7 +41,7 @@ $this->session->set_userdata('post','');
 <legend class="body-head">Search</legend>
 <table>
 	<tr>
-		<td><?php echo form_open(base_url()."front-desk/tarrif"); 
+		<td><?php echo form_open(base_url()."front-desk/tariff"); 
 		 echo form_input(array('name'=>'search_from_date','class'=>'fromdatepicker form-control' ,'placeholder'=>' From Date')); ?>
 		</td>
 		<td><?php  echo form_input(array('name'=>'search_to_date','class'=>'fromdatepicker form-control' ,'placeholder'=>' To Date')); ?></td>
@@ -77,7 +77,7 @@ $this->session->set_userdata('post','');
 		<tr>
 		<td>
 			<div class="form-group">
-				<?php echo form_open(base_url()."tarrif/tarrif_manage");
+				<?php echo form_open(base_url()."tariff/tarrif_manage");
 						echo form_input(array('name'=>'title','class'=>'form-control','id'=>'title','placeholder'=>'Title','value'=>$title)); 
 				?>
 			</div>
@@ -200,7 +200,7 @@ foreach($values as $det):
 <tr>
 <td>
 			<div class="form-group">
-				<?php echo form_open(base_url()."tarrif/tarrif_manage");
+				<?php echo form_open(base_url()."tariff/tarrif_manage");
 						echo form_input(array('name'=>'title','class'=>'form-control','id'=>'title','placeholder'=>'Title','value'=>$det['title']));
 						if(null!=$this->mysession->get('Err_title'.$det['id'])){
 							echo '<p class="text-red">'.$this->mysession->get('Err_title'.$det['id']).'</p>';

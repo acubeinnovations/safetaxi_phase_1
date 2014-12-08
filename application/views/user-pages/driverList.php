@@ -80,7 +80,7 @@
 					    <td><?php echo anchor(base_url().'front-desk/driver-profile/'.$det['id'],$det['name']).nbs(3);?></td>
 					    <td><?php echo $det['mobile'];?></td>	
 						<td><?php echo $det['vehicle_registration_number'];?></td>
-						<td><?php echo $det['app_key'];?></td>.
+						<td><?php echo $det['app_key'];?></td>
 						<td><?php echo $det['driver_status_id'];?></td>
 					</tr>
 					<?php endforeach;

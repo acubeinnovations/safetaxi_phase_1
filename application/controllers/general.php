@@ -23,7 +23,7 @@ class General extends CI_Controller {
 					}else if(isset($_REQUEST['edit'])){
 					$this->edit($tbl,$param1);
 					}else if(isset($_REQUEST['delete'])){
-					$this->delete($tbl,$param1);
+					/* $this->delete($tbl,$param1); */
 					}else{
 						$this->notFound();
 					}
@@ -108,6 +108,7 @@ class General extends CI_Controller {
 	
 	}
 	
+	/*
 	public function delete($tbl,$param1) {
 		if(isset($_REQUEST['delete'])){ 
 	
@@ -128,7 +129,7 @@ class General extends CI_Controller {
 				}
 			}
 		}
-	}
+	}*/
 	
 	public function notAuthorized(){
 	$data['title']='Not Authorized | '.PRODUCT_NAME;
