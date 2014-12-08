@@ -148,6 +148,10 @@ for ($i=0; $i < count($values); $i++)   {?>
 		</th>
 		<td width="50%" align="left">
 			<?php if($single_driver_record!=""){?>
+			<span style="font-size: 10px !important; color: #aaaaaa;">
+				Service Tax : 12% <br>
+			Edu cess: 2% (2% of basic Service Tax = 0.24 )<br>
+			Higher Edu.Cess-1% (1% of basic Service Tax = 0.12 )</span><br>
 			<b>Service Tax      :   <?php echo $service_tax;?><i>&nbsp;&nbsp;(12.36%)</i><br><br>
 				GRAND TOTAL     :   <?php echo $total_amount;?><br>	
 
