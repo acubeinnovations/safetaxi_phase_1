@@ -1126,7 +1126,7 @@ class User extends CI_Controller {
 	//echo $param2; exit;
 	//echo $qry;//exit;
 
-	$p_res=$this->mypage->paging($tbl='',$per_page=8,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	$p_res=$this->mypage->paging($tbl='',$per_page=25,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
 	//print_r($p_res);exit;
 
 	$data['values']=$p_res['values'];
