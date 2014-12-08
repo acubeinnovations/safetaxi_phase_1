@@ -1,5 +1,5 @@
 <?php 
-class Tarrif extends CI_Controller {
+class Tariff extends CI_Controller {
 	public function __construct()
 		{
 		parent::__construct();
@@ -29,7 +29,7 @@ class Tarrif extends CI_Controller {
 	$data['additional_kilometer_night_rate']=str_replace(",","",$this->input->post('additional_kilometer_night_rate'));
 	$data['user_id']=$this->session->userdata('id');
 
-	 $this->form_validation->set_rules('title','Title','trim|required|xss_clean|numeric');
+	 $this->form_validation->set_rules('title','Title','trim|required|xss_clean');
 	 $this->form_validation->set_rules('minimum_kilometers','Minimum Kilometers','trim|required|xss_clean|numeric');
 	 $this->form_validation->set_rules('from_date','Date ','trim|required|xss_clean');
 	 $this->form_validation->set_rules('day_rate','Day Rate','trim|required|xss_clean');
@@ -44,20 +44,20 @@ class Tarrif extends CI_Controller {
 	$this->session->set_userdata(array('Err_date'=>'Invalid Date!'));
 	}
 	
-	 if($this->form_validation->run()==False && $err==False){
+	 if($this->form_validation->run()==False || $err==False){
 		$this->session->set_userdata('post',$data);
-		redirect(base_url().'front-desk/tarrif',$data);	
+		redirect(base_url().'front-desk/tariff',$data);	
 	 }
 	 else{
 		 $res=$this->tarrif_model->addTariff($data);
 		if($res==true){
 		$this->session->set_userdata(array('dbSuccess'=>' Added Succesfully..!'));
 				    $this->session->set_userdata(array('dbError'=>''));
-				    redirect(base_url().'front-desk/tarrif');
+				    redirect(base_url().'front-desk/tariff');
 		}
 		else{
 		
-		redirect(base_url().'front-desk/tarrif');
+		redirect(base_url().'front-desk/tariff');
 		}
 	 }
 	}
@@ -136,7 +136,7 @@ class Tarrif extends CI_Controller {
 		if($res==true){
 		$this->session->set_userdata(array('dbSuccess'=>' Updated Succesfully..!'));
 				    $this->session->set_userdata(array('dbError'=>''));
-				    redirect(base_url().'front-desk/tarrif');
+				    redirect(base_url().'front-desk/tariff');
 		}
 		}
 	}
@@ -146,7 +146,7 @@ class Tarrif extends CI_Controller {
 		if($res==true){
 		$this->session->set_userdata(array('dbSuccess'=>' Deleted Succesfully..!'));
 				    $this->session->set_userdata(array('dbError'=>''));
-				    redirect(base_url().'organization/front-desk/tarrif');
+				    redirect(base_url().'organization/front-desk/tariff');
 		}
 	}*/
 	}
