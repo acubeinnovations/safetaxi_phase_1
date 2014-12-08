@@ -918,13 +918,14 @@ class User extends CI_Controller {
 	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
 	}*/
 	//$tbl="drivers";
-	$baseurl=base_url().'front-desk/list-driver/';
+	$baseurl=base_url().'front-desk/drivers-payments/';
 	$uriseg ='4';
 	//echo $param2; exit;
 	//echo $qry;//exit;
-	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	$p_res=$this->mypage->paging($tbl='',$per_page=25,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
 	//print_r($p_res);
 	$data['values']=$p_res['values'];
+	$data['page_links']=$p_res['page_links'];
 	//$data['values']='';
 	//print_r($data['values']);exit;
 	$driver_trips='';
@@ -1088,31 +1089,18 @@ class User extends CI_Controller {
 	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
 	}*/
 	//$tbl="drivers";
-	$baseurl=base_url().'front-desk/list-driver/';
+	$baseurl=base_url().'front-desk/trips/';
 	$uriseg ='4';
 	//echo $param2; exit;
 	//echo $qry;//exit;
-	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
-	//print_r($p_res);
+	$p_res=$this->mypage->paging($tbl='',$per_page=8,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	
 	$data['values']=$p_res['values'];
+	$data['page_links']=$p_res['page_links'];
 	//$data['values']='';
 	//print_r($data['values']);exit;
 	$driver_trips='';
-	$driver_statuses='';
-	for($i=0;$i<count($data['values']);$i++){
-		//$id=$data['values'][$i]['id'];
-		//print_r($data['values']);exit;
-		$id=1;
-		$availability=$this->driver_model->getCurrentStatuses($id);
-		if($availability==false){
-		$driver_statuses[$id]='Available';
-		$driver_trips[$id]=gINVALID;
-		}else{
-		$driver_statuses[$id]='OnTrip';
-		$driver_trips[$id]=$availability[0]['id'];
-		}
-	}
-	$data['driver_statuses']=$driver_statuses;
+	
 	$data['driver_trips']=$driver_trips;
 	if(empty($data['values'])){
 				$data['result']="No Results Found !";
@@ -1208,7 +1196,7 @@ public function	Customers($param2){
 			//print_r($data['customer_types']);exit;
 			$tbl="customers";
 			$baseurl=base_url().'front-desk/customers/';
-			$per_page=10;
+			$per_page=25;
 			$uriseg ='4';
 			
 			$where_arry='';
@@ -1402,6 +1390,7 @@ public function profile() {
 			
 			$data['trips']=$this->trip_booking_model->getDriverVouchers($param2);
 			}
+
 			
 			//sample ends
 				$data['title']="Driver Details | ".PRODUCT_NAME;  

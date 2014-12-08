@@ -92,7 +92,7 @@ echo form_close();?></td>
 					</tr>
 					<?php
 					
-					$trip_sl_no=1;
+					$trip_sl_no=1; 
 					for($trip_index=0;$trip_index<count($trips);$trip_index++){
 						
 						$pickdate=$trips[$trip_index]['pickup_date'];
@@ -121,7 +121,7 @@ echo form_close();?></td>
 						}
 					?>
 				</tbody>
-			</table><?php //echo $page_links;?>
+			</table><?php echo $page_links;?>
 		</div>
 		<?php } ?>
 	</fieldset>
