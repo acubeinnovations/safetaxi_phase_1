@@ -8,12 +8,12 @@ class Tariff extends CI_Controller {
 		no_cache();
 
 		}
-		public function session_check() {
-	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) {
-		return true;
-	} else {
-		return false;
-	}
+	public function session_check() {
+		if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	
@@ -65,7 +65,6 @@ class Tariff extends CI_Controller {
 	 $id= $this->input->post('manage_id');
 	 
 	 
-
 	 	$data['title']=$this->input->post('title');
 		$data['from_date']=$this->input->post('from_date');
 		$h_dtpicker=$this->input->post('h_dtpicker');
