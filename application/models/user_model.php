@@ -159,7 +159,7 @@ class user_model extends CI_Model {
 	
 	}
 	public function getTarrif_masters(){
-	$this->db->where('organisation_id',$this->session->userdata('organisation_id') );
+	//$this->db->where('organisation_id',$this->session->userdata('organisation_id') );
 	//$this->db->where('user_id',$this->session->userdata('id') );
 	$qry=$this->db->get('tariff_masters');
 	$count=$qry->num_rows();
@@ -175,7 +175,7 @@ class user_model extends CI_Model {
 			}
 	}
 	
-	public function getDriverList($organisation_id){
+	public function getDriverList(){
 	$qry=$this->db->select('id,name,phone,mobile');
 	//$qry=$this->db->where('organisation_id',$organisation_id);
 	$qry=$this->db->get('drivers');

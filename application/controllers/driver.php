@@ -34,16 +34,20 @@ class Driver extends CI_Controller {
 	$data['mobile']=$this->input->post('mobile');
 	$hmob=$this->input->post('hmob'); 
 	$data['email']=$this->input->post('email');
+
 	$hmail=$this->input->post('hmail');
 
 	$dr_id=$this->input->post('hidden_id');
+	
+
+
 
 	$data['vehicle_registration_number']=$this->input->post('vehicle_registration_number');
 	$data['device_imei']=$this->input->post('device_imei');
 	$data['device_sim_number']=$this->input->post('device_sim_number');
 	$data['app_key']=$this->input->post('app_key');
 	$data['base_location']=$this->input->post('base_location');
-	$data['status_description']=$this->input->post('status_description');
+	//$data['status_description']=$this->input->post('status_description');
 
 
 	$data['user_id']=$this->session->userdata('id');
@@ -58,7 +62,17 @@ class Driver extends CI_Controller {
 	 $this->form_validation->set_rules('state','State','trim|xss_clean');
 	 $this->form_validation->set_rules('pin_code','Pin Code','trim|xss_clean|regex_match[/^[0-9]{6}$/]');
 	 $this->form_validation->set_rules('mobile','Phone Number','trim|required|xss_clean|numeric]');
-	 $this->form_validation->set_rules('email','Email','trim|xss_clean|valid_email|is_unique[drivers.email]');
+	 if ($dr_id==gINVALID) {
+		 $this->form_validation->set_rules('email','Email','trim|xss_clean|valid_email|is_unique[drivers.email]');
+	}elseif($driver_id!=gINVALID){
+		if($hmail!=$data['email']){
+			 $this->form_validation->set_rules('email','Email','trim|xss_clean|valid_email|is_unique[drivers.email]');
+			}else{
+				 $this->form_validation->set_rules('email','Email','trim|xss_clean|valid_email');
+			}
+	}
+
+	
 
 
 	 $this->form_validation->set_rules('vehicle_registration_number','Vehicle Registration Number','trim|required|xss_clean');
@@ -66,7 +80,7 @@ class Driver extends CI_Controller {
 	 $this->form_validation->set_rules('device_sim_number','Device Sim Number','trim|required|xss_clean');
 	 $this->form_validation->set_rules('app_key','App Key','trim|required|xss_clean');
 	 $this->form_validation->set_rules('base_location','Base Location','trim|required|xss_clean');
-	 $this->form_validation->set_rules('status_description','Status Description','trim|required|xss_clean');
+	 //$this->form_validation->set_rules('status_description','Status Description','trim|required|xss_clean');
 
 	//echo "<pre>"; print_r($data); echo "</pre>"; exit();
 	
@@ -80,10 +94,9 @@ class Driver extends CI_Controller {
 	
 		if($dr_id==gINVALID ){
 			$res=$this->driver_model->addDriverdetails($data); 
+			print_r($res);
 			//$ins_id=$this->mysession->get('vehicle_id');
 			if($res){
-				//add driver as supplier in fa
-				$this->account_model->add_fa_supplier($res,"DR");
 
 				$this->session->set_userdata(array('dbSuccess'=>' Added Succesfully..!'));
 				$this->session->set_userdata(array('dbError'=>''));
