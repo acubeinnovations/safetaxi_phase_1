@@ -622,7 +622,7 @@ class User extends CI_Controller {
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
 	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount, VT.name as vouchertype,DP.voucher_number as voucher_number,
-	DP.payment_date as date,DP.period as Period,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.driver_id as Driver_id FROM driver_payment AS DP 
+	DP.payment_date as date,DP.period as Period,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.8956241257driver_id as Driver_id FROM driver_payment AS DP 
 	LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_types VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" 
 	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.period DESC';
 
@@ -1234,8 +1234,8 @@ public function	Customers($param2){
 			//print_r($data['customer_types']);exit;
 			$tbl="customers";
 			$baseurl=base_url().'front-desk/customers/';
-			$per_page=25;
-			$uriseg ='4';
+			$per_page=5;
+			$uriseg ='3';
 			
 			$where_arry='';
 			$like_arry='';
@@ -1262,6 +1262,17 @@ public function	Customers($param2){
 			}
 			if(is_null($this->mysession->get('condition'))){
 			$this->mysession->set('condition',array("where"=>$where_arry,"like"=>$like_arry));
+			}else{
+			$search_condition=$this->mysession->get('condition');
+			if(isset($search_condition['like']['name'])){
+			$data['customer']=$search_condition['like']['name'];
+			}
+			if(isset($search_condition['like']['mobile'])){
+			$data['mobile']=$search_condition['like']['mobile'];
+			}
+			if(isset($search_condition['where']['customer_status_id'])){
+			$data['customer_status_id']=$search_condition['where']['customer_status_id'];
+			}
 			}
 						
 			$paginations=$this->mypage->paging($tbl,$per_page,$param2,$baseurl,$uriseg,$model='');

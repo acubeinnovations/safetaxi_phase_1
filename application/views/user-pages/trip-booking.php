@@ -34,7 +34,7 @@
 				<!--trip-booking -start-->
 			<fieldset class="body-border">
 			<legend class="body-head">Trips</legend>
-				<div class="trip-booking">
+				<div class="trip-booking"><?php if($id!=gINVALID){ ?><div class="float-right"><a href="<?php echo base_url();?>front-desk/trip-booking" class="btn btn-sm btn-info">New Trip</a></div><?php } ?>
 					<?php	
 						$attributes = array('autocomplete'=>'off','id'=>'trip-form');
 						 echo form_open(base_url().'trip-booking/book-trip',$attributes); ?>

@@ -52,7 +52,7 @@ echo form_close();?></td>
 								  echo form_close(); 
 						?>
 						</td>-->
-						<td><?php echo form_button('print-customer','Print',"class='btn btn-primary print-customer'"); ?></td>
+						<td><div class="hide-me"><?php echo form_button('print-customer','Print',"class='btn btn-primary print-customer'"); ?></div></td>
 						
 					</tr>
 				</tbody>
