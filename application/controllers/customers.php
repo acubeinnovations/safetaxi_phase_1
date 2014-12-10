@@ -68,7 +68,9 @@ class Customers extends CI_Controller {
 		if(!empty($res)){
 		echo json_encode($res);
 		if(isset($_REQUEST['customer']) && $_REQUEST['customer']=='yes'){
+		ob_start();
 		$this->set_customer_session($res);
+		ob_end_clean();
 		}
 		}else{
 		echo false;

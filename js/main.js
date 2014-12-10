@@ -306,7 +306,7 @@ var API_KEY='AIzaSyBy-tN2uOTP10IsJtJn8v5WvKh5uMYigq8';
 //address
 
 var options = {
-			 types:  ['establishment'],
+			 
 		    componentRestrictions: {country: "IN"}
 		 };
 var autocompletepickup = new google.maps.places.Autocomplete($("#pickup")[0], options);
@@ -1030,7 +1030,7 @@ var h = Math.floor(total_min/60); //Get whole hours
 
 window.setInterval(function(){
 var current_loc=window.location.href;
-current_loc=current_loc.split('/');
+current_loc=current_Ambedkarloc.split('/');
 current_loc.length;
 if(current_loc[current_loc.length-1]=='trip-booking' || current_loc[current_loc.length-2]=='trip-booking'){
 notify();
@@ -1258,6 +1258,9 @@ if (newd < now) {
 }
 }
 
+}else{
+
+	return true;
 }
 }
 }

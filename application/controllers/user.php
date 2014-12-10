@@ -1,4 +1,3 @@
-
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class User extends CI_Controller {
@@ -210,7 +209,14 @@ class User extends CI_Controller {
 	public function checking_credentials() {
 	if($this->session_check()==true) {
         	
-				 redirect(base_url().'front-desk');
+				 if($this->session->userdata('permission')==PERMISSION_FOR_ALL){
+					 redirect(base_url().'front-desk');
+					}else  if($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){
+
+						 redirect(base_url().'front-desk/trip-booking');
+					}else  if($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS){
+						 redirect(base_url().'front-desk/trips');
+					}
 				 
 		} else if(isset($_REQUEST['username']) && isset($_REQUEST['password'])) {
 			 
@@ -233,15 +239,15 @@ class User extends CI_Controller {
 				 if($this->session->userdata('loginAttemptcount') > 1){
 		       	 $this->user_model->clearLoginAttempts($username);
 				 }
-				 if($this->session->userdata('type')==FRONT_DESK){
+				 if($this->session->userdata('type')==FRONT_DESK){	
 					 if($this->session->userdata('permission')==PERMISSION_FOR_ALL){
-					 redirect(base_url().'front-desk');
-					}else  if($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){
-
-						 redirect(base_url().'front-desk/trip-booking');
-					}else  if($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS){
+					 	redirect(base_url().'front-desk');
+					}elseif($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){
+						redirect(base_url().'front-desk/trip-booking');
+					}elseif($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS){
 						 redirect(base_url().'front-desk/trips');
-					}	
+					}
+			
 				 }
 				 
 		        
@@ -264,7 +270,8 @@ class User extends CI_Controller {
 	
 	
 	public function show_login() 
-	{   $data['title']="Login | ".PRODUCT_NAME;	
+	{  
+		 $data['title']="Login | ".PRODUCT_NAME;	
 		$this->load->view('user-pages/login',$data);
 		
     }
@@ -717,10 +724,6 @@ class User extends CI_Controller {
 	}
 
 
-	
-	echo $qry.'<br>';
-	echo $condition.'<br>';
-
 	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
 	} 
 
@@ -916,9 +919,6 @@ class User extends CI_Controller {
 
 
 	
-	echo $qry.'<br>';
-	echo $condition.'<br>';
-
 	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
 	} 
 
@@ -1579,6 +1579,4 @@ public function profile() {
 			return TRUE;
 		}
 	}
-
-	
 }

@@ -772,8 +772,18 @@ font-size:11px;
 .ajax-notifications{
 min-height:618px;
 }
+.hdpi.pac-container:after{
+background:none;
 
 
+}
+.pac-container:after{
+content:"Powered By Acube";
+background:none;
+color:#F4543C;
+margin-bottom:5px;
+margin-right:5px;
+}
 
 /* trips safe-taxi end*/
 

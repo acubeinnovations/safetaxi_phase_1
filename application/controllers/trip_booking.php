@@ -298,9 +298,7 @@ class Trip_booking extends CI_Controller {
 
 					$this->session->set_userdata(array('dbSuccess'=>'Trip Updated Succesfully..!!'));
 					$this->session->set_userdata(array('dbError'=>''));
-					if($dbdata['trip_status_id']==TRIP_STATUS_ACCEPTED){
-						//$this->SendTripConfirmation($dbdata,$data['id'],$customer);
-					}
+					
 				}else{
 					$this->session->set_userdata(array('dbError'=>'Trip Updated unsuccesfully..!!'));
 					$this->session->set_userdata(array('dbSuccess'=>''));
