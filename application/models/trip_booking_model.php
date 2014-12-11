@@ -146,7 +146,7 @@ SELECT max( id ) FROM vehicle_locations_logs GROUP BY app_key ) ORDER BY VL.crea
 
 	function getAvailableVehicles($data){
 	
-	$qry = sprintf("SELECT VL.app_key, VL.created, VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) ) AS distance
+	$qry = sprintf("SELECT VL.app_key, VL.created, VL.id, VL.lat, VL.lng, (( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) )*1000 ) AS distance
 FROM vehicle_locations_logs AS VL
 LEFT JOIN drivers AS D ON D.app_key = VL.app_key
 WHERE VL.id
@@ -163,6 +163,11 @@ ORDER BY VL.created DESC",
   mysql_real_escape_string($data['center_lat']),
   mysql_real_escape_string($data['radius'])); 
 	//echo $qry;exit;
+	//inner query with time check
+	/*SELECT max( id )
+FROM vehicle_locations_logs WHERE  TIMEDIFF( NOW(),created) <= '00:15:00'
+GROUP BY app_key
+	*/
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){

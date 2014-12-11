@@ -708,7 +708,9 @@ data=jQuery.parseJSON(data);
 if(data.No_Data=='false'){
 
 var tot_distance = data.distance.replace(/\km\b/g, '');
-$('.distance_from_web').attr('value',tot_distance);
+var tot_distance = tot_distance.replace(/\,\b/g, '');
+
+$('.distance_from_web').attr('value',Trim(tot_distance));
 
 }
 });

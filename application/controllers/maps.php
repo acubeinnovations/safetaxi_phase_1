@@ -35,7 +35,7 @@ class Maps extends CI_Controller {
 		
 		public function getDistance(){
 		if(isset($_REQUEST['url'])) {
-		$target_url=$_REQUEST['url'];
+		$target_url=str_replace(' ', '+',$_REQUEST['url']) ;
 			$data=file_get_contents($target_url);
 			$decode = json_decode($data);//print_r($data);exit;
 			if(isset($decode->rows[0]->elements[0]->status) && $decode->rows[0]->elements[0]->status!='NOT_FOUND') {
