@@ -3,7 +3,7 @@ class  Mypage{
 
 
 
-function paging($tbl,$per_page,$offset='',$baseurl,$Uriseg,$custom='',$qry=''){
+function paging($tbl,$per_page,$offset='',$baseurl,$Uriseg,$custom='',$qry='',$parameters=''){
 		$CI = & get_instance();
 		$CI->load->model('page_model');
 		$config['base_url'] = $baseurl; 
@@ -23,7 +23,7 @@ function paging($tbl,$per_page,$offset='',$baseurl,$Uriseg,$custom='',$qry=''){
 			//print_r($data['values']); exit;
 		}
 		$CI->pagination->initialize($config);
-		$data['page_links']=$CI->pagination->create_links();
+		$data['page_links']=$CI->pagination->create_links($parameters);
 		
 		return $data;
 		

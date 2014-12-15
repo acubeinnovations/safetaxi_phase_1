@@ -146,7 +146,7 @@ SELECT max( id ) FROM vehicle_locations_logs GROUP BY app_key ) ORDER BY VL.crea
 
 	function getAvailableVehicles($data){
 	
-	$qry = sprintf("SELECT VL.app_key, VL.created, VL.id, VL.lat, VL.lng, (( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) )*1000 ) AS distance
+	$qry = sprintf("SELECT VL.app_key, VL.created, VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) ) AS distance
 FROM vehicle_locations_logs AS VL
 LEFT JOIN drivers AS D ON D.app_key = VL.app_key
 WHERE VL.id
@@ -260,7 +260,7 @@ GROUP BY app_key
 	}
 
 	function getTodaysTripsDriversDetails(){
-$qry='SELECT T.id,T.pick_up_date,T.pick_up_time,T.drop_date,T.drop_time,T.pick_up_city,T.drop_city,D.id,D.name FROM trips AS T LEFT JOIN drivers AS D ON  T.driver_id =D.id AND T.trip_status_id='.TRIP_STATUS_CONFIRMED.' WHERE (T.pick_up_date="'.date('Y-m-d').'" OR T.drop_date="'.date('Y-m-d').'") OR ((T.pick_up_date < "'.date('Y-m-d').'" AND T.drop_date > "'.date('Y-m-d').'"))';
+$qry='SELECT T.id,T.pick_up_date,T.pick_up_time,T.trip_from,T.trip_to,D.id as driver_id,D.name FROM trips AS T LEFT JOIN drivers AS D ON  D.id =T.driver_id  WHERE T.trip_status_id='.TRIP_STATUS_ACCEPTED.' AND  T.pick_up_date="'.date('Y-m-d').'"';
 
 	$result=$this->db->query($qry);
 	$result=$result->result_array();

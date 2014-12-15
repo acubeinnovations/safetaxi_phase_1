@@ -90,6 +90,13 @@ class User extends CI_Controller {
 		}else{
 			$this->notAuthorized();
 		}
+		}elseif($param1=='driver-notifications'){
+
+		if($this->permission_for_all()==true) {
+			$this->DriverNotifications($param2);
+		}else{
+			$this->notAuthorized();
+		}
 		}elseif($param1=='trips'){
 		if($this->permission_for_all()==true) {
 			$this->Trips($param2);
@@ -465,6 +472,11 @@ class User extends CI_Controller {
 	if($this->session_check()==true) {
 	if($this->mysession->get('post')!=NULL){
 		$data=$this->mysession->get('post');
+		if($this->session->userdata('customer_id')==null){
+			$data['added_customer']='false';
+		}else{
+			$data['added_customer']='true';
+		}
 		$this->mysession->delete('post');
 	}else if($trip_id!=''){
 	$condition=array('id'=>$trip_id);
@@ -503,6 +515,7 @@ class User extends CI_Controller {
 	$data['driver_id']=$values[0]->driver_id;
 	$data['radius']=1;
 	$data['distance_in_km_from_web']=$values[0]->distance_in_km_from_web;
+	$data['added_customer']='true';
 	}else{
 	$data['id']=gINVALID;
 	$data['driver_id']=gINVALID;
@@ -520,6 +533,7 @@ class User extends CI_Controller {
 	$data['trip_to_lng']='';
 	$data['radius']=1;
 	$data['distance_in_km_from_web']='';
+	$data['added_customer']='false';
 	}
 	}else{
 	$data['id']=gINVALID;
@@ -538,6 +552,7 @@ class User extends CI_Controller {
 	$data['trip_to_lng']='';
 	$data['radius']=1;
 	$data['distance_in_km_from_web']='';
+	$data['added_customer']='false';
 	}
 	}else{
 	$data['id']=gINVALID;
@@ -556,6 +571,7 @@ class User extends CI_Controller {
 	$data['trip_to_lng']='';
 	$data['radius']=1;
 	$data['distance_in_km_from_web']='';
+	$data['added_customer']='false';
 	}
 	$tbl_arry=array();
 	
@@ -578,8 +594,8 @@ class User extends CI_Controller {
 	}else{
 		$data['list_of_drivers']='';
 	}
+
 	$data['title']="Trip Booking | ".PRODUCT_NAME;  
-	
 	$page='user-pages/trip-booking';
 	$this->load_templates($page,$data);
 	
@@ -1154,6 +1170,118 @@ class User extends CI_Controller {
 		
 	}	
 	
+
+	public function DriverNotifications($param2){
+		if($this->session_check()==true) {
+			
+			$trip_id=$param2;
+			$tbl_arry=array('notification_view_statuses','notification_types');
+			for ($i=0;$i<count($tbl_arry);$i++){
+					$result=$this->user_model->getArray($tbl_arry[$i]);
+					if($result!=false){
+					$data[$tbl_arry[$i]]=$result;
+					}
+					else{
+					$data[$tbl_arry[$i]]='';
+					}
+			}	
+			
+			
+			
+	$qry="SELECT T.id AS trip_id ,NT.name as notification_type,NVS.name as notification_view_status,NVS.id AS notification_view_status_id, N.id  AS notification_id , T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,
+	 T.trip_to AS trip_to,C.name as customer,C.mobile as mobile,D.name as drivername,D.vehicle_registration_number as vehiclenumber,
+	 TS.name AS tripstatus  FROM notifications  AS N
+	 LEFT JOIN drivers AS D  ON D.app_key=N.app_key
+	 LEFT JOIN  trips AS T ON T.id=N.trip_id
+	 LEFT JOIN  customers AS C ON C.id=T.customer_id 
+	 LEFT JOIN notification_types AS NT  ON NT.id=N.notification_type_id 
+	 LEFT JOIN 	notification_view_statuses AS NVS ON NVS.id=N.notification_view_status_id
+	 LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
+	$condition="";	
+	$baseurl=base_url().'front-desk/driver-notifications/';
+	if(isset($_GET['id']) && is_numeric($_GET['id'])){
+	$parameters='?id='.$_GET['id'];
+	$qry.=" WHERE D.id=".$_GET['id'];
+	$data['id']=$_GET['id'];
+	}else{
+		redirect(base_url().'front-desk/list-driver');
+	}
+	if($param2=='' || $param2=='1'){
+	$param2='0';
+	}
+	
+	
+	if(isset($_GET['period']) && $_GET['period']!=gINVALID){
+		$data['period']=$_GET['period'];
+		$todatefinder=$data['period'].'/'.date('d/Y');
+		$lastday = date('t',strtotime(date('m/d/Y',strtotime($todatefinder))));
+		$fromdate=date('Y').'-'.$data['period'].'-'.'01 00:00:00';
+		$todate=date('Y').'-'.$data['period'].'-'.$lastday.' 23:59:59';
+		$qry.=' AND N.created BETWEEN "'.$fromdate.'" AND "'.$todate.'"';
+		$parameters.='&period='.$_GET['period'];
+		
+	}else{
+
+		$data['period']='';
+
+	}
+	if(isset($_GET['notification_view_status']) && $_GET['notification_view_status']!=gINVALID){
+		$data['notification_view_status']=$_GET['notification_view_status'];
+		$qry.=' AND N.notification_view_status_id='.$data['notification_view_status'];
+		$parameters.='&notification_view_status='.$_GET['notification_view_status'];
+		
+	}else{
+
+		$data['notification_view_status']='';
+
+	}
+	if(isset($_GET['notification_type']) && $_GET['notification_type']!=gINVALID){
+		$data['notification_type']=$_GET['notification_type'];
+		
+		$qry.=' AND N.notification_type_id='.$data['notification_type'];
+		$parameters.='&notification_type='.$data['notification_type'];
+		
+	}else{
+
+		$data['notification_type']='';
+	
+	}
+
+	
+	$uriseg ='3';
+	//echo $qry; exit;
+	
+	$p_res=$this->mypage->paging($tbl='',$per_page=2,$param2,$baseurl,$uriseg,$custom='yes',$qry,$parameters);
+	$data['notification_sl_no']=$param2+1;
+	$data['values']=$p_res['values'];
+	$data['periods']=$p_res['values'];
+	$data['periods']=array("1"=>"January","2"=>"February","3"=>"March","4"=>"April","5"=>"May","6"=>"June","7"=>"July","8"=>"August","9"=>"September","10"=>"October","11"=>"November",
+"12"=>"December");
+	$data['page_links']=$p_res['page_links'];
+	/*echo '<pre>';
+	print_r($data['values']);
+	echo '</pre>';exit;*/
+	
+	if(empty($data['values'])){
+		$data['msg']="No Results Found !";
+	}else{
+		$data['msg']="";
+	}
+	$data['trips']=$data['values'];
+
+	
+			/* search condition ends*/
+			$data['title']="Notifications | ".PRODUCT_NAME;  
+			$page='user-pages/driver-notifications';
+		    $this->load_templates($page,$data);
+		    }else{
+				$this->notAuthorized();
+			}
+		
+	}
+
+
+
 	public function Customer($param2=''){
 		if($this->session_check()==true) {
 		$data['mode']=$param2;
@@ -1452,21 +1580,111 @@ public function profile() {
 	
 	  public function ShowDriverList($param1,$param2) {
 	if($this->session_check()==true) {
-	$data['values']=$this->driver_model->getDrivers();
+	
 	$data['drivers']=$this->driver_model->getDriversArray($condition=''); 
-	$data['title']='List Driver| '.PRODUCT_NAME;
+			
+	$qry="SELECT D.id,D.name,D.mobile,D.vehicle_registration_number,D.app_key,DS.name as driver_status,D.driver_status_id FROM drivers AS D
+	 LEFT JOIN driver_statuses AS DS ON DS.id=D.driver_status_id";
+	
+	$baseurl=base_url().'front-desk/list-driver/';
+	$parameters='';
+	if(isset($_GET['id']) && is_numeric($_GET['id'])){
+	$parameters='?id='.$_GET['id'];
+	$condition=" WHERE D.id=".$_GET['id'];
+	$data['id']=$_GET['id'];
+	}
+
+	if($param2=='' || $param2=='1'){
+	$param2='0';
+	}
+	
+	
+	if(isset($_GET['driver_name']) && $_GET['driver_name']!=''){
+		$data['driver_name']=$_GET['driver_name'];
+		
+		if($condition!=''){
+		$condition.=' AND D.name LIKE "%'.$data['driver_name'].'%"';
+		$parameters.='&driver_name='.$_GET['driver_name'];
+		}else{
+		$condition=' WHERE D.name LIKE "%'.$data['driver_name'].'%"';
+		$parameters='?driver_name='.$_GET['driver_name'];
+		}
+		
+		
+	}else{
+
+		$data['driver_name']='';
+
+	}
+	if(isset($_GET['driver_city']) && $_GET['driver_city']!=''){
+		$data['driver_city']=$_GET['driver_city'];
+		
+		if($condition!=''){
+		$condition.=' AND D.city LIKE "%'.$data['driver_city'].'%"';
+		$parameters.='&driver_name='.$_GET['driver_name'];
+		}else{
+		$condition=' WHERE D.city LIKE "%'.$data['driver_city'].'%"';
+		$parameters='?driver_city='.$_GET['driver_city'];
+		}
+	}else{
+
+		$data['driver_city']='';
+
+	}
+	if(isset($_GET['status']) && $_GET['status']!=gINVALID){
+		$data['status_id']=$_GET['status'];
+		if($condition!=''){
+		$condition.=' AND D.driver_status_id='.$data['status_id'];
+		$parameters.='&status='.$data['status_id'];
+		}else{
+		$condition=' WHERE D.driver_status_id='.$data['status_id'];
+		$parameters='?status='.$data['status_id'];
+		}
+		
+	}else{
+
+		$data['status_id']='';
+	
+	}
+	if(isset($_GET['drivers']) && $_GET['drivers']!=gINVALID){
+		$data['driver_id']=$_GET['drivers'];
+		if($condition!=''){
+		$condition.=' AND D.id='.$data['driver_id'];
+		$parameters.='&drivers='.$data['driver_id'];
+		}else{
+		$condition=' WHERE D.id='.$data['driver_id'];
+		$parameters='?drivers='.$data['driver_id'];
+		}
+		
+	}else{
+
+		$data['driver_id']='';
+	
+	}
+	
+	$uriseg ='3';
+	//echo $qry.$condition; exit;
+	
+	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition,$parameters);
+	$data['driver_sl_no']=$param2+1;
+	$data['values']=$p_res['values'];
+	$data['page_links']=$p_res['page_links'];
+	
+	if(empty($data['values'])){
+		$data['results']="No Results Found";
+	}else{
+		$data['results']='true';
+	}
+
+	$data['title']='List Drivers | '.PRODUCT_NAME;
 	$page='user-pages/driverList';
 	$this->load_templates($page,$data);	
 	}
 
-	/////////////////////////////////////////for search
+	
 
 	}
-	///for search
 	
-	
-	
-		
 		public function ShowDriverProfile($param1,$param2){
 			if($this->session_check()==true) {
 			$data['mode']=$param2;

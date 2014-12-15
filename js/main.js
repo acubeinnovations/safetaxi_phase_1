@@ -44,12 +44,15 @@ function drawChart() {
 	var P_time=[];
 	var D_time=[];
 	var json_obj=[];
+	cyear=new Date().getFullYear();
+	cdate=new Date().getDate();
+	cmonth=new Date().getMonth();
 	json_obj.push([
-  	'All Drivers','Trips Time-Sheet of Connect and Cabs',new Date(0,0,0,0,0,0),new Date(0,0,0,24,0,0)
+  	'All Drivers','Trips Time-Sheet of Safe Taxi',new Date(cyear,cmonth,cdate,0,0,0),new Date(cyear,cmonth,cdate,23,59,59)
 	]);
 	for(var i=0;i<data.length;i++){
 		P_date=data[i].pick_up_date.split('-');
-		D_date=data[i].drop_date.split('-');
+		D_date=data[i].pick_up_date.split('-');
 		if(data[i].pick_up_date==currentDate){
 			P_time=data[i].pick_up_time.split(':');
 			
@@ -57,16 +60,13 @@ function drawChart() {
 			P_time[0]='00';
 			P_time[1]='00';
 		}
-		if(data[i].drop_date==currentDate){
-			D_time=data[i].drop_time.split(':');
-		}else{
-			D_time[0]='23';
-			D_time[1]='59';
-		}
+		
 		var pickdate=new Date(0,0,0,P_time[0],P_time[1],00);
-		var dropdate=new Date(0,0,0,D_time[0],D_time[1],00);
+		var dropdate=new Date(0,0,0,P_time[0],P_time[1],00);
+		dropdate=new Date(dropdate.getTime() + 30*60000);
+	
 		json_obj.push([
-	  	data[i].name,data[i].pick_up_city+' to '+data[i].drop_city,pickdate,dropdate
+	  	data[i].name,data[i].trip_from+' to '+data[i].trip_to,pickdate,dropdate
 		]);
 		
 	}
@@ -141,35 +141,7 @@ window.open(url, '_blank');
 
 });
 
-$('.print-vehicle').on('click',function(){
 
-var reg_num=$('#reg_num').val();
-var vehicle_owner=$('#vehicle-owner').val();
-var vehicle_model=$('#vehicle-model').val();
-var vehicle_ownership=$('#vehicle-ownership').val();
-var url=base_url+'/front-desk/download_xl/vehicle?';
-
-if(reg_num!=''){
-url=url+'reg_num='+reg_num;
-
-}
-if(vehicle_owner!='-1'){
-url=url+'&vehicle_owner='+vehicle_owner;
-
-}
-if(vehicle_model!='-1'){
-url=url+'&vehicle_model='+vehicle_model;
-
-}
-if(vehicle_ownership!='-1'){
-url=url+'&vehicle_ownership='+vehicle_ownership;
-
-}
-window.open(url, '_blank');
-//window.location.replace(url);
-
-
-});
 
 $('.print-customer').on('click',function(){
 
@@ -513,9 +485,11 @@ var mobile=$('#mobile').val();
 			
 		$('.clear-customer').show();
 		$('.add-customer').hide();
+		$('.add-customer').attr('added_customer','true');
       }else{
 		$('.clear-customer').hide();
 		$('.add-customer').show();
+		$('.add-customer').attr('added_customer','false');
 		$('#customer').val('');
 	}
 	});
@@ -533,14 +507,14 @@ var mobile=$('#mobile').val();
 		$("label[for=name_error]").css('display','none');
 		$("label[for=mobile_error]").css('display','none');
 		$('#customer-group').val('');
-		
+		$('.add-customer').attr('added_customer','false');
 
 	});
 	
 
 	//add pasenger informations
 	$('.add-customer').click(function(){
-		var name =$('#customer').val();
+		var name =$('#c1ustomer').val();
 		var mobile=$('#mobile').val();
 		var error_mobile ="";
 		var error_name='';
@@ -1032,7 +1006,7 @@ var h = Math.floor(total_min/60); //Get whole hours
 
 window.setInterval(function(){
 var current_loc=window.location.href;
-current_loc=current_Ambedkarloc.split('/');
+current_loc=current_loc.split('/');
 current_loc.length;
 if(current_loc[current_loc.length-1]=='trip-booking' || current_loc[current_loc.length-2]=='trip-booking'){
 notify();
@@ -1210,12 +1184,23 @@ checkPastDate();
 });
 
 $('.book_trip').click(function(){
+var added_customer=$('.add-customer').attr('added_customer');
 if(checkPastDate()==true){
-$('.book_trip_submit').trigger('click');
+	if(added_customer=='true'){
+
+		$('.book_trip_submit').trigger('click');
+
+	}else{
+
+		alert("Add Customer Informations");
+		return false;
+
+	}
 
 }else{
 
-return false;
+	return false;
+
 }
 
 });

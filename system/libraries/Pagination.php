@@ -112,7 +112,7 @@ class CI_Pagination {
 	 * @access	public
 	 * @return	string
 	 */
-	function create_links()
+	function create_links($parameters='')
 	{
 		// If our item count or per-page total is zero there is no need to continue.
 		if ($this->total_rows == 0 OR $this->per_page == 0)
@@ -245,12 +245,12 @@ class CI_Pagination {
 
 			if ($i == 0 && $this->first_url != '')
 			{
-				$output .= $this->prev_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->first_url.'">'.$this->prev_link.'</a></li>'.$this->prev_tag_close;
+				$output .= $this->prev_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->first_url.$parameters.'">'.$this->prev_link.'</a></li>'.$this->prev_tag_close;
 			}
 			else
 			{
 				$i = ($i == 0) ? '1' : $this->prefix.$i.$this->suffix;
-				$output .= $this->prev_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->base_url.$i.'">'.$this->prev_link.'</a></li>'.$this->prev_tag_close;
+				$output .= $this->prev_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->base_url.$i.$parameters.'">'.$this->prev_link.'</a></li>'.$this->prev_tag_close;
 			}
 
 		}
@@ -274,7 +274,7 @@ class CI_Pagination {
 				{
 					if ($this->cur_page == $loop)
 					{	if($loop==1){
-						$tweak='href="'.$this->base_url.'/'.$loop.'"';
+						$tweak='href="'.$this->base_url.'/'.$loop.$parameters.'"';
 						}else{
 						$tweak='';
 						}
@@ -292,7 +292,7 @@ class CI_Pagination {
 						{	
 							$n = ($n == '') ? '1' : $this->prefix.$n.$this->suffix;
 							
-							$output .= $this->num_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->base_url.$n.'">'.$loop.'</a></li>'.$this->num_tag_close;
+							$output .= $this->num_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->base_url.$n.$parameters.'">'.$loop.'</a></li>'.$this->num_tag_close;
 						}
 					}
 				}
@@ -311,7 +311,7 @@ class CI_Pagination {
 				$i = ($this->cur_page * $this->per_page);
 			}
 
-			$output .= $this->next_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.'">'.$this->next_link.'</a></li>'.$this->next_tag_close;
+			$output .= $this->next_tag_open.'<li><a '.$this->anchor_class.'href="'.$this->base_url.$this->prefix.$i.$this->suffix.$parameters.'">'.$this->next_link.'</a></li>'.$this->next_tag_close;
 		}
 
 		// Render the "Last" link

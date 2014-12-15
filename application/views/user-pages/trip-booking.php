@@ -56,7 +56,7 @@
 							</td>
 							<td>
 								<div class="form-group margin-10-px margin-top-less-1">
-									<button class="btn btn-info btn-sm add-customer hide-me" type="button">ADD</button>
+						<button class="btn btn-info btn-sm add-customer hide-me" type="button" added_customer="<?php echo $added_customer; ?>">ADD</button>
 									<button class="btn btn-danger btn-sm clear-customer" type="button">CLEAR</button>
 								</div>
 							</td>
