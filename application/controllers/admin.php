@@ -44,6 +44,7 @@ class Admin extends CI_Controller {
 		    $password  = $this->input->post('password');
 		    $email  = $this->input->post('email');
 		    $phone = $this->input->post('phone');
+			$user_permission_id = $this->input->post('user_permission_id');
 	        
 		$this->form_validation->set_rules('firstname','First Name','trim|required|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('lastname','Last Name','trim|required|min_length[2]|xss_clean');
@@ -63,7 +64,7 @@ class Admin extends CI_Controller {
 	  
 		  
 		   //inserting values to db
-		    $res	=	$this->admin_model->insertUser($firstname,$lastname,$address,$username,$password,$email,$phone);
+		    $res	=	$this->admin_model->insertUser($firstname,$lastname,$address,$username,$password,$email,$phone,$user_permission_id);
 		       if($res==true){ 
 			    //sending email to user
 					$to = $email;

@@ -5,12 +5,13 @@ class Cron_tarrif extends CI_Controller {
 		parent::__construct();
 		$this->load->model("cron_tarrif_model");
 		$this->load->model("trip_booking_model");
+		$this->load->model("driver_model");
 		$this->load->model("driver_payment_model");
 		$this->load->helper('my_helper');
 		no_cache();
 
 		}
-		public function session_check() {
+	public function session_check() {
 	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK)) {
 		return true;
 	} else {
@@ -19,15 +20,7 @@ class Cron_tarrif extends CI_Controller {
 	}
 
 
-
-
-
-
-
-
 	public function cronDriverPayments(){
-	
-
 	
 	$res=$this->cron_tarrif_model->getDriverPayment(); 
 	
@@ -75,17 +68,24 @@ class Cron_tarrif extends CI_Controller {
 			$db_data['dr_amount']=$value;
 			$db_data['voucher_number']="INV";
 			$this->driver_payment_model->addDriverpayment($db_data);
+			$this->sendPaymentNotification($db_data);
 		}
 		
-
-
-
-		
-
 	}	
 
 
+	public function sendPaymentNotification($driverdata){
 
+	$condition=array('id'=>$driverdata['driver_id']);
+	$drivers=$this->driver_model->getDriversAppKey($condition);
+	
+	$data['message']="You Have To Pay Rs. ".$driverdata['dr_amount']." on ".$driverdata['period'];
+	$data['notification_type_id']=NOTIFICATION_TYPE_PAYMENT_MSGS;
+	$data['notification_status_id']=gINVALID;
+	$data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+	$this->driver_model->sendNotification($data,$drivers);
+
+	}
 	
 	public function notAuthorized(){
 	$data['title']='Not Authorized | '.PRODUCT_NAME;

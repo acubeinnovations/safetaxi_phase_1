@@ -220,7 +220,36 @@ class Driver extends CI_Controller {
 
 }
 
+	public function sendNotification(){
+		if(isset($_REQUEST['send-notification'])){
 
+			$driver_id=$_REQUEST['driver'];
+			$message=$_REQUEST['message'];
+			$pdata['driver']=$_REQUEST['driver'];
+			$data['message']=$pdata['message']=$_REQUEST['message'];
+		
+			 $this->form_validation->set_rules('message','Message','trim|xss_clean|required');
+			if($this->form_validation->run()==False){
+			$this->mysession->set('post',$pdata); 
+			redirect(base_url().'front-desk/sendNotifications');	
+
+			}else{
+			if($driver_id!=gINVALID){
+				$condition=array('id'=>$driver_id);
+			}else{
+				$condition='';
+			}
+			$drivers=$this->driver_model->getDriversAppKey($condition);
+			$data['notification_type_id']=NOTIFICATION_TYPE_COMMON_MSGS;
+			$data['notification_status_id']=gINVALID;
+			$data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+			$this->driver_model->sendNotification($data,$drivers);
+			redirect(base_url().'front-desk/sendNotifications');
+			}
+
+		}
+
+	}
 
 		
 

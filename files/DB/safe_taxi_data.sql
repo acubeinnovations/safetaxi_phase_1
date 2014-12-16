@@ -56,7 +56,8 @@ INSERT INTO `notification_types` (`id`, `name`, `description`, `value`, `user_id
 (1, 'Notification Type New Trip', 'New Trip', 0, 2, '2014-12-02 05:26:34', '0000-00-00 00:00:00'),
 (2, 'Notification Type Trip Cancelled', 'Trip Cancelled', 0, 2, '2014-12-02 05:26:34', '0000-00-00 00:00:00'),
 (3, 'Notification Type Trip Update', 'Trip Update', 0, 2, '2014-12-02 05:28:24', '0000-00-00 00:00:00'),
-(4, 'Notification Type  Payment', 'Payment', 0, 2, '2014-12-02 05:28:24', '0000-00-00 00:00:00');
+(4, 'Notification Type  Payment Message', 'Payment', 0, 2, '2014-12-02 05:28:24', '2014-12-05 05:00:40'),
+(5, 'Notification Type  Common Message', 'Common Message', 0, 2, '2014-12-16 13:00:14', '0000-00-00 00:00:00');
 
 --
 -- Dumping data for table `notification_view_statuses`

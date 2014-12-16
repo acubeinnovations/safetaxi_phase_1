@@ -194,6 +194,14 @@ class User extends CI_Controller {
 		}else{
 			$this->notAuthorized();
 		}
+		}elseif($param1=='sendNotifications'){
+		
+		
+		if($this->permission_for_all()==true) {
+				$this->sendNotifications();
+		}else{
+			$this->notAuthorized();
+		}
 		}elseif($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
 		
 		if($this->permission_for_all()==true) {
@@ -1251,7 +1259,7 @@ class User extends CI_Controller {
 	$uriseg ='3';
 	//echo $qry; exit;
 	
-	$p_res=$this->mypage->paging($tbl='',$per_page=2,$param2,$baseurl,$uriseg,$custom='yes',$qry,$parameters);
+	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry,$parameters);
 	$data['notification_sl_no']=$param2+1;
 	$data['values']=$p_res['values'];
 	$data['periods']=$p_res['values'];
@@ -1682,6 +1690,27 @@ public function profile() {
 	}
 
 	
+
+	}
+
+	public function sendNotifications(){
+	if($this->session_check()==true) {
+			if($this->mysession->get('post')!=''){
+				$data=$this->mysession->get('post');print_r($data);
+				$this->mysession->delete('post');
+			}else{
+				$data['driver']='';
+				$data['message']='';
+			}
+			$data['title']='Send Notification | '.PRODUCT_NAME;
+			$page='user-pages/sendNotification';
+			
+			$data['drivers']=$this->driver_model->getDriversArray($condition=''); 
+			$this->load_templates($page,$data);
+
+	}else{
+					$this->notAuthorized();
+	}
 
 	}
 	

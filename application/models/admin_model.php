@@ -48,9 +48,9 @@ class admin_model extends CI_Model {
         );
     }
 
- function  insertUser($fname,$lname,$addr,$uname,$pwd,$mail,$phn) {
+ function  insertUser($fname,$lname,$addr,$uname,$pwd,$mail,$phn,$user_permission_id) {
 	
-	$data=array('username'=>$uname,'password'=>md5($pwd),'first_name'=>$fname,'last_name'=>$lname,'phone'=>$phn,'address'=>$addr,'user_status_id'=>USER_STATUS_ACTIVE,'user_type_id'=>FRONT_DESK,'email'=>$mail,'organisation_id'=>$org_id);
+	$data=array('username'=>$uname,'password'=>md5($pwd),'first_name'=>$fname,'last_name'=>$lname,'phone'=>$phn,'address'=>$addr,'user_status_id'=>USER_STATUS_ACTIVE,'user_type_id'=>FRONT_DESK,'email'=>$mail,'user_permission_id'=>$user_permission_id);
 
 	$this->db->set('created', 'NOW()', FALSE);
 	$this->db->insert('users',$data);

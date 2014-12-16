@@ -87,6 +87,25 @@ public function getDriverDetails($data){
 
 	}
 
+	function getDriversAppKey($condion=''){
+	$this->db->from('drivers');
+	if($condion!=''){
+    $this->db->where($condion);
+	}
+    $results = $this->db->get()->result();
+	
+
+		for($i=0;$i<count($results);$i++){
+		$values[$i]=$results[$i]->app_key;
+		}
+		if(!empty($values)){
+		return $values;
+		}
+		else{
+		return false;
+		}
+
+	}
 
 	function getDetails($conditon ='',$orderby=''){
 
@@ -115,6 +134,18 @@ public function getDriverDetails($data){
 	$qry=$this->db->update("drivers",$data);
 	
 	return true;
+	}
+
+	function sendNotification($data,$drivers){
+		for($driver_index=0;$driver_index<count($drivers);$driver_index++){
+		$data['app_key']=$drivers[$driver_index];
+		$data['trip_id']=gINVALID;
+		$this->db->set('created', 'NOW()', FALSE);
+		$this->db->set('user_id', $this->session->userdata('id'), FALSE);
+		$this->db->insert('notifications',$data);
+		
+		}
+	
 	}
 
 
