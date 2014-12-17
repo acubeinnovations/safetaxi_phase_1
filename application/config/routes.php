@@ -52,7 +52,7 @@ $route['general/(:any)'] 					= 'general/$0';
 $route['trip-booking/(:any)'] 				= 'trip_booking/index/$0';
 $route['customers/(:any)'] 					= 'customers/$0';
 $route['maps/(:any)']					 	= 'maps/$0';
-$route['cron_tarrif/(:any)'] 				= 'cron_tarrif/$0';
+//$route['cron_tarrif/(:any)'] 				= 'cron_tarrif/$0';
 $route['driver_invoice/(:any)'] 			= 'driver_invoice/$0';
 
 /* End of file routes.php */

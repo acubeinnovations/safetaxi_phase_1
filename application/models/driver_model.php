@@ -141,7 +141,12 @@ public function getDriverDetails($data){
 		$data['app_key']=$drivers[$driver_index];
 		$data['trip_id']=gINVALID;
 		$this->db->set('created', 'NOW()', FALSE);
-		$this->db->set('user_id', $this->session->userdata('id'), FALSE);
+		if($this->session->userdata('id')!=''){
+			$user_id=$this->session->userdata('id');
+		}else{
+			$user_id=gINVALID;
+		}
+		$this->db->set('user_id',$user_id , FALSE);
 		$this->db->insert('notifications',$data);
 		
 		}

@@ -1003,7 +1003,7 @@ class User extends CI_Controller {
 	public function Trips($param2){
 		if($this->session_check()==true) {
 			/* */
-			$trip_id=$param2;
+			
 			$tbl_arry=array('customers','drivers','trip_statuses');
 			for ($i=0;$i<count($tbl_arry);$i++){
 					$result=$this->user_model->getArray($tbl_arry[$i]);
@@ -1015,103 +1015,88 @@ class User extends CI_Controller {
 					}
 			}	
 			// print_r($data);exit;
-			$drivers=$this->driver_model->getDriversArray($condition='');
-			$conditon = array('id'=>$trip_id);
-			$result=$this->trip_booking_model->getDetails($conditon);
-			/* search condition starts */
-				//for search
-	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
-
+			//$drivers=$this->driver_model->getDriversArray($condition='');
+			
 	$qry="SELECT T.id AS trip_id, T.booking_date AS booking_dates,T.pick_up_date AS pickup_date,T.pick_up_time AS pickuptime, T.trip_from AS trip_from,
 	 T.trip_to AS trip_to,C.name as customer_name,C.mobile as mob,D.name as drivername,D.vehicle_registration_number as vehiclenumber,
 	 TS.name AS tripstatus  FROM trips  AS T 
 	 LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id 
 	 LEFT JOIN trip_statuses AS TS ON TS.id=T.trip_status_id";
-	$condition="";	
-	if(isset($_REQUEST['trip_search'])){ 
+	$condition="";
+	$parameters='';	
+	
 	if($param2==''){
 	$param2='0';
 	}
 
 	//driver search
-	if($_REQUEST['vehicle_number']!=null){
-	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
+	if(isset($_GET['vehicle_number']) && $_GET['vehicle_number']!=null){
+	$data['vehiclenumber']= $_GET['vehicle_number'];
 	if($condition==""){
-	$condition=' WHERE D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
-}
-	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
+	$condition=' WHERE D.vehicle_registration_number Like "%'.$_GET['vehicle_number'].'%"';
+	$parameters='?vehicle_number='.$_GET['vehicle_number'];	
+	}
+	
 	} 
 
-
-
-	
 	//from date
-	if($_REQUEST['trip_pick_date']!=null ){
-	$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
-	//$date_now=date('Y-m-d');
+	 
 	
-	$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
-	if($condition==""){
-		$condition =' WHERE T.pick_up_date >= "'.$_REQUEST['trip_pick_date'].'"';
-
-
-
-
-	}else{
-		//$condition.=' AND T.pick_up_date >= "'.$date_now.'"';
-	}
-	
-	} 
-	//from date ends
-
-
-
 	//to date starts
-	if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
-	$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
+	if(isset($_GET['trip_drop_date']) && $_GET['trip_drop_date']!=null && isset($_GET['trip_pick_date']) &&  $_GET['trip_pick_date']!=null){
+	$data['trip_drop_date']=$_GET['trip_drop_date'];
 	//$date_now=date('Y-m-d H');
-
-	$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
 	if($condition==""){
-		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
-
-
-
-
+		$condition =' WHERE T.pick_up_date >= "'.$_GET['trip_pick_date'].'" AND T.pick_up_date <="'.$_GET['trip_drop_date'].'"';
+		$parameters='?trip_pick_date='.$_GET['trip_pick_date'].'&trip_drop_date='.$_GET['trip_drop_date'];	
 	}else{
-		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
+		$condition.=' AND T.pick_up_date >= "'.$_GET['trip_pick_date'].'" AND T.pick_up_date <="'.$_GET['trip_drop_date'].'"';
+		$parameters.='&trip_pick_date='.$_GET['trip_pick_date'].'&trip_drop_date='.$_GET['trip_drop_date'];
 	}
 	
-	} 
-	//to date ends
-
-
-
-
-
-//
-	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
-	$data['driver_id']=$_REQUEST['drivers'];
+	}else if(isset($_GET['trip_pick_date']) && $_GET['trip_pick_date']!=null ){
+	$data['trip_pick_date']=$_GET['trip_pick_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date >= "'.$_GET['trip_pick_date'].'"';
+		$parameters='?trip_pick_date='.$_GET['trip_pick_date'];	
+	}else{
+		$condition.=' AND T.pick_up_date >= "'.$_GET['trip_pick_date'].'"';
+		$parameters.='&trip_pick_date='.$_GET['trip_pick_date'];	
+	}
 	
-	$where_arry['driver_id']=$_REQUEST['drivers'];
+	}else if(isset($_GET['trip_drop_date']) && $_GET['trip_drop_date']!=null ){
+	$data['trip_drop_date']=$_GET['trip_drop_date'];
+	if($condition==""){
+		$condition =' WHERE T.pick_up_date >= "'.$_GET['trip_drop_date'].'"';
+		$parameters='?trip_drop_date='.$_GET['trip_drop_date'];	
+	}else{
+		$condition.=' AND T.pick_up_date >= "'.$_GET['trip_drop_date'].'"';
+		$parameters.='&trip_drop_date='.$_GET['trip_drop_date'];	
+	}
+	
+	}
+
+	if(isset($_GET['drivers']) && $_GET['drivers']!=null && $_GET['drivers']!=gINVALID){
+	$data['driver_id']=$_GET['drivers'];
+	
 	if($condition==""){
 		$condition =' WHERE T.driver_id = '.$data['driver_id'];
+		$parameters='?drivers='.$_GET['drivers'];	
 	}else{
 		$condition.=' AND T.driver_id = '.$data['driver_id'];
+		$parameters.='&drivers='.$_GET['drivers'];
 	}
 	}
 
-
-
-	if($_REQUEST['customers']!=null && $_REQUEST['customers']!=gINVALID){
-	$data['customer_id']=$_REQUEST['customers'];
-	
-	$where_arry['customer_id']=$_REQUEST['customers'];
-	if($condition==""){
-		$condition =' WHERE T.customer_id = '.$data['customer_id'];
-	}else{
-		$condition.=' AND T.customer_id = '.$data['customer_id'];
-	}
+	if(isset($_GET['customers']) && $_GET['customers']!=null && $_GET['customers']!=gINVALID){
+		$data['customer_id']=$_GET['customers'];
+		if($condition==""){
+			$condition =' WHERE T.customer_id = '.$data['customer_id'];
+			$parameters='?customers='.$_GET['customers'];
+		}else{
+			$condition.=' AND T.customer_id = '.$data['customer_id'];
+			$parameters.='&customers='.$_GET['customers'];
+		}
 	}
 
 
@@ -1119,46 +1104,29 @@ class User extends CI_Controller {
 
 
 
-	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
-	$data['status_id']=$_REQUEST['trip_status_id'];
-	//$date_now=date('Y-m-d H:i:s');
-	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
-
+	if(isset($_GET['trip_status_id']) && $_GET['trip_status_id']!=null && $_GET['trip_status_id']!=gINVALID ){
+	$data['status_id']=$_GET['trip_status_id'];
 	if($condition==""){
 		$condition =' WHERE T.trip_status_id='.$data['status_id'];
+		$parameters='?trip_status_id='.$_GET['trip_status_id'];
 	}else{
 		$condition.=' AND T.trip_status_id='.$data['status_id'];
+		$parameters.='&trip_status_id='.$_GET['trip_status_id'];
 	}
 	}
 
-
-	
 	//echo $qry.'<br>';
 	//echo $condition.'<br>';
 
-	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
-	} 
-
-
-	//echo "hellow";
-	/*if(is_null($this->mysession->get('condition'))){
-	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
-	}*/
-	//$tbl="drivers";
 	$baseurl=base_url().'front-desk/trips/';
 	$uriseg ='3';
-	//echo $param2; exit;
-	//echo $qry;//exit;
-
-	$p_res=$this->mypage->paging($tbl='',$per_page=25,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	
+	$p_res=$this->mypage->paging($tbl='',$per_page=10,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition,$parameters);
 	//print_r($p_res);exit;
 
 	$data['values']=$p_res['values'];
 	$data['page_links']=$p_res['page_links'];
 	
-
-	//$data['values']='';
-	//print_r($data['values']);exit;
 	$driver_trips='';
 	
 	$data['driver_trips']=$driver_trips;
@@ -1166,7 +1134,7 @@ class User extends CI_Controller {
 				$data['result']="No Results Found !";
 	}
 	$data['trips']=$data['values'];
-
+	$data['trip_sl_no']=$param2; 
 	
 			/* search condition ends*/
 			$data['title']="Trips | ".PRODUCT_NAME;  

@@ -17,23 +17,22 @@ $trip_pick_date='';
 if(!isset($trip_drop_date)){
 $trip_drop_date='';
 }
-if(!isset($customer)){
-$customer='';
+if(!isset($customer_id)){
+$customer_id='';
 }
+
 if(!isset($driver_id)){
 $driver_id='';
 }
-if(!isset($vehicle_id)){
-$vehicle_id='';
+if(!isset($vehicle_number)){
+$vehicle_number='';
 }
 if(!isset($trip_status_id)){
 $trip_status_id='';
 }
-$page=$this->uri->segment(4);
-if($page==''){
+
+if($trip_sl_no==''){
 $trip_sl_no=1;
-}else{
-$trip_sl_no=$page;
 }
 ?>
 
@@ -45,13 +44,12 @@ $trip_sl_no=$page;
 	<fieldset class="body-border">
 		<legend class="body-head">Trips</legend>
 		<div class="box-body table-responsive no-padding">
-			
-			<?php echo form_open(base_url()."front-desk/trips"); ?>
+			<form action="<?php echo base_url(); ?>front-desk/trips" method="get">
 			<table class="table list-trip-table no-border">
 				<tbody>
 					<tr>
 
-						<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-AB-1234','value'=>"",'id'=>'c_name')); ?></td>
+						<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-AB-1234','value'=>$vehicle_number)); ?></td>
 					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'From Date','value'=>$trip_pick_date)); ?></td>
 					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>$trip_drop_date)); ?></td>
 						 
@@ -62,7 +60,7 @@ $trip_sl_no=$page;
 
 						<td><?php $class="form-control";
 							  $id='customers';
-						echo $this->form_functions->populate_dropdown('customers',$customers,$customer_id="",$class,$id,$msg="Select Customer");?>
+						echo $this->form_functions->populate_dropdown('customers',$customers,$customer_id,$class,$id,$msg="Select Customer");?>
 						</td>
 
 						<td><?php $class="form-control";
@@ -100,7 +98,7 @@ echo form_close();?></td>
 					</tr>
 					<?php
 					
-					$trip_sl_no=1; 
+					
 					for($trip_index=0;$trip_index<count($trips);$trip_index++){
 						
 						$pickdate=$trips[$trip_index]['pickup_date'];
@@ -112,12 +110,10 @@ echo form_close();?></td>
 						
 					?>
 					<tr>
-						<td><?php echo $trip_sl_no;?></td>
+						<td><?php echo ++$trip_sl_no;?></td>
 						<td><?php echo $trips[$trip_index]['trip_id'];?></td>
-					   	
 					   	<td><?php echo $trips[$trip_index]['pickup_date'].' - '.$trips[$trip_index]['pickuptime'];?></td>
-					   	
-					   	<td><?php echo $trips[$trip_index]['trip_from'];?></td>
+					    <td><?php echo $trips[$trip_index]['trip_from'];?></td>
 					   	<td><?php echo $trips[$trip_index]['trip_to'];?></td>
 					   	<td><?php echo $trips[$trip_index]['drivername'].' - '.$trips[$trip_index]['vehiclenumber'];?></td>
 					   	<td><?php echo $trips[$trip_index]['customer_name'];?></td>
@@ -125,7 +121,7 @@ echo form_close();?></td>
 					   	<td><?php echo $trips[$trip_index]['tripstatus'];?></td>
 					</tr>
 					<?php 
-						$trip_sl_no++;
+						
 						}
 					?>
 				</tbody>
