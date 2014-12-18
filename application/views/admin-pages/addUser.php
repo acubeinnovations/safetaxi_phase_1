@@ -104,5 +104,12 @@
 				</div>
 			 <?php echo form_close(); ?>
 			</fieldset>
+			<?php if(isset($id)){ ?>
+			<fieldset class="body-border">
+   			 <legend class="body-head">Permissions</legend>
+				
+			</fieldset>
+			<?php }
+				 ?> 
 		</div><!-- body -->
 	

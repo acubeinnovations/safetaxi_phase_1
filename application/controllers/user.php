@@ -490,7 +490,7 @@ class User extends CI_Controller {
 	$condition=array('id'=>$trip_id);
 	$values=$this->trip_booking_model->getDetails($condition);
 	if($values!=false){
-		if($values[0]->trip_status_id==TRIP_STATUS_PENDING || $values[0]->trip_status_id==TRIP_STATUS_ACCEPTED){
+		
 
 	$data['id']=$trip_id;
 	if($values[0]->customer_id!=gINVALID){
@@ -542,6 +542,7 @@ class User extends CI_Controller {
 	$data['radius']=1;
 	$data['distance_in_km_from_web']='';
 	$data['added_customer']='false';
+	$data['trip_status_id']=gINVALID;
 	}
 	}else{
 	$data['id']=gINVALID;
@@ -561,25 +562,7 @@ class User extends CI_Controller {
 	$data['radius']=1;
 	$data['distance_in_km_from_web']='';
 	$data['added_customer']='false';
-	}
-	}else{
-	$data['id']=gINVALID;
-	$data['driver_id']=gINVALID;
-	$data['name']='';
-	$data['mobile']='';
-	$data['trip_from']='';
-	$data['trip_to']='';
-	$data['trip_from_landmark']='';
-	$data['trip_to_landmark']='';
-	$data['pick_up_date']=date('Y-m-d');;
-	$data['pick_up_time']='';	
-	$data['trip_from_lat']='';	
-	$data['trip_to_lat']='';
-	$data['trip_from_lng']='';
-	$data['trip_to_lng']='';
-	$data['radius']=1;
-	$data['distance_in_km_from_web']='';
-	$data['added_customer']='false';
+	$data['trip_status_id']=gINVALID;
 	}
 	$tbl_arry=array();
 	
@@ -653,7 +636,7 @@ class User extends CI_Controller {
 	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
 
 	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount, VT.name as vouchertype,DP.voucher_number as voucher_number,
-	DP.payment_date as date,DP.period as Period,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.8956241257driver_id as Driver_id FROM driver_payment AS DP 
+	DP.payment_date as date,DP.period as Period,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.driver_id as Driver_id FROM driver_payment AS DP 
 	LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_types VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" 
 	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.period DESC';
 

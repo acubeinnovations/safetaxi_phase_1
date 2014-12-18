@@ -309,7 +309,7 @@ $("#drop").attr('value',place.name+','+place.address_components[0].short_name);
 
 
 
-
+/*
 if($('.recurrent-yes-chek-box').attr('checked')=='checked'){
 
 var radio_button_to_be_checked = $('.recurrent-yes-chek-box').attr('radio_button_to_be_checked');
@@ -365,6 +365,7 @@ $('#reccurent_alternatives_droptimepicker'+i).datetimepicker({datepicker:false,
 }
 }
 }
+*/
 
  var base_url=window.location.origin;
 
@@ -1164,6 +1165,17 @@ $('#trip-form').on("keyup keypress", function(e) {
     return false;
   }
 });
+
+
+$('#reccurent').click(function(){
+
+	$('.overlay-container').css('display','block');
+	$('.modal').css('display','block');
+	var top=-1*(Number($('.trip-booking-area').height()/2)+70);
+	$('.modal-body').css('top',top);
+
+});
+
 //trip_bookig page-js end
 
 //trips paje js start

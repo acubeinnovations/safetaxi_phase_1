@@ -47,12 +47,34 @@ class admin_model extends CI_Model {
 				    )
         );
     }
+	function insertPages($files){
 
- function  insertUser($fname,$lname,$addr,$uname,$pwd,$mail,$phn,$user_permission_id) {
+	//$this->db->set('created', 'NOW()', FALSE);
+	$this->db->insert_batch('pages',$files);
+	return true;
+
+	}
+
+	function getPages(){
+		$qry=$this->db->get('pages');
+		$count=$qry->num_rows();
+		if($count>0){
+		$s= $qry->result_array();
+		
+			for($i=0;$i<$count;$i++){
+			
+			$pages[$i]=$s[$i]['name'];
+			}
+			return $pages;
+		}else{
+			return false;
+		}
+	}
+ 	function  insertUser($fname,$lname,$addr,$uname,$pwd,$mail,$phn,$user_permission_id) {
 	
 	$data=array('username'=>$uname,'password'=>md5($pwd),'first_name'=>$fname,'last_name'=>$lname,'phone'=>$phn,'address'=>$addr,'user_status_id'=>USER_STATUS_ACTIVE,'user_type_id'=>FRONT_DESK,'email'=>$mail,'user_permission_id'=>$user_permission_id);
 
-	$this->db->set('created', 'NOW()', FALSE);
+		$this->db->set('created', 'NOW()', FALSE);
 	$this->db->insert('users',$data);
 	return true;
 	  

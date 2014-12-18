@@ -1,6 +1,8 @@
 <?php
-
+$count=1;
 ?>
+<div class="box box-custom">
+    <div class="box-body1">
 <div class="trip-booking-body">
 <div class="db-msgs">
 <?php    if($this->session->userdata('dbSuccess') != '') { ?>
@@ -83,7 +85,7 @@
 							
 							<td>
 								<div class="form-group margin-10-px">
-									<?php if($driver_id!=gINVALID){ ?><input  class="btn btn-warning btn-sm revoke-driver " name="revoke" type="submit" value="REVOKE DRIVER" ><?php } ?>	<div class="hide-me"> <input name="driver_id" class="" value="<?php echo $driver_id; ?>" type="text"></div>
+									<?php if($driver_id!=gINVALID && $trip_status_id==TRIP_STATUS_ACCEPTED ){ ?><input  class="btn btn-warning btn-sm revoke-driver " name="revoke" type="submit" value="REVOKE DRIVER" ><?php } ?>	<div class="hide-me"> <input name="driver_id" class="" value="<?php echo $driver_id; ?>" type="text"></div>
 							 </div>
 							</td>
 							
@@ -109,9 +111,10 @@
 							</td>
 							<td>
 								<div class="input-group margin-10-px ">
-                                        <input name="radius" class="form-control width-30-percent float-left height-27-px" value="<?php echo $radius; ?>" type="text">
-                                        <span class="input-group-addon float-left width-20-percent height-27-px">KM</span>
-										<?php if($id!=gINVALID && $driver_id==gINVALID){ ?><i class="fa fa-fw btn btn-info btn-sm margin-left-3-px no-padding search-ico">SEARCH AND NOTIFY</i> <div class="hide-me"> <input  class="btn btn-info btn-sm search" name="search" type="submit" ></div> <?php } ?>
+										<?php if($id==gINVALID || ($driver_id==gINVALID && $trip_status_id==TRIP_STATUS_PENDING)){  ?>
+                                        <input name="radius" class="form-control width-30-percent float-left height-27-px" value="<?php echo $radius; ?>" type="text">		<span class="input-group-addon float-left width-20-percent height-27-px">KM</span>		<?php } ?>
+                                        
+										<?php if($id!=gINVALID && $driver_id==gINVALID && $trip_status_id==TRIP_STATUS_PENDING){  ?><i class="fa fa-fw btn btn-info btn-sm margin-left-3-px no-padding search-ico">SEARCH AND NOTIFY</i> <div class="hide-me"> <input  class="btn btn-info btn-sm search" name="search" type="submit" ></div> <?php }else if($id!=gINVALID && $trip_status_id!=TRIP_STATUS_PENDING){ ?> <input  class="btn btn-info btn-sm search" name="reccurent" type="button" value="RECCURENT" id="reccurent" > <?php } ?>
                                     </div>
 							</td>
 							
@@ -136,9 +139,9 @@
 								</div>
 							</td>
 							<td>
-								<div class="form-group margin-10-px margin-top-less-12"><?php if($id!=gINVALID){ $saveandsearch="UPDATE"; }else{ $saveandsearch="SAVE AND SEARCH";}?> 
+								<div class="form-group margin-10-px margin-top-less-12"><?php  if($id!=gINVALID){ $saveandsearch="UPDATE"; }else{ $saveandsearch="SAVE AND SEARCH"; } if($id==gINVALID || $trip_status_id==TRIP_STATUS_PENDING || $trip_status_id==TRIP_STATUS_ACCEPTED) { ?> 
 									<input class="btn btn-success btn-sm 	search-vehicles book_trip" name="book_trip_button" type="button" value="<?php echo $saveandsearch; ?>"><div class="hide-me"><input class="btn book_trip_submit" name="book_trip" type="submit"></div><div class="hide-me"> <input name="id" class="id" value="<?php echo $id; ?>" type="text"></div> 
-									<?php  if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"> <?php } ?>
+									<?php  if($id!=gINVALID){ ?> <input  class="btn btn-danger btn-sm cancel-trip margin-top-10-px" name="cancel_trip" type="submit" value="CANCEL"> <?php } } ?>
 								
 								</div>
 							</td>
@@ -211,48 +214,48 @@
 					 <fieldset class="body-border">
 					<legend class="body-head">Notifications</legend>
 						<div class="ajax-notifications">
-		<?php
+						<?php
 		
-		if(count($notification)>0 && $notification!=''){
-		for($notification_index=0;$notification_index<count($notification);$notification_index++){?>
-		<a href="<?php echo base_url().'front-desk/trip-booking/'.$notification[$notification_index]->id;?>" class="notify-link">
-		<div class="callout callout-warning no-right-padding width-100-percent float-left">
-		<div class="notification<?php echo $notification_index; ?>">
-			<table style="width:100%;" class="font-size-12-px">
-				<tr>
-					<td class='notification-trip-id'>
-						Trip ID :<?php echo $notification[$notification_index]->id; ?>
-					</td>
-					<td>
-						Cust :	<?php echo $customers_array[$notification[$notification_index]->customer_id]; ?>
-					</td>
-				</tr>
+						if(count($notification)>0 && $notification!=''){
+						for($notification_index=0;$notification_index<count($notification);$notification_index++){?>
+						<a href="<?php echo base_url().'front-desk/trip-booking/'.$notification[$notification_index]->id;?>" class="notify-link">
+						<div class="callout callout-warning no-right-padding width-100-percent float-left">
+						<div class="notification<?php echo $notification_index; ?>">
+							<table style="width:100%;" class="font-size-12-px">
+								<tr>
+									<td class='notification-trip-id'>
+										Trip ID :<?php echo $notification[$notification_index]->id; ?>
+									</td>
+									<td>
+										Cust :	<?php echo $customers_array[$notification[$notification_index]->customer_id]; ?>
+									</td>
+								</tr>
 				
-				<tr>
-					<td class='notification-trip-id'>
-						Pick up :
-					</td>
-					<td>
-						<?php echo $notification[$notification_index]->trip_from; ?>
-					</td>
-				</tr>
-				<tr>
-					<td class='notification-pickup-city'>
-					Date :</td><td><?php echo $notification[$notification_index]->pick_up_date; ?>
-					</td>
-				</tr>
-			</table>
-		</div>
-		</div>
-		</a>
-		<?php }
+								<tr>
+									<td class='notification-trip-id'>
+										Pick up :
+									</td>
+									<td>
+										<?php echo $notification[$notification_index]->trip_from; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class='notification-pickup-city'>
+									Date :</td><td><?php echo $notification[$notification_index]->pick_up_date; ?>
+									</td>
+								</tr>
+							</table>
+						</div>
+						</div>
+						</a>
+						<?php }
 
 
-		}
+						}
 
 
-		?>
-		</div>
+						?>
+						</div>
  					</fieldset>
 				</div>
 				<!--trip-booking-notifications -end-->
@@ -262,6 +265,107 @@
 
 	</div>
 	<!--trip-booking-area -end-->
+	</div>
+	
+   </div><!-- /.box-body1 -->
+	<div class='overlay-container'>
+   		<div class="overlay modal"></div>
+			<div class="loading-img"></div>
+				<div class="modal-body width-50-percent-important border-2-px box-shadow">
+					<div class="reccurent-container" slider="<?php echo $count; ?>">
+								<fieldset class="body-border ">
+								<legend class="body-head font-size-18-px">Recurrent</legend>
+									
+									<div class="form-group float-right recurrent-radio-container">
+									<div class="div-continues">
+									<?php
+												echo nbs(1).form_radio(array('name' => 'recurrent','id' => 'continues-recurrent','value'=>'continues'));
+								
+												echo nbs(5).form_label('Continues').nbs(5);
+												?></div> <div class="div-alternatives"><?php
+												echo form_radio(array('name' => 'recurrent','id' => 'alternative-recurrent','value'=>'alternatives'));
+								
+											echo nbs(5).form_label('Alternatives');
+											?>
+									</div>
+									</div>
+									<div class="recurrent-container-continues">
+										<div class="form-group">
+									
+												<?php 
+								
+												echo form_input(array('name'=>'reccurent_continues_pickupdatepicker','class'=>'form-control width-60-percent-with-margin-10','id'=>'reccurent_continues_pickupdatepicker','placeholder'=>'Pick up Date ')).form_input(array('name'=>'reccurent_continues_pickuptimepicker','class'=>'form-control width-30-percent-with-margin-left-20','id'=>'reccurent_continues_pickuptimepicker','placeholder'=>'Pick up time '));
+												echo br(3).$this->form_functions->form_error_session('reccurent_continues_pickupdatepicker', '<p class="text-red">', '</p>').$this->form_functions->form_error_session('reccurent_continues_pickuptimepicker', '<p class="text-red">', '</p>');
+												 ?>
+									
+											</div>
+											
+										</div>
+										<div class="recurrent-container-alternatives">
+											<table class="alternative-table">
+												<tr>
+													<td class="width-80-percent">
+														<div class="form-group">
+														<?php 
+														if(isset($reccurent_alternatives_pickupdatepicker[0]) && $reccurent_alternatives_pickupdatepicker[0]!=''){
+														$alternative_pickupdatepicker=$reccurent_alternatives_pickupdatepicker[0];
+														}
+														if(isset($reccurent_alternatives_pickuptimepicker[0]) && $reccurent_alternatives_pickuptimepicker[0]!=''){
+														$alternative_pickuptimepicker=$reccurent_alternatives_pickuptimepicker[0];
+														}
+											
+														echo form_input(array('name'=>'reccurent_alternatives_pickupdatepicker[]','class'=>'form-control width-60-percent-with-margin-10','id'=>'reccurent_alternatives_pickupdatepicker0','placeholder'=>'Pick up Date and time ','value'=>$alternative_pickupdatepicker)).form_input(array('name'=>'reccurent_alternatives_pickuptimepicker[]','class'=>'form-control width-30-percent-with-margin-left-20','id'=>'reccurent_alternatives_pickuptimepicker0','placeholder'=>'Pick up time ','value'=>$alternative_pickuptimepicker));
+														echo $this->form_functions->form_error_session('reccurent_alternatives_pickupdatepicker', '<p class="text-red">', '</p>').$this->form_functions->form_error_session('reccurent_alternatives_pickuptimepicker', '<p class="text-red">', '</p>');
+														 ?>
+														</div>
+								
+														<div class="form-group">
+														<?php 
+														if(isset($reccurent_alternatives_dropdatepicker[0]) && $reccurent_alternatives_dropdatepicker[0]!=''){
+														$alternative_dropdatepicker=$reccurent_alternatives_dropdatepicker[0];
+														}
+														if(isset($reccurent_alternatives_droptimepicker[0]) && $reccurent_alternatives_droptimepicker[0]!=''){
+														$alternative_droptimepicker=$reccurent_alternatives_droptimepicker[0];
+														}
+											
+														echo form_input(array('name'=>'reccurent_alternatives_dropdatepicker[]','class'=>'form-control width-60-percent-with-margin-10','id'=>'reccurent_alternatives_dropdatepicker0','placeholder'=>'Drop Date and time ','value'=>$alternative_dropdatepicker)).form_input(array('name'=>'reccurent_alternatives_droptimepicker[]','class'=>'form-control width-30-percent-with-margin-left-20','id'=>'reccurent_alternatives_droptimepicker0','placeholder'=>'Drop time ','value'=>$alternative_droptimepicker));
+														echo $this->form_functions->form_error_session('reccurent_alternatives_dropdatepicker[]', '<p class="text-red">', '</p>').$this->form_functions->form_error_session('reccurent_alternatives_droptimepicker[]', '<p class="text-red">', '</p>');
+														 ?>
+														</div>
+													</td>
+													<td>
+													<?php
+													 if(count($reccurent_alternatives_dropdatepicker)==0){
+														 $count=0;
+													}else{
+														$count=count($reccurent_alternatives_dropdatepicker);
+													} 
+													?>
+														<div class="float-left margin-15"><a class="btn btn-info btn-lg add-reccurent-dates" count="<?php echo$count; ?>">ADD</a></div>
+													</td>
+												</tr>
+											</table>
+											<div class="new-reccurent-date-textbox reccurent-slider">
+											<?php
+											 if(count($reccurent_alternatives_dropdatepicker)>1){
+												$count=count($reccurent_alternatives_dropdatepicker);
+											for($date_time_index=1;$date_time_index<$count;$date_time_index++){
+											?>
+											<div class="form-group"><input name="reccurent_alternatives_pickupdatepicker[]" class="form-control width-60-percent-with-margin-10" id="reccurent_alternatives_pickupdatepicker<?php echo $date_time_index; ?>" placeholder="Pick up Date" type="text" value="<?php echo $reccurent_alternatives_pickupdatepicker[$date_time_index]; ?>"><input name="reccurent_alternatives_pickuptimepicker[]" value="<?php echo $reccurent_alternatives_pickuptimepicker[$date_time_index]; ?>" class="form-control width-30-percent-with-margin-left-20" id="reccurent_alternatives_pickuptimepicker<?php echo $date_time_index; ?>" placeholder="Pick up Time" type="text"></div><div class="form-group"><input name="reccurent_alternatives_dropdatepicker[]" value="<?php echo $reccurent_alternatives_dropdatepicker[$date_time_index]; ?>" class="form-control width-60-percent-with-margin-10" id="reccurent_alternatives_dropdatepicker<?php echo $date_time_index; ?>" placeholder="Drop Date" type="text"><input name="reccurent_alternatives_droptimepicker[]" value="<?php echo $reccurent_alternatives_droptimepicker[$date_time_index]; ?>" class="form-control width-30-percent-with-margin-left-20" id="reccurent_alternatives_droptimepicker<?php echo $date_time_index; ?>" placeholder="Drop time " type="text"></div>
+											<?php
 
-</div>
+											}
+				
+											}								
+											?>
+								
+											</div>
+										</div>
+							
+								</fieldset>
+							</div>
+			</div><!-- modal -->
+	</div>
+	</div>
+    <!-- end loading -->
 

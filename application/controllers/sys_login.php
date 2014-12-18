@@ -27,7 +27,24 @@ class Sys_login extends CI_Controller {
 		     if( $username && $pass && $this->admin_model->AdminLogin($username,$pass)) {
 				 if($this->session->userdata('loginAttemptcount') > 1){
 		       	 $this->admin_model->clearLoginAttempts($username);
-				 }
+				 }$i=0;
+					$pages=$this->admin_model->getPages();
+					foreach(glob('./application/views/user-pages/*.*') as $filename){
+						if($pages!=false){
+						if(!in_array(trim(basename($filename, ".php")), $pages)){
+							$files[$i]['name'] = trim(basename($filename, ".php"));
+							$files[$i]['created']=date('Y-m-d H:i:s');
+							$i++;
+						}
+						}else{
+							$files[$i]['name'] = trim(basename($filename, ".php"));
+							$files[$i]['created']=date('Y-m-d H:i:s');
+							$i++;
+						}
+					} 
+					if(count($files)>0){
+					$this->admin_model->insertPages($files);
+					}
 				 redirect(base_url().'admin');
 		        
 		    } else {
