@@ -309,8 +309,7 @@ $("#drop").attr('value',place.name+','+place.address_components[0].short_name);
 
 
 
-/*
-if($('.recurrent-yes-chek-box').attr('checked')=='checked'){
+
 
 var radio_button_to_be_checked = $('.recurrent-yes-chek-box').attr('radio_button_to_be_checked');
 
@@ -364,27 +363,16 @@ $('#reccurent_alternatives_droptimepicker'+i).datetimepicker({datepicker:false,
 });
 }
 }
-}
-*/
+
 
  var base_url=window.location.origin;
 
 
-$('.recurrent-yes-container > .icheckbox_minimal > .iCheck-helper').on('click',function(){
-
-$('.recurrent-radio-container').toggle();
-$('.recurrent-radio-container > .div-continues > .iradio_minimal > .iCheck-helper').trigger('click');
-if($('.recurrent-yes-chek-box').attr('checked')!='checked'){
-if(Trim($('.recurrent-container-continues').css('display'))=='block' || Trim($('.recurrent-container-alternatives').css('display'))=='block' ){
-$('.recurrent-container-continues').hide();
-$('.recurrent-container-alternatives').hide();
-}
-}
-});
 
 $('.recurrent-radio-container > .div-continues > .iradio_minimal > .iCheck-helper').on('click',function(){
 
 $('.recurrent-container-continues').show();
+$('.height-300-px').css('height','280px');
 $('#reccurent_continues_pickupdatepicker').daterangepicker({format: 'MM/DD/YYYY'});
 $('#reccurent_continues_dropdatepicker').daterangepicker({format: 'MM/DD/YYYY'});
 
@@ -405,19 +393,13 @@ $('.recurrent-container-alternatives').hide();
 
 
 $('.recurrent-radio-container > .div-alternatives > .iradio_minimal > .iCheck-helper').on('click',function(){
-
+$('.height-300-px').css('height','380px');
 $('.recurrent-container-continues').hide();
 
 $('.recurrent-container-alternatives').show();
 $('#reccurent_alternatives_pickupdatepicker0').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-$('#reccurent_alternatives_dropdatepicker0').datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-
 
 $('#reccurent_alternatives_pickuptimepicker0').datetimepicker({datepicker:false,
-	format:'H:i',
-	step:30
-});
-$('#reccurent_alternatives_droptimepicker0').datetimepicker({datepicker:false,
 	format:'H:i',
 	step:30
 });
@@ -428,27 +410,62 @@ $('.add-reccurent-dates').click(function(){
 var slider=$('.reccurent-container').attr('slider');
 if(slider=='2'){
 $('.reccurent-slider').css('overflow-y','scroll');
-$('.reccurent-slider').css('height','300px');
+$('.reccurent-slider').css('height','100px');
 }else{
 $('.reccurent-container').attr('slider',Number(slider)+1);
 }
 var count = $('.add-reccurent-dates').attr('count');
-var new_content='<div class="form-group"><input name="reccurent_alternatives_pickupdatepicker[]" value="" class="form-control width-60-percent-with-margin-10" id="reccurent_alternatives_pickupdatepicker'+count+'" placeholder="Pick up Date" type="text"><input name="reccurent_alternatives_pickuptimepicker[]" value="" class="form-control width-30-percent-with-margin-left-20" id="reccurent_alternatives_pickuptimepicker'+count+'" placeholder="Pick up Time" type="text"></div><div class="form-group"><input name="reccurent_alternatives_dropdatepicker[]" value="" class="form-control width-60-percent-with-margin-10" id="reccurent_alternatives_dropdatepicker'+count+'" placeholder="Drop Date" type="text"><input name="reccurent_alternatives_droptimepicker[]" value="" class="form-control width-30-percent-with-margin-left-20" id="reccurent_alternatives_droptimepicker'+count+'" placeholder="Drop time " type="text"></div>';
+var new_content='<div class="form-group"><input name="reccurent_alternatives_pickupdatepicker[]" value="" class="form-control width-60-percent-with-margin-10" id="reccurent_alternatives_pickupdatepicker'+count+'" placeholder="Pick up Date" type="text"><input name="reccurent_alternatives_pickuptimepicker[]" value="" class="form-control width-30-percent-with-margin-left-20" id="reccurent_alternatives_pickuptimepicker'+count+'" placeholder="Pick up Time" type="text"><br /><br /><br /><p class="float-left clear-error margin-left-15-px margin-top-less-15 text-red date'+count+'"></p><p class="float-right margin-right-135-px clear-error margin-top-less-15 text-red time'+count+'"></p></div>';
 $('.new-reccurent-date-textbox').append(new_content);
 $('#reccurent_alternatives_pickupdatepicker'+count).datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
-$('#reccurent_alternatives_dropdatepicker'+count).datetimepicker({timepicker:false,format:'Y-m-d',formatDate:'Y-m-d'});
+
 
 $('#reccurent_alternatives_pickuptimepicker'+count).datetimepicker({datepicker:false,
-	format:'H:i',
-	step:30
-});
-$('#reccurent_alternatives_droptimepicker'+count).datetimepicker({datepicker:false,
 	format:'H:i',
 	step:30
 });
 
 $('.add-reccurent-dates').attr('count',Number(count)+1);
 });
+
+$('.add-reccurent-trip').click(function(){
+var count=$('.add-reccurent-dates').attr('count');
+$('.clear-error').html('');
+var error=false;
+if($('#reccurent_alternatives_pickuptimepicker0').val()=='' && $('#reccurent_alternatives_pickuptimepicker0').val()==''){
+
+error=true;
+$('.date0').html('Field Required');
+$('.time0').html('Field Required');
+}
+
+for(var i=0;i<count;i++){
+if($('#reccurent_alternatives_pickupdatepicker'+i).val()!=''){
+if($('#reccurent_alternatives_pickuptimepicker'+i).val()==''){
+$('.time'+i).html('Field Required');
+error=true;
+}
+}
+if($('#reccurent_alternatives_pickuptimepicker'+i).val()!=''){
+if($('#reccurent_alternatives_pickupdatepicker'+i).val()==''){
+$('.date'+i).html('Field Required');
+error=true;
+}
+}
+
+}
+
+if(error==false){
+
+}else{
+
+return false;
+
+}
+});
+
+
+
 
 //for checking user in db
 $('#mobile').on('keyup click',function(){
@@ -1173,6 +1190,7 @@ $('#reccurent').click(function(){
 	$('.modal').css('display','block');
 	var top=-1*(Number($('.trip-booking-area').height()/2)+70);
 	$('.modal-body').css('top',top);
+	$('.recurrent-radio-container > .div-continues > .iradio_minimal > .iCheck-helper').trigger('click');
 
 });
 

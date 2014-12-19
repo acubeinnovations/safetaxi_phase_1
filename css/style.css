@@ -793,6 +793,25 @@ background: none;
 
 line-height:0;
 }
+.width-90-percent{
+
+width:90%;
+}
+.position-absolute{
+position:absolute;
+}
+.height-300-px{
+height:350px;
+}
+.margin-left-15-px{
+margin-left:15px;
+}
+.margin-right-135-px{
+margin-right:135px;
+}
+.margin-right-90-px{
+margin-right:90px;
+}
 /* trips safe-taxi end*/
 
 

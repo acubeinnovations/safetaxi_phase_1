@@ -65,6 +65,10 @@ class Trip_booking extends CI_Controller {
 
 				$this->saveTrip($revoke=false);
 				
+		}else if(isset($_REQUEST['book-reccurent-trip'])){
+
+				$this->saveReccurentTrip();
+				
 		}else if(isset($_REQUEST['revoke'])){
 
 				$this->saveTrip($revoke=true);
@@ -343,6 +347,80 @@ class Trip_booking extends CI_Controller {
 			}
 		}
 
+	}
+
+
+	function saveReccurentTrip(){
+		if(isset($_REQUEST['id']) && $_REQUEST['id']!=gINVALID){
+			$data['id']=$this->input->post('id');
+		}else{
+			$data['id']=gINVALID;
+		}
+		$condition=array('id'=>$data['id']);
+		$values=$this->trip_booking_model->getDetails($condition);
+
+		$dbdata['trip_from']				=	$values[0]->trip_from;
+		$dbdata['trip_to']					=	$values[0]->trip_to;
+		$dbdata['trip_from_landmark']		=	$values[0]->trip_from_landmark;
+		$dbdata['trip_to_landmark']			=	$values[0]->trip_to_landmark;
+		$dbdata['trip_from_lat']			=	$values[0]->trip_from_lat;	
+		$dbdata['trip_to_lat']				=	$values[0]->trip_to_lat;
+		$dbdata['trip_from_lng']			=	$values[0]->trip_from_lng;
+		$dbdata['trip_to_lng']				=	$values[0]->trip_to_lng;
+		$dbdata['trip_status_id']			=	TRIP_STATUS_ACCEPTED;
+		$dbdata['distance_in_km_from_web']	=	$values[0]->distance_in_km_from_web;
+		$dbdata['customer_id']				=	$this->session->userdata('customer_id');
+		$dbdata['driver_id']				= 	gINVALID;
+		
+		if($this->input->post('recurrent')=='continues'){
+
+						$data['reccurent_continues_pickupdatepicker'] = $this->input->post('reccurent_continues_pickupdatepicker');
+						$reccurent_continues_pickupdatepicker = explode('-',$this->input->post('reccurent_continues_pickupdatepicker'));
+						$data['reccurent_continues_pickuptimepicker'] = $reccurent_continues_pickuptimepicker = $this->input->post('reccurent_continues_pickuptimepicker');
+						$pickupdatepicker_start=$reccurent_continues_pickupdatepicker[0];
+						$pickupdatepicker_end=$reccurent_continues_pickupdatepicker[1];
+				
+						
+						$pickup_dates = array();
+						$start = $current = strtotime($pickupdatepicker_start);
+						$end = strtotime($pickupdatepicker_end);
+
+						while ($current <= $end) {
+							$pickup_dates[] = date('Y-m-d', $current);
+							$current = strtotime('+1 days', $current);
+						}
+					
+						
+
+				for($index=0;$index<count($pickup_dates);$index++){
+					$dbdata['pick_up_date']					=$pickup_dates[$index];
+					$dbdata['pick_up_time']					=$reccurent_continues_pickuptimepicker;
+					
+					if($dbdata['pick_up_date']!='' && $dbdata['pick_up_time']!='' && $dbdata['drop_date']!='' &&  $dbdata['drop_time']!=''){
+					$res = $this->trip_booking_model->bookTrip($dbdata);
+						if($res==true){
+							$this->session->set_userdata(array('dbSuccess'=>'Trips Booked Succesfully..!!'));
+							$this->session->set_userdata(array('dbError'=>''));
+						}
+					}
+				}
+			}else if($this->input->post('recurrent')=='alternatives'){
+					
+						$data['reccurent_alternatives_pickupdatepicker'] = $reccurent_alternatives_pickupdatepicker = $this->input->post('reccurent_alternatives_pickupdatepicker');
+						$data['reccurent_alternatives_pickuptimepicker'] = $reccurent_alternatives_pickuptimepicker = $this->input->post('reccurent_alternatives_pickuptimepicker');
+						
+				for($index=0;$index<count($reccurent_alternatives_pickupdatepicker);$index++){
+					$dbdata['pick_up_date']	=$reccurent_alternatives_pickupdatepicker[$index];
+					$dbdata['pick_up_time']	=$reccurent_alternatives_pickuptimepicker[$index];
+					if($dbdata['pick_up_date']!='' && $dbdata['pick_up_time']!=''){	 
+					$res = $this->trip_booking_model->bookTrip($dbdata);
+						if($res==true){
+							$this->session->set_userdata(array('dbSuccess'=>'Trips Booked Succesfully..!!'));
+							$this->session->set_userdata(array('dbError'=>''));
+						}
+					}
+				}
+			}
 	}
 	
 	function searchVehicles($data_locations){
