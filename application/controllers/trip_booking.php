@@ -358,7 +358,9 @@ class Trip_booking extends CI_Controller {
 		}
 		$condition=array('id'=>$data['id']);
 		$values=$this->trip_booking_model->getDetails($condition);
-
+		
+		$dbdata['booking_date']				=	date('Y-m-d');
+		$dbdata['booking_time']				=	date('H:i:s');
 		$dbdata['trip_from']				=	$values[0]->trip_from;
 		$dbdata['trip_to']					=	$values[0]->trip_to;
 		$dbdata['trip_from_landmark']		=	$values[0]->trip_from_landmark;
@@ -370,7 +372,13 @@ class Trip_booking extends CI_Controller {
 		$dbdata['trip_status_id']			=	TRIP_STATUS_ACCEPTED;
 		$dbdata['distance_in_km_from_web']	=	$values[0]->distance_in_km_from_web;
 		$dbdata['customer_id']				=	$this->session->userdata('customer_id');
-		$dbdata['driver_id']				= 	gINVALID;
+		$dbdata['driver_id']				= 	$this->input->post('driver');
+		$dbdata['user_id']					= 	$this->session->userdata('id');
+
+		$dbdata['tariff_id']				=	$this->trip_booking_model->getLatestTariff(); //NEED TO REMOVE COMMENT
+		if($dbdata['tariff_id']== false){
+			$dbdata['tariff_id']=gINVALID;
+		}
 		
 		if($this->input->post('recurrent')=='continues'){
 
@@ -395,15 +403,47 @@ class Trip_booking extends CI_Controller {
 				for($index=0;$index<count($pickup_dates);$index++){
 					$dbdata['pick_up_date']					=$pickup_dates[$index];
 					$dbdata['pick_up_time']					=$reccurent_continues_pickuptimepicker;
+		
 					
-					if($dbdata['pick_up_date']!='' && $dbdata['pick_up_time']!='' && $dbdata['drop_date']!='' &&  $dbdata['drop_time']!=''){
+					if($dbdata['pick_up_time'] >= '05:00:00' && $dbdata['pick_up_time'] <= '21:00:00'){
+						$dbdata['trip_day_night_type_id']		= DAY_TRIP;
+					}else{
+
+						$dbdata['trip_day_night_type_id']		= NIGHT_TRIP;
+					}					
+					
+					$tripdatetime							=$dbdata['pick_up_date'].' '.$dbdata['pick_up_time'];
+					$dbdata['trip_type_id']					=$this->checkFutureOrInstantTrip($tripdatetime);
+
+					if($dbdata['pick_up_date']!='' && $dbdata['pick_up_time']!=''){
 					$res = $this->trip_booking_model->bookTrip($dbdata);
-						if($res==true){
+						if($res>0){
 							$this->session->set_userdata(array('dbSuccess'=>'Trips Booked Succesfully..!!'));
 							$this->session->set_userdata(array('dbError'=>''));
+			
+							$driver=$this->trip_booking_model->getDriverDetails($res);
+								if($driver!=false ){
+									$app_key=$driver[0]['app_key'];
+									if($app_key!=''){
+									$driver_id=$driver[0]['id'];
+									$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_RECCURENT;
+									$notification_data['notification_status_id']=gINVALID;
+									$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+									$notification_data['app_key']=$app_key;
+									$notification_data['trip_id']=$res;
+									$trip_update=FALSE;
+									$this->trip_booking_model->setNotifications($notification_data,$trip_update);
+									if($dbdata['trip_type_id']==INSTANT_TRIP){
+											$driver_data['driver_status_id']=DRIVER_STATUS_ACTIVE;
+											$this->trip_booking_model->changeDriverstatus($driver_id,$driver_data);
+									}
+									}
+
+								}
 						}
 					}
 				}
+				 redirect(base_url().'front-desk/trip-booking/');
 			}else if($this->input->post('recurrent')=='alternatives'){
 					
 						$data['reccurent_alternatives_pickupdatepicker'] = $reccurent_alternatives_pickupdatepicker = $this->input->post('reccurent_alternatives_pickupdatepicker');
@@ -412,14 +452,45 @@ class Trip_booking extends CI_Controller {
 				for($index=0;$index<count($reccurent_alternatives_pickupdatepicker);$index++){
 					$dbdata['pick_up_date']	=$reccurent_alternatives_pickupdatepicker[$index];
 					$dbdata['pick_up_time']	=$reccurent_alternatives_pickuptimepicker[$index];
+
+					if($dbdata['pick_up_time'] >= '05:00:00' && $dbdata['pick_up_time'] <= '21:00:00'){
+						$dbdata['trip_day_night_type_id']		= DAY_TRIP;
+					}else{
+
+						$dbdata['trip_day_night_type_id']		= NIGHT_TRIP;
+					}					
+					
+					$tripdatetime							=$dbdata['pick_up_date'].' '.$dbdata['pick_up_time'];
+					$dbdata['trip_type_id']					=$this->checkFutureOrInstantTrip($tripdatetime);
+
 					if($dbdata['pick_up_date']!='' && $dbdata['pick_up_time']!=''){	 
 					$res = $this->trip_booking_model->bookTrip($dbdata);
-						if($res==true){
+						if($res>0){
 							$this->session->set_userdata(array('dbSuccess'=>'Trips Booked Succesfully..!!'));
 							$this->session->set_userdata(array('dbError'=>''));
+							$driver=$this->trip_booking_model->getDriverDetails($res);
+								if($driver!=false ){
+									$app_key=$driver[0]['app_key'];
+									if($app_key!=''){
+									$driver_id=$driver[0]['id'];
+									$notification_data['notification_type_id']=NOTIFICATION_TYPE_TRIP_RECCURENT;
+									$notification_data['notification_status_id']=gINVALID;
+									$notification_data['notification_view_status_id']=NOTIFICATION_NOT_VIEWED_STATUS;
+									$notification_data['app_key']=$app_key;
+									$notification_data['trip_id']=$res;
+									$trip_update=FALSE;
+									$this->trip_booking_model->setNotifications($notification_data,$trip_update);
+									if($dbdata['trip_type_id']==INSTANT_TRIP){
+											$driver_data['driver_status_id']=DRIVER_STATUS_ACTIVE;
+											$this->trip_booking_model->changeDriverstatus($driver_id,$driver_data);
+									}
+									}
+
+								}
 						}
 					}
 				}
+				redirect(base_url().'front-desk/trip-booking/');
 			}
 	}
 	

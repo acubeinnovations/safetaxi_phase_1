@@ -297,8 +297,7 @@ $count=1;
 												<?php 
 								
 												echo form_input(array('name'=>'reccurent_continues_pickupdatepicker','class'=>'form-control width-60-percent-with-margin-10','id'=>'reccurent_continues_pickupdatepicker','placeholder'=>'Pick up Date ')).form_input(array('name'=>'reccurent_continues_pickuptimepicker','class'=>'form-control width-30-percent-with-margin-left-20','id'=>'reccurent_continues_pickuptimepicker','placeholder'=>'Pick up time '));
-												echo br(3).$this->form_functions->form_error_session('reccurent_continues_pickupdatepicker', '<p class="text-red">', '</p>').$this->form_functions->form_error_session('reccurent_continues_pickuptimepicker', '<p class="text-red">', '</p>');
-												 ?>
+												 ?><p class="text-red float-left margin-top-less-12 margin-left-15-px date clear-error"></p><p class="text-red float-right margin-top-less-12 margin-right-110-px time clear-error"></p><?php echo br(3); ?>
 									
 											</div>
 											
@@ -329,8 +328,14 @@ $count=1;
 											</div>
 										</div>
 										<div class="form-group">
+												<?php $class="form-control";
+							 
+										echo $this->form_functions->populate_dropdown('driver',$drivers,$driver,$class,'driver',"Select driver"); ?>
+										<p class="text-red float-left margin-left-15-px driver-error clear-error">
+										</div>
+										<div class="form-group">
 												<a class="btn btn-success float-right btn-lg add-reccurent-trip" >SAVE RECCURRENT TRIP</a>
-												<div class="hide-me"><input  class="book-reccurent-trip margin-top-10-px" name="book-reccurent-trip" type="submit"></div>
+												<div class="hide-me"><input  class="book-reccurent-trip margin-top-10-px" name="book-reccurent-trip" type="submit"></div><div class="hide-me"> <input name="id" class="id" value="<?php echo $id; ?>" type="text"></div> 
 										</div>
 								</fieldset>	 <?php echo form_close(); ?>
 							</div>

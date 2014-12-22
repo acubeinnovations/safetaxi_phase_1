@@ -110,7 +110,7 @@ class User extends CI_Controller {
 		}elseif($param1=='driver-payments'){
 		
 		if($this->permission_for_all()==true) {
-			$this->DriverPayments($param2);
+			$this->DriverPayments($param2,$param3);
 		}else{
 			$this->notAuthorized();
 		}
@@ -564,7 +564,7 @@ class User extends CI_Controller {
 	$data['added_customer']='false';
 	$data['trip_status_id']=gINVALID;
 	}
-	$tbl_arry=array();
+	$tbl_arry=array('drivers');
 	
 	for ($i=0;$i<count($tbl_arry);$i++){
 	$result=$this->user_model->getArray($tbl_arry[$i]);
@@ -585,7 +585,7 @@ class User extends CI_Controller {
 	}else{
 		$data['list_of_drivers']='';
 	}
-
+	$data['driver']='';
 	$data['title']="Trip Booking | ".PRODUCT_NAME;  
 	$page='user-pages/trip-booking';
 	$this->load_templates($page,$data);
@@ -612,10 +612,28 @@ class User extends CI_Controller {
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
-	public function DriverPayments($param2){
+	public function DriverPayments($param2,$param3=''){
 		if($this->session_check()==true) {
 			/* */
-			$driver_id=$param2; 
+			$driver_id=$param2;
+			if(isset($param3) && $param3!=''){
+			$payment_id=$param3;
+			$data['payment_id']=$param3;
+			$payment=$this->driver_payment_model->getPayment($payment_id);
+		  	$data['payment_type']=$payment[0]['voucher_type_id'];
+			if($data['payment_type']==INVOICE){
+				$data['amount']=$payment[0]['dr_amount'];
+			}else if($data['payment_type']==PAYMENT || $data['payment_type']==RECIEPT){
+				$data['amount']=$payment[0]['cr_amount'];
+			}
+			$data['payment_date']=$payment[0]['payment_date'];
+			
+			}else{
+			$data['payment_id']=gINVALID;
+			$data['payment_type']='';
+			$data['payment_date']='';
+			$data['amount']='';
+			}
 			$tbl_arry=array('drivers','trip_statuses');
 			for ($i=0;$i<count($tbl_arry);$i++){
 					$result=$this->user_model->getArray($tbl_arry[$i]);
@@ -631,12 +649,10 @@ class User extends CI_Controller {
 			$drivers=$this->driver_model->getDetails($condition=''); //print_r($drivers); 
 			$conditon = array('id'=>$driver_id);
 			$result=$this->trip_booking_model->getDetails($conditon);
-			/* search condition starts */
-				//for search
-	//$qry="SELECT * FROM trips AS T LEFT JOIN drivers AS D  ON D.id=T.driver_id LEFT JOIN  customers AS C ON C.id=T.customer_id";
+			
 
 	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount, VT.name as vouchertype,DP.voucher_number as voucher_number,
-	DP.payment_date as date,DP.period as Period,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.driver_id as Driver_id FROM driver_payment AS DP 
+	DP.payment_date as date,DP.period as Period,DP.id as payment_id,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.driver_id as Driver_id FROM driver_payment AS DP 
 	LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_types VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" 
 	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.period DESC';
 
@@ -712,11 +728,6 @@ class User extends CI_Controller {
 	}
 	}
 //Search period ends
-
-
-
-
-
 
 	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
 	$data['status_id']=$_REQUEST['trip_status_id'];

@@ -372,7 +372,7 @@ $('#reccurent_alternatives_droptimepicker'+i).datetimepicker({datepicker:false,
 $('.recurrent-radio-container > .div-continues > .iradio_minimal > .iCheck-helper').on('click',function(){
 
 $('.recurrent-container-continues').show();
-$('.height-300-px').css('height','280px');
+$('.height-300-px').css('height','320px');
 $('#reccurent_continues_pickupdatepicker').daterangepicker({format: 'MM/DD/YYYY'});
 $('#reccurent_continues_dropdatepicker').daterangepicker({format: 'MM/DD/YYYY'});
 
@@ -393,7 +393,7 @@ $('.recurrent-container-alternatives').hide();
 
 
 $('.recurrent-radio-container > .div-alternatives > .iradio_minimal > .iCheck-helper').on('click',function(){
-$('.height-300-px').css('height','380px');
+$('.height-300-px').css('height','320px');
 $('.recurrent-container-continues').hide();
 
 $('.recurrent-container-alternatives').show();
@@ -407,6 +407,7 @@ $('#reccurent_alternatives_pickuptimepicker0').datetimepicker({datepicker:false,
 });
 
 $('.add-reccurent-dates').click(function(){
+$('.height-300-px').css('height','420px');
 var slider=$('.reccurent-container').attr('slider');
 if(slider=='2'){
 $('.reccurent-slider').css('overflow-y','scroll');
@@ -429,14 +430,34 @@ $('.add-reccurent-dates').attr('count',Number(count)+1);
 });
 
 $('.add-reccurent-trip').click(function(){
-var count=$('.add-reccurent-dates').attr('count');
+
 $('.clear-error').html('');
 var error=false;
-if($('#reccurent_alternatives_pickuptimepicker0').val()=='' && $('#reccurent_alternatives_pickuptimepicker0').val()==''){
+
+if($('.div-continues > .iradio_minimal').attr('aria-checked')=='false' && $('.div-alternatives > .iradio_minimal').attr('aria-checked')=='true'){
+var count=$('.add-reccurent-dates').attr('count');
+
+if($('#reccurent_alternatives_pickupdatepicker0').val()!=''){
+if( $('#reccurent_alternatives_pickuptimepicker0').val()==''){
+
+error=true;
+$('.time0').html('Field Required');
+}
+}
+
+if($('#reccurent_alternatives_pickuptimepicker0').val()!=''){
+if($('#reccurent_alternatives_pickupdatepicker0').val()==''){
+
+error=true;
+$('.date0').html('Field Required');
+}
+}
+if($('#reccurent_alternatives_pickuptimepicker0').val()=='' && $('#reccurent_alternatives_pickupdatepicker0').val()==''){
 
 error=true;
 $('.date0').html('Field Required');
 $('.time0').html('Field Required');
+
 }
 
 for(var i=0;i<count;i++){
@@ -454,9 +475,25 @@ error=true;
 }
 
 }
+}else if($('.div-continues > .iradio_minimal').attr('aria-checked')=='true' && $('.div-alternatives > .iradio_minimal').attr('aria-checked')=='false'){
+
+if($('#reccurent_continues_pickupdatepicker').val()==''){
+error=true;
+$('.date').html('Field Required');
+}
+if($('#reccurent_continues_pickuptimepicker').val()==''){
+error=true;
+$('.time').html('Field Required');
+}
+
+}
+if($('#driver').val()==-1){
+error=true;
+$('.driver-error').html('Field Required');
+}
 
 if(error==false){
-
+$('.book-reccurent-trip').trigger('click');
 }else{
 
 return false;

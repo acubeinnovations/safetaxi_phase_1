@@ -8,6 +8,17 @@ class Driver_payment_model extends CI_Model {
 	return true;
 	}
 
+	public function getPayment($id){ 
+	$qry='SELECT * FROM driver_payment WHERE id= '.$id;
+	$results=$this->db->query($qry);
+	$results=$results->result_array();
+	if(count($results)>0){
+	
+		return $results;
+	}else{
+		return false;
+	}
+	}
 
 	public function editDriverpayment($data,$id){
 	$tbl="driver_payment";

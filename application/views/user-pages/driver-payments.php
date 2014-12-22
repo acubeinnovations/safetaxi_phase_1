@@ -1,8 +1,4 @@
 <?php    
-$amount="";
-$payment_date="";
-$payment_type="";
-
 
  if($this->mysession->get('post')!=null){
 $amount=$data['amount'];
@@ -50,8 +46,6 @@ $trip_sl_no=$page;
 
 <div class="trips">
 
-<div class="box">
-    <div class="box-body1">
 <div class="page-outer">    
 	<fieldset class="body-border">
 		<legend class="body-head">Driver Payments</legend>
@@ -140,8 +134,7 @@ echo form_close();?></td>
 					   	<td><?php echo $trips[$trip_index]['date'];?></td>
 					   	<td><?php echo $trips[$trip_index]['Debitamount'];?></td>
 					   	<td><?php echo $trips[$trip_index]['Creditamount'];?></td>
-					   	<td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['Period']."/".$trips[$trip_index]['Voucher_type_id']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?></td>
-					   
+					   	<td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['Period']."/".$trips[$trip_index]['Voucher_type_id']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?><?php echo "<a href=".base_url().'front-desk/driver-payments/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['payment_id']." class='fa fa-edit' target='_blank' title='Edit'></a>".nbs(5); ?></td>
 					   
 					  
 					</tr>
@@ -305,133 +298,35 @@ echo form_close();?></td>
 					<div class='hide-me'><?php echo form_input(array('name'=>'driver_id','class'=>'form-control','value'=>$driver_id));?></div>
 				        <div class="form-group">
 						<?php echo form_label('Enter Amount','usernamelabel'); ?>
-				           <?php echo form_input(array('name'=>'amount','class'=>'form-control','placeholder'=>'Enter Amount','value'=>"$amount")); ?>
+				           <?php echo form_input(array('name'=>'amount','class'=>'form-control','placeholder'=>'Enter Amount','value'=>$amount)); ?>
 					   
 				        </div>
 				        <!-- -->
 				        <div class="form-group">
 				        	<?php echo form_label('Payment Type','usernamelabel'); ?>
-				        	<select name="payment_type" class="customer form-control">
-								<option value="-1" disabled="disabled" selected="selected">--Select--</option>
-								<option value="3">Receipt</option>
-								<option value="2">Payment</option>
-							</select>
+
+						<?php $class="form-control customer";
+						if($payment_id!=gINVALID) { 
+							$payment_types=array('1'=>'Invoice','2'=>'Payment','3'=>'Receipt');
+						}else{
+							$payment_types=array('2'=>'Payment','3'=>'Receipt');
+						}
+						echo $this->form_functions->populate_dropdown('payment_type',$payment_types,$payment_type,$class,'',$msg="Select payment type");?>
 				        </div>
 				        <!-- -->
 				        <div class="form-group">
 				        	<?php echo form_label('Select Date','usernamelabel'); ?>
 				        	<?php  echo form_input(array('name'=>'payment_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'Date','value'=>$payment_date)); ?>
 				        </div>
-
-				        <?php echo form_submit("payment-submit","Add Payment","class='btn btn-primary'"); ?>  
+				
+				        <?php if($payment_id==gINVALID){ $class="Add Payment"; }else{ $class="UPDATE"; } echo form_submit("payment-submit",$class,"class='btn btn-primary'"); ?>  
 				</div><!-- Responsive Table-->
 			</legend>
 		</fieldset>	
 	</div>	<!-- Add Driver Payment-->	
 </div>
 
-</div><!-- /.box-body -->
 
-
-
-
-   
-	<div class='overlay-container'>
-   		<div class="overlay modal"></div>
-		<div class="loading-img"></div>
-		<div class="modal-body border-2-px box-shadow">
-			<div class="profile-body width-80-percent-and-margin-auto ">
-			<fieldset class="body-border">
-   			 <legend class="body-head">Trip Voucher</legend>
-				<div class="div-with-50-percent-width-with-margin-10">
-					<div class="form-group">
-					   <?php echo form_label('Start KM Reading','startkm'); ?>
-					   <?php echo form_input(array('name'=>'startkm','class'=>'form-control startkm','id'=>'startkm','placeholder'=>'Enter Start K M')); ?>			
-						<span class="start-km-error text-red"></span>
-					</div>
-					<div class="form-group">
-						<?php echo form_label('End Km Reading','endkm'); ?>
-						<?php echo form_input(array('name'=>'endkm','class'=>'form-control endkm','placeholder'=>'Enter End KM')); ?>
-						<span class="end-km-error text-red"></span>
-					</div>
-					<div class="form-group">
-						<?php echo form_label('Gariage Clossing KM Reading','gariageclosingkm'); ?>
-						<?php echo form_input(array('name'=>'garageclosingkm','class'=>'form-control garageclosingkm','placeholder'=>'Enter Gariage closing km')); ?>
-						<span class="garage-km-error text-red"></span>
-					</div>
-					<div class="form-group hide-me">
-						<?php echo form_label('Gariage Closing Time','gariageclosingtime'); ?>
-						<?php echo form_input(array('name'=>'garageclosingtime','class'=>'form-control garageclosingtime initialize-time-picker','placeholder'=>'Enter Gariage Closing Time')); 
-						?>
-						<span class="garage-time-error text-red"></span>
-					</div>
-					<div class="form-group">
-						<?php echo form_label('Trip Starting Time','tripstartingtime'); ?>
-						<?php echo form_input(array('name'=>'tripstartingtime','class'=>'form-control tripstartingtime format-time','placeholder'=>'Enter Trip Starting Time')); 
-						?>
-					</div>
-					<div class="form-group">
-						<?php echo form_label('Trip Ending Time','tripendingtimelabel'); ?>
-						<?php echo form_input(array('name'=>'tripendingtime','class'=>'form-control tripendingtime format-time','placeholder'=>'Enter Trip Ending Time')); 
-						?>
-					</div>
-					<div class="form-group">
-						<?php $class="form-control";
-						$id="tarrif";
-						echo form_label('Tariff','triptariflabel'); 
-						echo $this->form_functions->populate_dropdown('tariff',$tariffs='',$tariff='',$class,$id,$msg="Tariffs");?>
-						<span class="tariff-error text-red"></span>
-					</div>
-				</div>
-				<div class="div-with-50-percent-width-with-margin-10">
-					<div class="form-group hide-me">
-						<?php echo form_label('Releasing Place','releasingplace'); ?>
-						<?php echo form_input(array('name'=>'releasingplace','class'=>'form-control releasingplace','placeholder'=>'Enter Releasing Place')); 
-						?>
-					</div>
-					<div class="form-group">
-						<?php echo form_label('Parking Fee','parking'); ?>
-						<?php echo form_input(array('name'=>'parkingfee','class'=>'form-control parkingfee','placeholder'=>'Enter Parking Fee')); ?>
-					
-					</div>
-					<div class="form-group">
-						<?php echo form_label('Toll Fee','tollfee'); ?>
-						<?php echo form_input(array('name'=>'tollfee','class'=>'form-control tollfee','placeholder'=>'Enter Toll Fee')); ?>
-					
-					</div>
-					<div class="form-group">
-						<?php echo form_label('State Tax','statetax'); ?>
-						<?php echo form_input(array('name'=>'statetax','class'=>'form-control statetax','placeholder'=>'Enter State Tax')); 
-						?>
-					</div>
-			
-			
-					<div class="form-group">
-						<?php echo form_label('Night Halt','nighthalt'); ?>
-						<?php echo form_input(array('name'=>'nighthalt','class'=>'form-control nighthalt','placeholder'=>'Enter Night Halt')); 
-						?>
-					</div>
-					<div class="form-group">
-						<?php echo form_label('Extra Fuel Charge','extrafuel'); ?>
-						<?php echo form_input(array('name'=>'extrafuel','class'=>'form-control extrafuel','placeholder'=>'Enter Extra Fuel Charge')); ?>
-					
-					</div>
-					<div class="form-group">
-						<?php echo form_label('Driver Bata','driverbatalabel'); ?>
-						<?php echo form_input(array('name'=>'driverbata','class'=>'form-control driverbata','placeholder'=>'Enter Driver Bata')); ?>
-					
-					</div>
-			   		<div class="box-footer">
-					<?php echo form_submit("trip-voucher-save","SAVE","class='btn btn-success trip-voucher-save'").nbs(5);  ?><button class='btn btn-danger modal-close' type='button'>CLOSE</button>  
-					</div>
-				</div>
-			</div>
-			</fieldset>
-		</div><!-- body -->
-
-		</div>
-	</div>
-    <!-- end loading -->
 </div>	
 </div>
 
