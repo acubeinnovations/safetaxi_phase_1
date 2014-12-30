@@ -29,11 +29,11 @@ $single_driver_record=$this->uri->segment(3);
 <table border="1px solid black" width="100%">
 	<tr>
 		<td align="center">
-			SAFE TAXI<br>
+			<?php echo PRODUCT_NAME; ?><br>
 		
-			Safe Taxi,Kaloor,Ernakulam,Kerala<br>
-			<i>Phone : 9633532262</i><br>
-			<i>Email : safetaxi@gmail.com</i>
+			<?php echo SYSTEM_ADDRESS; ?><br>
+			<i>Phone : <?php echo SYSTEM_PHONE_NUMBER; ?></i><br>
+			<i>Email : <?php echo SYSTEM_EMAIL; ?></i>
 		</td>
 	</tr>
 </table>
@@ -111,7 +111,7 @@ for ($i=0; $i < count($values); $i++)   {?>
 	<td width="20%">
 		<?php
 			if($values[$i]['Voucher_type']=="Invoice"){
-				echo $amount=$values[$i]['Driver_debit']; if($single_driver_record==""){$amountdr+=$amount; echo " Dr"; }
+				echo $amount=$values[$i]['Driver_debit']*COMMISION_PERCENTAGE/100; if($single_driver_record==""){$amountdr+=$amount; echo " Dr"; }
 			}elseif($values[$i]['Voucher_type']=="Payment"){
 				echo $amount=$values[$i]['Driver_credit']; if($single_driver_record==""){$amountcr+=$amount; echo " Cr"; }
 			}
@@ -133,9 +133,10 @@ for ($i=0; $i < count($values); $i++)   {?>
 <div class="tblgap"></div>
 <?php 
 			//service tax calculation
-			$servic_tax=$amount*12.36/100;
+			$servic_tax=$amount*VAT/100;
 			$service_tax=floor($servic_tax * 100) / 100; //for rounding of service tax
-			$total= $service_tax+$amount;
+			$total= $amount;
+			$amount_payable=floor(($total/1.1236)* 100) / 100;
 			$total_amount=floor($total * 100) / 100;  //for rounding of total amount
 			?>
 <table cellpadding="10" border="1px solid black" width="100%">
@@ -153,6 +154,8 @@ for ($i=0; $i < count($values); $i++)   {?>
 			Edu cess: 2% (2% of basic Service Tax = 0.24 )<br>
 			Higher Edu.Cess-1% (1% of basic Service Tax = 0.12 )</span><br>
 			<b>Service Tax      :   <?php echo $service_tax;?><i>&nbsp;&nbsp;(12.36%)</i><br><br>
+				
+				Amount     :   <?php echo $amount_payable; ?><br>	
 				GRAND TOTAL     :   <?php echo $total_amount;?><br>	
 
 			</b>
@@ -173,7 +176,7 @@ for ($i=0; $i < count($values); $i++)   {?>
 <table cellpadding="8" border="1px solid black" width="100%">
 	<tr>
 		<td width="60%" align="left">
-			Registered Office : &nbsp;&nbsp; &nbsp;&nbsp;  Safe Taxi,Kaloor,Ernakulam,Kerala,
+			Registered Office : &nbsp;&nbsp; &nbsp;&nbsp;  <?php echo SYSTEM_ADDRESS; ?>
 			
 		</td>
 		<td width="40%" align="center">

@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `notification_view_status_id` int(11) NOT NULL,
   `app_key` varchar(255) NOT NULL,
   `trip_id` int(11) NOT NULL,
+  `amount` double NOT NULL,
   `message` text NOT NULL,
   `user_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -157,7 +158,8 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   PRIMARY KEY (`id`),
   KEY `notification_type_id` (`notification_type_id`,`notification_status_id`,`trip_id`,`user_id`),
   KEY `notification_view_status_id` (`notification_view_status_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+
 
 -- --------------------------------------------------------
 

@@ -24,7 +24,10 @@ define('API_KEY','AIzaSyBy-tN2uOTP10IsJtJn8v5WvKh5uMYigq8');
 
 define('SYSTEM_ADMINISTRATOR',1);
 define('FRONT_DESK',2);
+
 define('SYSTEM_EMAIL','safetaxi@safetaxi.com');
+define('SYSTEM_ADDRESS','Safe Taxi,Kaloor,Ernakulam,Kerala');
+define('SYSTEM_PHONE_NUMBER','999999999');
 
 define('INVOICE', 1);
 define('PAYMENT', 2);
@@ -74,6 +77,8 @@ define('NOTIFICATION_TYPE_TRIP_UPDATE', 3);
 define('NOTIFICATION_TYPE_PAYMENT_MSGS', 4);
 define('NOTIFICATION_TYPE_COMMON_MSGS', '5');
 define('NOTIFICATION_TYPE_TRIP_RECCURENT', '6');
+define('NOTIFICATION_TYPE_TRIP_AWARDED', '7');
+define('NOTIFICATION_TYPE_TRIP_REGRET', '8');
 
 define('NOTIFICATION_STATUS_NOTIFIED', 1);
 define('NOTIFICATION_STATUS_RESPONDED', 2);
@@ -84,6 +89,11 @@ define('NOTIFICATION_NOT_VIEWED_STATUS',2);
 
 
 define('gINVALID',-1);
+define('VAT','12.36');
+define('COMMISION_PERCENTAGE','10');
+
+
+
 /*
 |--------------------------------------------------------------------------
 | File Stream Modes

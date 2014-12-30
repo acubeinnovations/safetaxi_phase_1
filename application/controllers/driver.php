@@ -181,43 +181,52 @@ class Driver extends CI_Controller {
 			echo "not same";
 		}
 
-	}*/	//
+	} */	//
 
 
 
 	//Newly Added ends
-	$data['voucher_type_id']=$this->input->post('payment_type'); 	
+	$data['voucher_type_id']=$this->input->post('payment_type'); 
 	if($this->input->post('payment_type')==RECEIPT){
-		$data['dr_amount']=$this->input->post('amount');
+		$data['cr_amount']=$this->input->post('amount');
+		$data['dr_amount']=0;
 		$data['voucher_number']="RECEIPT";
 	}elseif ($this->input->post('payment_type')==PAYMENT){
 		$data['cr_amount']=$this->input->post('amount');
 		$data['voucher_number']="PYMNT".$i;
+		$data['dr_amount']=0;
+	}elseif ($this->input->post('payment_type')==INVOICE){
+		$data['dr_amount']=$this->input->post('amount');
+		$data['cr_amount']=0;
+		
 	}	
 	
 	}//for loop
-	$data['payment_date']=$this->input->post('payment_date');
+	$data['payment_date']=date('Y-m-d',$this->input->post('payment_date'));
 	$data['driver_id']=$this->input->post('driver_id'); 
+	$payment_id=$this->input->post('payment_id');
 	$year = explode('-', $this->input->post('payment_date'));
 	$data['year']=$year[0];
 	$month = explode('-', $this->input->post('payment_date'));
 	$data['period']=$month[1];
-	$res=$this->driver_payment_model->addDriverpayment($data); 
-	
+	if($payment_id!=gINVALID){
+		$res=$this->driver_payment_model->editDriverpayment($data,$payment_id); 
+		$action='Updated';
+	}else{
+		$res=$this->driver_payment_model->addDriverpayment($data); 
+		$action='Added';
+	}
 	if($res==true){
-		$this->session->set_userdata(array('dbSuccess'=>' Added Succesfully..!'));
+		$this->session->set_userdata(array('dbSuccess'=>$action.' Succesfully..!'));
 		$this->session->set_userdata(array('dbError'=>''));
 		redirect(base_url().'front-desk/driver-payments/'.$data['driver_id']);
 	}
-	
 	else{
-			$this->notAuthorized();
-			}
+		$this->session->set_userdata(array('dbSuccess'=>''));
+		$this->session->set_userdata(array('dbError'=>$action.' Unsuccesfully..!'));
+		redirect(base_url().'front-desk/driver-payments/'.$data['driver_id']);
+	}
 	
-
-
-
-
 }
 
 	public function sendNotification(){

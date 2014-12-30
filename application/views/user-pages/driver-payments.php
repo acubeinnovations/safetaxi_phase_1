@@ -93,7 +93,7 @@ echo form_close();?></td>
 		</div>
 	
 	<div class="msg"> <?php 
-			if (isset($result)){ echo $result;} else {?></div>
+			if (isset($result)){ echo $result;} else { $tot_dr=0;$tot_cr=0;?></div>
 		
 		<div class="box-body table-responsive no-padding trips-table">
 			<table class="table table-hover table-bordered">
@@ -106,7 +106,8 @@ echo form_close();?></td>
 					   
 					    <th style="width:15%">Period</th>
 					    <th style="width:15%">Date</th>
-					    <th  style="width:12%">Amount (Dr)</th>
+						<th  style="width:12%">Amount (Dr)</th>
+						<th  style="width:12%">Tax</th>
 					    <th  style="width:12%">Amount (Cr)</th>
 					   	<th  style="width:12%">Action</th>
 										
@@ -132,8 +133,11 @@ echo form_close();?></td>
 					   	
 					   	<td><?php echo date('F', strtotime("2012-$int-01"));?></td>
 					   	<td><?php echo $trips[$trip_index]['date'];?></td>
-					   	<td><?php echo $trips[$trip_index]['Debitamount'];?></td>
-					   	<td><?php echo $trips[$trip_index]['Creditamount'];?></td>
+						<?php $amount_payable=$trips[$trip_index]['Debitamount']*COMMISION_PERCENTAGE/100; ?>
+						<?php $amount_dr= $amount_payable/1.1236;?>
+					   	<td><?php $tot_dr=$tot_dr+$amount_payable; echo floor(($amount_payable)*100)/100; ?></td>
+						<td><?php echo  $tax=floor(($amount_payable-$amount_dr)*100) / 100; ?></td>
+					   	<td><?php echo $tot_cr = $tot_cr+$trips[$trip_index]['Creditamount'];?></td>
 					   	<td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['Period']."/".$trips[$trip_index]['Voucher_type_id']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?><?php echo "<a href=".base_url().'front-desk/driver-payments/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['payment_id']." class='fa fa-edit' target='_blank' title='Edit'></a>".nbs(5); ?></td>
 					   
 					  
@@ -148,28 +152,23 @@ echo form_close();?></td>
 						<td><b>Closing</b></td>
 						<td></td>
 						<td></td>
+						
 						<td>
 						<?php $value=0;
-						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$value+=$trips[$trip_index]['Debitamount'];
 						
-						
-						}
-						echo "<b>".$value."</b>";
+						echo "<b>".$tot_dr."</b>";
 						?>
 						</td>
 						<td>
-						<?php $value2=0;
-						for($trip_index=0;$trip_index<count($trips);$trip_index++){
-						$value2+=$trips[$trip_index]['Creditamount'];
+						</td>
 						
+						<td>
+						<?php 
 						
-						}
-						echo  "<b>".$value2."</b>";
+						echo  "<b>".$tot_cr."</b>";
 						?>	
 						</td>
-						<td>
-						</td>
+						
 						
 						
 					</tr>
@@ -184,12 +183,13 @@ echo form_close();?></td>
 						<td>
 							
 						</td>
+						
 						<td>
+						</td>
 							
-						</td>	
 						<td>
 						<?php 
-							$total=$value-$value2;
+							$total=$tot_dr-$tot_cr;
 							if($total > 0){
 								echo  "<b>".$total."</b>";
 							}else{
@@ -198,6 +198,9 @@ echo form_close();?></td>
 							
 						?>
 						</td>
+						<td>
+						</td>
+						
 						<td>
 							<?php
 							if($total < 0){
@@ -295,7 +298,7 @@ echo form_close();?></td>
 					
 					<?php// echo $value; exit;?>
 					<?php  echo form_open(base_url()."driver/DriverPayments/".$driver_id);?>
-					<div class='hide-me'><?php echo form_input(array('name'=>'driver_id','class'=>'form-control','value'=>$driver_id));?></div>
+					<div class='hide-me'><?php echo form_input(array('name'=>'driver_id','class'=>'form-control','value'=>$driver_id)).form_input(array('name'=>'payment_id','class'=>'form-control','value'=>$payment_id));?></div>
 				        <div class="form-group">
 						<?php echo form_label('Enter Amount','usernamelabel'); ?>
 				           <?php echo form_input(array('name'=>'amount','class'=>'form-control','placeholder'=>'Enter Amount','value'=>$amount)); ?>
