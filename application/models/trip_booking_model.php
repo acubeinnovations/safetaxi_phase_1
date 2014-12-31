@@ -194,19 +194,16 @@ GROUP BY app_key
 
 	function  bookTrip($data) {
 	
-	$this->db->set('created', 'NOW()', FALSE);
-	$this->db->insert('trips',$data);
-	if($this->db->insert_id()>0){
-		return $this->db->insert_id();
-	}else{
-		return false;
-	}
+		$this->db->set('created', 'NOW()', FALSE);
+		$this->db->insert('trips',$data);
+		if($this->db->insert_id()>0){
+			return $this->db->insert_id();
+		}else{
+			return false;
+		}
 	 
     }	
 
-	
-	
-	
 
 	function  updateTrip($data,$id) {
 	$this->db->where('id',$id );

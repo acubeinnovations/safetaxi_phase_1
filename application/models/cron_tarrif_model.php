@@ -12,7 +12,7 @@ class Cron_Tarrif_model extends CI_Model {
 
 
 	function getDriverPayment(){
-		$qry='SELECT GREATEST(T.distance_in_km_from_app,T.distance_in_km_from_web) as G_distance,T.trip_status_id as Tripstatus, 
+		$qry='SELECT GREATEST(T.distance_in_km_from_app,T.distance_in_km_from_web) as G_distance,T.total_amount,T.trip_status_id as Tripstatus, 
 		T.trip_day_night_type_id as day_or_night,T.id as trip_id, T.driver_id as driver_id,D.name as driver_name,T.distance_in_km_from_app as Distance_app,
 		T.distance_in_km_from_web as Distance_web, TF.day_rate as Day_rate,TF.night_rate as Night_rate, 
 		TF.minimum_kilometers,TF.additional_kilometer_day_rate,TF.additional_kilometer_night_rate FROM trips T 

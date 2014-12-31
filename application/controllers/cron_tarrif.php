@@ -19,8 +19,46 @@ class Cron_tarrif extends CI_Controller {
 	}
 	}
 
-
 	public function cronDriverPayments(){
+	
+	$res=$this->cron_tarrif_model->getDriverPayment(); 
+		if($res!=''){
+			for($index=0; $index<count($res);$index++){
+				$trip_id=$res[$index]['trip_id'];
+				$driver_id=$res[$index]['driver_id'];
+				$driver_name[$driver_id]=$res[$index]['driver_name'];
+								
+				$total_trip_amount=$res[$index]['total_amount'];
+				$data=array('trip_status_id' => TRIP_STATUS_INVOICE_GENERATED);
+				$this->trip_booking_model->updateTrip($data,$trip_id);
+
+				$percentage=$total_trip_amount; //commented - $percentage=$total_trip_amount*10/100;//percentage calulation for commission
+
+				if(isset($payments[$driver_id])){
+					$payments[$driver_id]=$payments[$driver_id]+$percentage;
+
+				}else{
+					$payments[$driver_id]=$percentage;
+				}
+			} 
+			foreach ($payments as $key => $value) {
+				$db_data['driver_id']=$key;
+				$db_data['payment_date']=date('Y-m-d');
+				//
+				$year = explode('-', date('Y-m-d'));
+				$db_data['year']=$year[0];
+				$db_data['period']=$year[1];
+				//
+				$db_data['voucher_type_id']=INVOICE;
+				$db_data['dr_amount']=$value;
+				$db_data['voucher_number']="INV";
+				$this->driver_payment_model->addDriverpayment($db_data);
+				$this->sendPaymentNotification($db_data,$driver_name);
+			}
+		}
+	}	
+
+	/* public function cronDriverPayments(){
 	
 	$res=$this->cron_tarrif_model->getDriverPayment(); 
 		if($res!=''){
@@ -73,7 +111,7 @@ class Cron_tarrif extends CI_Controller {
 			}
 		}
 	}	
-
+*/
 
 	public function sendPaymentNotification($driverdata,$driver_name){
 
