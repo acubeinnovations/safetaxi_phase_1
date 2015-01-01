@@ -829,24 +829,21 @@ class User extends CI_Controller {
 	LEFT JOIN driver_payment AS DP2 ON DP2.driver_id=D.id  
 	LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id WHERE DP.period<month(NOW()) AND DP2.period=month(NOW()) AND DP.year<=year(NOW()) AND 
 	DP.voucher_type_id <> '".RECEIPT."' GROUP BY D.id DESC"; */
+	if(isset($_REQUEST['trip_pick_date'])){
+	$period=$_REQUEST['trip_pick_date'].' 00:00:00';
+	}else{
+	$period='NOW()';
+	}
 
 
 	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name as Drivername,
-	SUM(CASE WHEN DP.period=month(NOW()) THEN DP.dr_amount ELSE 0 END) AS Current_Invoice,
-	SUM(CASE WHEN DP.period<month(NOW()) THEN DP.dr_amount ELSE 0 END) AS Old_Invoice,
-	SUM(CASE WHEN DP.period=month(NOW()) THEN DP.cr_amount ELSE 0 END) AS Current_Payment,
-	SUM(CASE WHEN DP.period<month(NOW()) THEN DP.cr_amount ELSE 0 END) AS Old_Payment
+	SUM(CASE WHEN DP.period=month('".$period."') THEN DP.dr_amount ELSE 0 END) AS Current_Invoice,
+	SUM(CASE WHEN DP.period < month('".$period."') THEN DP.dr_amount ELSE 0 END) AS Old_Invoice,
+	SUM(CASE WHEN DP.period=month('".$period."') THEN DP.cr_amount ELSE 0 END) AS Current_Payment,
+	SUM(CASE WHEN DP.period < month('".$period."') THEN DP.cr_amount ELSE 0 END) AS Old_Payment
 	 FROM drivers as D 
-	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id 
-	WHERE DP.period<=month(NOW()) AND DP.year<=year(NOW()) AND DP.voucher_type_id <>  '".RECEIPT."'  GROUP BY DP.driver_id DESC";
-
-
-
-
-
-
-	
-
+	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.id=D.driver_status_id 
+	WHERE DP.period<=month('".$period."') AND DP.year<=year('".$period."') AND DP.voucher_type_id <>  '".RECEIPT."'  ";
 
 
 	$condition="";	
@@ -858,56 +855,11 @@ class User extends CI_Controller {
 	//driver search
 	if($_REQUEST['vehicle_number']!=null){
 	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
-	if($condition==""){
-	$condition=' WHERE D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
-}
+	
+	$condition=' AND  D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
+	
 	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
 	} 
-
-
-
-	
-	//from date
-	if($_REQUEST['trip_pick_date']!=null ){
-	$data['trip_pick_date']=$_REQUEST['trip_pick_date'];
-	//$date_now=date('Y-m-d');
-	
-	$where_arry['trip_pick_date']=$_REQUEST['trip_pick_date'];
-	if($condition==""){
-		$condition =' WHERE T.pick_up_date >= "'.$_REQUEST['trip_pick_date'].'"';
-
-
-
-
-	}else{
-		//$condition.=' AND T.pick_up_date >= "'.$date_now.'"';
-	}
-	
-	} 
-	//from date ends
-
-
-
-	//to date starts
-	if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
-	$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
-	//$date_now=date('Y-m-d H');
-
-	$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
-	if($condition==""){
-		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
-
-
-
-
-	}else{
-		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
-	}
-	
-	} 
-	//to date ends
-
-
 
 
 
@@ -916,30 +868,16 @@ class User extends CI_Controller {
 	$data['driver_id']=$_REQUEST['drivers'];
 	
 	$where_arry['driver_id']=$_REQUEST['drivers'];
-	if($condition==""){
-		$condition =' AND D.id = '.$data['driver_id'];
-	}else{
+	
 		$condition.=' AND D.id = '.$data['driver_id'];
+	
 	}
-	}
-
-	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
-	$data['status_id']=$_REQUEST['trip_status_id'];
-	//$date_now=date('Y-m-d H:i:s');
-	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
-
-	if($condition==""){
-		$condition =' AND T.trip_status_id='.$data['status_id'];
-	}else{
-		$condition.=' AND T.trip_status_id='.$data['status_id'];
-	}
-	}
-
 
 	
-	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	//$t
 	} 
-
+	$qry.=$condition;
+	$qry.=' GROUP BY DP.driver_id DESC';
 
 	//echo "hellow";
 	/*if(is_null($this->mysession->get('condition'))){
@@ -950,7 +888,7 @@ class User extends CI_Controller {
 	$uriseg ='4';
 	//echo $param2; exit;
 	//echo $qry;//exit;
-	$p_res=$this->mypage->paging($tbl='',$per_page=25,$param2,$baseurl,$uriseg,$custom='yes',$qry.$condition);
+	$p_res=$this->mypage->paging($tbl='',$per_page=25,$param2,$baseurl,$uriseg,$custom='yes',$qry);
 	//print_r($p_res);
 	$data['values']=$p_res['values'];
 	$data['page_links']=$p_res['page_links'];
