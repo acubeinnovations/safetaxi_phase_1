@@ -107,7 +107,7 @@ echo form_close();?></td>
 						<td><?php echo $trip_sl_no;?></td>
 						<td><a href="<?php echo base_url()."front-desk/driver-payments/".$trips[$trip_index]['driverid'];?>"><?php echo $trips[$trip_index]['Drivername'];?></a></td>
 					   	<td><?php echo $trips[$trip_index]['driverstatus'];?></td>
-					   	<td>0</td>
+					   	<td><?php echo $trips[$trip_index]['no_of_trips'];?></td>
 					   	
 					   	<td><?php echo $Outstanding = $trips[$trip_index]['Old_Invoice']-$trips[$trip_index]['Old_Payment']?></td>
 					   	<td><?php echo $Current_Invoice=$trips[$trip_index]['Current_Invoice'];?></td>

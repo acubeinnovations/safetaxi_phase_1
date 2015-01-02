@@ -350,7 +350,7 @@ class User extends CI_Controller {
 		else {
 		//show search results
 		
-	if((isset($_REQUEST['search_from_date'])|| isset($_REQUEST['search_to_date']))&& isset($_REQUEST['search'])){
+	if((isset($_REQUEST['search_from_date']) || isset($_REQUEST['search_to_date']))&& isset($_REQUEST['search'])){
 	if($param2==''){
 	$param2='0';
 	} 
@@ -614,7 +614,7 @@ class User extends CI_Controller {
 ////////////////////////////////////////////////////////////////////////////////
 	public function DriverPayments($param2,$param3=''){
 		if($this->session_check()==true) {
-			/* */
+			
 			$driver_id=$param2;
 			if(isset($param3) && $param3!=''){
 			$payment_id=$param3;
@@ -654,108 +654,36 @@ class User extends CI_Controller {
 	$qry='SELECT (SUM(DP.cr_amount)) AS Creditamount,(SUM(DP.dr_amount)) AS Debitamount, VT.name as vouchertype,DP.voucher_number as voucher_number,
 	DP.payment_date as date,DP.period as Period,DP.id as payment_id,DP.voucher_type_id as Voucher_type_id,D.name as Drivername,D.driver_status_id as Driverstatus_id,DP.driver_id as Driver_id FROM driver_payment AS DP 
 	LEFT JOIN drivers AS D ON D.id=DP.driver_id LEFT JOIN voucher_types VT ON VT.id=DP.voucher_type_id WHERE D.id="'.$driver_id.'" 
-	AND DP.voucher_type_id <> "'.RECEIPT.'" GROUP BY DP.created ORDER BY DP.period DESC';
+	AND DP.voucher_type_id <> "'.RECEIPT.'"';
 
 
-	
+	$parameters='';
 
 	$condition="";	
-	if(isset($_REQUEST['trip_search'])){ 
+	if(isset($_GET['trip_search'])){ 
 	if($param2==''){
-	$param2='0';
+		$param2='0';
 	}
-
-	//driver search
-	if($_REQUEST['vehicle_number']!=null){
-	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
-	if($condition==""){
-	$condition=' WHERE D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
-}
-	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
-	} 
-
-
 
 	
-
-
-
-
-	//to date starts
-	if($_REQUEST['trip_drop_date']!=null && $_REQUEST['trip_pick_date']!=null){
-	$data['trip_drop_date']=$_REQUEST['trip_drop_date'];
-	//$date_now=date('Y-m-d H');
-
-	$where_arry['trip_drop_date']=$_REQUEST['trip_drop_date'];
-	if($condition==""){
-		$condition =' WHERE T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
-
-
-
-
-	}else{
-		$condition.=' AND T.pick_up_date <= "'.$_REQUEST['trip_drop_date'].'"';
-	}
-	
-	} 
-	//to date ends
-
-
-
-
-
-//
-	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
-	$data['driver_id']=$_REQUEST['drivers'];
-	
-	$where_arry['driver_id']=$_REQUEST['drivers'];
-	if($condition==""){
-		$condition =' WHERE T.driver_id = '.$data['driver_id'];
-	}else{
-		$condition.=' AND T.driver_id = '.$data['driver_id'];
-	}
-	}
-
 //Search period
-	if($_REQUEST['periods']!=null && $_REQUEST['periods']!=gINVALID){
-	$data['period']=$_REQUEST['periods'];
+	if(isset($_GET['periods']) && $_GET['periods']!=null){
+	$data['period']=$_GET['periods'];
+	$condition.=' AND DP.period = '.$data['period'];
+	$parameters.='?periods='.$_GET['periods'];
 	
-	$where_arry['period']=$_REQUEST['drivers'];
-	if($condition==""){
-		$condition =' WHERE DP.period = '.$data['period'];
-	}else{
-		$condition.=' AND DP.period = '.$data['period'];
-	}
 	}
 //Search period ends
 
-	if($_REQUEST['trip_status_id']!=null && $_REQUEST['trip_status_id']!=gINVALID ){
-	$data['status_id']=$_REQUEST['trip_status_id'];
-	//$date_now=date('Y-m-d H:i:s');
-	$where_arry['dstatus']=$_REQUEST['trip_status_id'];
-
-	if($condition==""){
-		$condition =' WHERE T.trip_status_id='.$data['status_id'];
-	}else{
-		$condition.=' AND T.trip_status_id='.$data['status_id'];
-	}
-	}
-
-
-	//$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
+	
 	} 
 
-
-	//echo "hellow";
-	/*if(is_null($this->mysession->get('condition'))){
-	$this->mysession->set('condition',array("like"=>$like_arry,"where"=>$where_arry));
-	}*/
-	//$tbl="drivers";
-	$baseurl=base_url().'front-desk/list-driver/';
+	
+	$baseurl=base_url().'front-desk/list-driver/'.$driver_id;
 	$uriseg ='4';
-	//echo $param2; exit;
-	//echo $qry;//exit;
-	$p_res=$this->mypage->paging($tbl='',$per_page=10,$offset=0,$baseurl,$uriseg,$custom='yes',$qry);
+	$qry.=$condition;
+	$qry.=' GROUP BY DP.created ORDER BY DP.period DESC';
+	$p_res=$this->mypage->paging($tbl='',$per_page=25,$offset=0,$baseurl,$uriseg,$custom='yes',$qry,$parameters);
 	//print_r($p_res);
 	$data['values']=$p_res['values']; //print_r($data['values']); exit;
 	//$data['values']='';
@@ -836,14 +764,14 @@ class User extends CI_Controller {
 	}
 
 
-	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name as Drivername,
+	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name as Drivername,count(T.id) as no_of_trips,
 	SUM(CASE WHEN DP.period=month('".$period."') THEN DP.dr_amount ELSE 0 END) AS Current_Invoice,
 	SUM(CASE WHEN DP.period < month('".$period."') THEN DP.dr_amount ELSE 0 END) AS Old_Invoice,
 	SUM(CASE WHEN DP.period=month('".$period."') THEN DP.cr_amount ELSE 0 END) AS Current_Payment,
 	SUM(CASE WHEN DP.period < month('".$period."') THEN DP.cr_amount ELSE 0 END) AS Old_Payment
 	 FROM drivers as D 
-	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.id=D.driver_status_id 
-	WHERE DP.period<=month('".$period."') AND DP.year<=year('".$period."') AND DP.voucher_type_id <>  '".RECEIPT."'  ";
+	LEFT JOIN driver_payment AS DP ON DP.driver_id=D.id LEFT JOIN driver_statuses as DS ON DS.id=D.driver_status_id LEFT JOIN trips as T ON T.driver_id=D.id
+	WHERE DP.period<=month('".$period."') AND DP.year<=year('".$period."') AND DP.voucher_type_id <>  '".RECEIPT."' AND month(T.pick_up_date)=month('".$period."') AND year(T.pick_up_date)=year('".$period."') AND T.trip_status_id='".TRIP_STATUS_INVOICE_GENERATED."' ";
 
 
 	$condition="";	

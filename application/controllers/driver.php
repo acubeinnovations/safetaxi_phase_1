@@ -193,7 +193,7 @@ class Driver extends CI_Controller {
 		$data['voucher_number']="RECEIPT";
 	}elseif ($this->input->post('payment_type')==PAYMENT){
 		$data['cr_amount']=$this->input->post('amount');
-		$data['voucher_number']="PYMNT".$i;
+		$data['voucher_number']="PYMNT";
 		$data['dr_amount']=0;
 	}elseif ($this->input->post('payment_type')==INVOICE){
 		$data['dr_amount']=$this->input->post('amount');
@@ -202,12 +202,13 @@ class Driver extends CI_Controller {
 	}	
 	
 	}//for loop
-	$data['payment_date']=date('Y-m-d',$this->input->post('payment_date'));
+	
+	 $data['payment_date']=date('Y-m-d',strtotime($this->input->post('payment_date')));
 	$data['driver_id']=$this->input->post('driver_id'); 
 	$payment_id=$this->input->post('payment_id');
-	$year = explode('-', $this->input->post('payment_date'));
+	$year = explode('-', $data['payment_date']);
 	$data['year']=$year[0];
-	$month = explode('-', $this->input->post('payment_date'));
+	$month = explode('-', $data['payment_date']);
 	$data['period']=$month[1];
 	if($payment_id!=gINVALID){
 		$res=$this->driver_payment_model->editDriverpayment($data,$payment_id); 

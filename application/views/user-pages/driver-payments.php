@@ -51,14 +51,14 @@ $trip_sl_no=$page;
 		<legend class="body-head">Driver Payments</legend>
 		<div class="box-body table-responsive no-padding">
 			
-			<?php echo form_open(base_url()."front-desk/driver-payments/".$driver_id); ?>
+			<form action="<?php echo base_url(); ?>front-desk/driver-payments/<?php echo $driver_id;  ?>" method="get">
 			<table class="table list-trip-table no-border">
 				<tbody>
 					<tr>
 
-						<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-AB-1234','value'=>"",'id'=>'c_name')); ?></td>
-					    <td>
-							<select name="periods" class="customer form-control">
+						<!--<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-AB-1234','value'=>"",'id'=>'c_name')); ?></td>-->
+					    <td width=200px>
+							<select name="periods" class="customer form-control" width="300px">
 							<option value="-1" disabled="disabled" selected="selected"  >--Select--</option>
 							<option value="1">January</option>
 							<option value="2">February</option>
@@ -74,14 +74,14 @@ $trip_sl_no=$page;
 							<option value="12">December</option>
 							</select>
 						</td>
-					    <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>$trip_drop_date)); ?></td>
+					  <!--  <td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>$trip_drop_date)); ?></td>
 						 
 						 <td><?php $class="form-control";
 							  $id='drivers';
 						echo $this->form_functions->populate_dropdown('drivers',$drivers,$driver_id,$class,$id,$msg="Select Driver");?></td>
 						<td><?php $class="form-control";
 							  $id='trip-status';
-						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
+						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>-->
 					    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
 echo form_close();?></td>
 					
@@ -138,7 +138,7 @@ echo form_close();?></td>
 					   	<td><?php $tot_dr=$tot_dr+$amount_payable; echo floor(($amount_payable)*100)/100; ?></td>
 						<td><?php echo  $tax=floor(($amount_payable-$amount_dr)*100) / 100; ?></td>
 					   	<td><?php echo $tot_cr = $tot_cr+$trips[$trip_index]['Creditamount'];?></td>
-					   	<td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['Period']."/".$trips[$trip_index]['Voucher_type_id']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?><?php echo "<a href=".base_url().'front-desk/driver-payments/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['payment_id']." class='fa fa-edit' target='_blank' title='Edit'></a>".nbs(5); ?></td>
+					   	<td><?php echo "<a href=".base_url().'driver_invoice/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['Period']."/".$trips[$trip_index]['Voucher_type_id']." class='fa fa-print for print' target='_blank' title='Print'></a>".nbs(5); ?><?php echo "<a href=".base_url().'front-desk/driver-payments/'.$trips[$trip_index]['Driver_id']."/".$trips[$trip_index]['payment_id']." class='fa fa-edit'  title='Edit'></a>".nbs(5); ?></td>
 					   
 					  
 					</tr>
