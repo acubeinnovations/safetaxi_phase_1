@@ -263,6 +263,7 @@ CREATE TABLE IF NOT EXISTS `trips` (
   `customer_id` int(11) NOT NULL,
   `trip_type_id` int(11) NOT NULL,
   `trip_day_night_type_id` int(11) NOT NULL,
+  `round_trip` char(1) NOT NULL,
   `trip_status_id` int(11) NOT NULL,
   `booking_date` date NOT NULL,
   `booking_time` time NOT NULL,
@@ -293,7 +294,8 @@ CREATE TABLE IF NOT EXISTS `trips` (
   PRIMARY KEY (`id`),
   KEY `customer_id` (`customer_id`,`trip_type_id`,`trip_status_id`,`driver_id`,`tariff_id`,`user_id`),
   KEY `trip_day_night_type_id` (`trip_day_night_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
 
 -- --------------------------------------------------------
 

@@ -43,12 +43,12 @@ $trip_sl_no=$page;
 		<legend class="body-head">Drivers Payments</legend>
 		<div class="box-body table-responsive no-padding">
 			
-			<?php echo form_open(base_url()."front-desk/drivers-payments"); ?>
+			<form action="<?php echo base_url(); ?>front-desk/drivers-payments" methjo="get">
 			<table class="table list-trip-table no-border">
 				<tbody>
 					<tr>
 
-						<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-AB-1234','value'=>"",'id'=>'c_name')); ?></td>
+						<td><?php echo form_input(array('name'=>'vehicle_number','class'=>'customer form-control' ,'placeholder'=>'KL-7-AB-1234','value'=>$vehiclenumber,'id'=>'c_name')); ?></td>
 					    <td><?php echo form_input(array('name'=>'trip_pick_date','class'=>'pickupdatepicker initialize-date-picker form-control' ,'placeholder'=>'From Date','value'=>$trip_pick_date)); ?></td>
 					    <!--<td><?php  echo form_input(array('name'=>'trip_drop_date','class'=>'dropdatepicker initialize-date-picker form-control' ,'placeholder'=>'To Date','value'=>$trip_drop_date)); ?></td>-->
 						 
@@ -59,7 +59,7 @@ $trip_sl_no=$page;
 							  $id='trip-status';
 						echo $this->form_functions->populate_dropdown('trip_status_id',$trip_statuses,$trip_status_id,$class,$id,$msg="Select Trip Status");?></td>
 					-->    <td><?php echo form_submit("trip_search","Search","class='btn btn-primary'");
-echo form_close();?></td>
+?></form></td>
 					
 					
 						

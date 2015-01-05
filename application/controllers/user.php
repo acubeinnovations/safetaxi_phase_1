@@ -27,28 +27,6 @@ class User extends CI_Controller {
 		}
 	}  
 
-	public function permission_for_all() {
-	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK) && ($this->session->userdata('permission')==PERMISSION_FOR_ALL)) {
-		return true;
-		} else {
-		return false;
-		}
-	}
-
-	public function permission_for_trip_booking() {
-	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK) && ($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING || $this->session->userdata('permission')==PERMISSION_FOR_ALL)) {
-		return true;
-		} else {
-		return false;
-		}
-	}
-	public function permission_for_view_trips() {
-	if(($this->session->userdata('isLoggedIn')==true ) && ($this->session->userdata('type')==FRONT_DESK) && ($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS || $this->session->userdata('permission')==PERMISSION_FOR_ALL)) {
-		return true;
-		} else {
-		return false;
-		}
-	}
  
 	public function index(){
 		$param1=$this->uri->segment(2);
@@ -56,14 +34,12 @@ class User extends CI_Controller {
 		$param3=$this->uri->segment(4);
        	if($param1==''){
 		if($this->session_check()==true) {
-		if($this->permission_for_all()==true) {
+		
 			$this->home();
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}else{
 
-		$this->checking_credentials();
+			$this->checking_credentials();
 
 		}
 		}elseif($param1=='login'){
@@ -75,140 +51,101 @@ class User extends CI_Controller {
 		}
 		elseif($param1=='settings'){
 		
-		if($this->permission_for_all()==true) {
+		
 			$this->settings();
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}elseif($param1=='trip-booking'){
 
-		if($this->permission_for_all()==true) {
-			$this->ShowBookTrip($param2);
-		}else if($this->permission_for_trip_booking()==true) {
 			$this->ShowBookTrip($param2);
 		
-		}else{
-			$this->notAuthorized();
-		}
 		}elseif($param1=='driver-notifications'){
 
-		if($this->permission_for_all()==true) {
+		
 			$this->DriverNotifications($param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}elseif($param1=='trips'){
-		if($this->permission_for_all()==true) {
-			$this->Trips($param2);
-		}else if($this->permission_for_view_trips()==true) {
+		
 			$this->Trips($param2);
 		
-		}else{
-			$this->notAuthorized();
-		}
 
 		}elseif($param1=='driver-payments'){
 		
-		if($this->permission_for_all()==true) {
+		
 			$this->DriverPayments($param2,$param3);
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}
 		elseif($param1=='drivers-payments'){
 		
-		if($this->permission_for_all()==true) {
+		
 			$this->DriversPayments($param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}
 
 		elseif($param1=='customer'){
 
 		
-		if($this->permission_for_all()==true) {
+		
 			$this->Customer($param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
 
 		}elseif($param1=='customerTrips'){
 
 		
-		if($this->permission_for_all()==true) {
+		
 			$this->CustomerTrips($param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
 
 		}elseif($param1=='customers'){
-		if($this->permission_for_all()==true) {
+		
 			$this->Customers($param2);
-		}else{
-			$this->notAuthorized();
-		}
 		
 
 		}elseif($param1=='setup_dashboard'){
 
 		
-		if($this->permission_for_all()==true) {
+		
 			$this->setup_dashboard();
-		}else{
-			$this->notAuthorized();
-		}
 		
 
 		}elseif($param1=='getNotifications'){
 			
-			if($this->permission_for_all()==true) {
-			$this->getNotifications();
-		}else if($this->permission_for_trip_booking()==true) {
 			
-		$this->getNotifications();
-		}else{
-			$this->notAuthorized();
-		}
+			$this->getNotifications();
+		
 		}else if($param1=='tariff'&& ($param2== '' || is_numeric($param2))){
 	
-		if($this->permission_for_all()==true) {
+		
 				$this->tarrif($param1,$param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}
 		elseif($param1=='driver'){
 
 		
-		if($this->permission_for_all()==true) {
+		
 				$this->ShowDriverView($param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
+		}elseif($param1=='find-distance'){
+
+		
+		
+				$this->findDistance();
+		
 		}elseif($param1=='list-driver'&&($param2== ''|| is_numeric($param2))){
 		
 		
-		if($this->permission_for_all()==true) {
+		
 				$this->ShowDriverList($param1,$param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}elseif($param1=='sendNotifications'){
 		
 		
-		if($this->permission_for_all()==true) {
 				$this->sendNotifications();
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}elseif($param1=='driver-profile'&&($param2== ''|| is_numeric($param2))){
 		
-		if($this->permission_for_all()==true) {
+		
 				$this->ShowDriverProfile($param1,$param2);
-		}else{
-			$this->notAuthorized();
-		}
+		
 		}else{
 			$this->notFound();
 		}
@@ -224,14 +161,9 @@ class User extends CI_Controller {
 	public function checking_credentials() {
 	if($this->session_check()==true) {
         	
-				 if($this->session->userdata('permission')==PERMISSION_FOR_ALL){
+				
 					 redirect(base_url().'front-desk');
-					}else  if($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){
-
-						 redirect(base_url().'front-desk/trip-booking');
-					}else  if($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS){
-						 redirect(base_url().'front-desk/trips');
-					}
+					
 				 
 		} else if(isset($_REQUEST['username']) && isset($_REQUEST['password'])) {
 			 
@@ -255,14 +187,9 @@ class User extends CI_Controller {
 		       	 $this->user_model->clearLoginAttempts($username);
 				 }
 				 if($this->session->userdata('type')==FRONT_DESK){	
-					 if($this->session->userdata('permission')==PERMISSION_FOR_ALL){
+					 
 					 	redirect(base_url().'front-desk');
-					}elseif($this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){
-						redirect(base_url().'front-desk/trip-booking');
-					}elseif($this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS){
-						 redirect(base_url().'front-desk/trips');
-					}
-			
+					
 				 }
 				 
 		        
@@ -485,6 +412,13 @@ class User extends CI_Controller {
 		}else{
 			$data['added_customer']='true';
 		}
+		if($data['id']!=gINVALID) {
+			$condition=array('id'=>$data['id']);
+			$values=$this->trip_booking_model->getDetails($condition);
+			$data['trip_status_id']=$values[0]->trip_status_id;
+		}else{
+			$data['trip_status_id']=gINVALID;
+		}
 		$this->mysession->delete('post');
 	}else if($trip_id!=''){
 	$condition=array('id'=>$trip_id);
@@ -520,10 +454,11 @@ class User extends CI_Controller {
 	$data['trip_to_lng']=$values[0]->trip_to_lng;
 	$data['driver_id']=$values[0]->driver_id;
 	$data['trip_status_id']=$values[0]->trip_status_id;
-	$data['driver_id']=$values[0]->driver_id;
+	
 	$data['radius']=1;
 	$data['distance_in_km_from_web']=$values[0]->distance_in_km_from_web;
 	$data['added_customer']='true';
+	$data['roundtrip']	=$values[0]->round_trip;
 	}else{
 	$data['id']=gINVALID;
 	$data['driver_id']=gINVALID;
@@ -543,6 +478,7 @@ class User extends CI_Controller {
 	$data['distance_in_km_from_web']='';
 	$data['added_customer']='false';
 	$data['trip_status_id']=gINVALID;
+	$data['roundtrip']	='f';
 	}
 	}else{
 	$data['id']=gINVALID;
@@ -563,6 +499,7 @@ class User extends CI_Controller {
 	$data['distance_in_km_from_web']='';
 	$data['added_customer']='false';
 	$data['trip_status_id']=gINVALID;
+	$data['roundtrip']	='f';
 	}
 	$tbl_arry=array('drivers');
 	
@@ -757,12 +694,18 @@ class User extends CI_Controller {
 	LEFT JOIN driver_payment AS DP2 ON DP2.driver_id=D.id  
 	LEFT JOIN driver_statuses as DS ON DS.ID=D.driver_status_id WHERE DP.period<month(NOW()) AND DP2.period=month(NOW()) AND DP.year<=year(NOW()) AND 
 	DP.voucher_type_id <> '".RECEIPT."' GROUP BY D.id DESC"; */
-	if(isset($_REQUEST['trip_pick_date'])){
-	$period=$_REQUEST['trip_pick_date'].' 00:00:00';
+	$data['vehiclenumber']='';
+	$data['driver_id']='';
+	$data['trip_pick_date']='';
+	$parameters='';
+	if(isset($_GET['trip_pick_date'])){
+	$period=$_GET['trip_pick_date'].' 00:00:00';
+	$data['trip_pick_date']=$_GET['trip_pick_date'];
+	$parameters.='?trip_pick_date='.$_GET['trip_pick_date'];
 	}else{
 	$period='NOW()';
 	}
-
+	
 
 	$qry="SELECT DS.name as driverstatus,D.id as driverid,D.name as Drivername,count(T.id) as no_of_trips,
 	SUM(CASE WHEN DP.period=month('".$period."') THEN DP.dr_amount ELSE 0 END) AS Current_Invoice,
@@ -775,30 +718,30 @@ class User extends CI_Controller {
 
 
 	$condition="";	
-	if(isset($_REQUEST['trip_search'])){ 
+	if(isset($_GET['trip_search'])){ 
 	if($param2==''){
 	$param2='0';
 	}
-
+	$parameters.='?trip_search='.$_GET['trip_search'];
 	//driver search
-	if($_REQUEST['vehicle_number']!=null){
-	$data['vehiclenumber']= $_REQUEST['vehicle_number'];
+	if($_GET['vehicle_number']!=null){
+	$data['vehiclenumber']= $_GET['vehicle_number'];
 	
-	$condition=' AND  D.vehicle_registration_number Like "%'.$_REQUEST['vehicle_number'].'%"';
+	$condition=' AND  D.vehicle_registration_number Like "%'.$_GET['vehicle_number'].'%"';
 	
-	$like_arry['vehiclenumber']=$_REQUEST['vehicle_number'];
+	$parameters.='?vehicle_number='.$_GET['vehicle_number'];
 	} 
 
 
 
 //
-	if($_REQUEST['drivers']!=null && $_REQUEST['drivers']!=gINVALID){
-	$data['driver_id']=$_REQUEST['drivers'];
+	if($_GET['drivers']!=null && $_GET['drivers']!=gINVALID){
+	$data['driver_id']=$_GET['drivers'];
 	
-	$where_arry['driver_id']=$_REQUEST['drivers'];
+	$where_arry['driver_id']=$_GET['drivers'];
 	
 		$condition.=' AND D.id = '.$data['driver_id'];
-	
+	$parameters.='?driver_id='.$data['driver_id'];
 	}
 
 	
@@ -816,7 +759,7 @@ class User extends CI_Controller {
 	$uriseg ='4';
 	//echo $param2; exit;
 	//echo $qry;//exit;
-	$p_res=$this->mypage->paging($tbl='',$per_page=25,$param2,$baseurl,$uriseg,$custom='yes',$qry);
+	$p_res=$this->mypage->paging($tbl='',$per_page=25,$param2,$baseurl,$uriseg,$custom='yes',$qry,$parameters);
 	//print_r($p_res);
 	$data['values']=$p_res['values'];
 	$data['page_links']=$p_res['page_links'];
@@ -1163,15 +1106,43 @@ class User extends CI_Controller {
 
 
 	public function load_templates($page='',$data=''){
-	if($this->session_check()==true) {
+	if($this->session_check()==true) {		
+		
+		if($this->checkPermissions($page)==true){
 		$this->load->view('admin-templates/header',$data);
 		$this->load->view('admin-templates/nav');
 		$this->load->view($page,$data);
 		$this->load->view('admin-templates/footer');
-		}
-	else{
+		}else{
 			$this->notAuthorized();
 		}
+		}else{
+			$this->notAuthorized();
+		}
+	}
+	
+	public function checkPermissions($page){
+	
+		$page=explode('/',$page);
+		$page_id=$this->user_model->getPageId($page[count($page)-1]);
+		if($page_id!=false){		
+			$id=$this->session->userdata('id');
+			$permitted_page_ids=$this->user_model->getPageIds($id);
+				if($permitted_page_ids!=false){
+					$permitted_page_ids=explode(',',$permitted_page_ids);
+					if(in_array($page_id, $permitted_page_ids)){
+						return true;
+					}else{
+						return false;
+					}
+				}else{
+					return false;
+				}
+		}else{
+
+			return false;
+		}
+		
 	}
 
 public function	Customers($param2){
@@ -1642,6 +1613,17 @@ public function profile() {
 	}
 	}
 }
+	public function findDistance(){
+		if($this->session_check()==true) {
+		
+			$data['title']='Find Distance | '.PRODUCT_NAME;
+			$page='user-pages/finddistance';
+			$this->load_templates($page,$data);
+		
+			}else{
+				$this->notAuthorized();
+			}
+	}
 
 	public function captcha_check($str){
 		if (trim($str) != trim($this->session->userdata('captcha_code')))

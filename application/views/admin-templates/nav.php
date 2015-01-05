@@ -26,7 +26,7 @@
                                 
                             </ul>
                         </li>
-                        <?php }else if($this->session->userdata('isLoggedIn')==true && $this->session->userdata('type')==FRONT_DESK && $this->session->userdata('permission')==PERMISSION_FOR_ALL){ ?>
+                        <?php }else if($this->session->userdata('isLoggedIn')==true && $this->session->userdata('type')==FRONT_DESK ){ ?>
                         <li>
                             <a href="<?php echo base_url().'front-desk';?>">
                                 <i class="fa fa-home"></i> <span> Dashboard </span>
@@ -70,7 +70,7 @@
                             <ul class="treeview-menu">
                                 <li><a href="<?php echo base_url().'front-desk/trip-booking';?>"><i class="fa fa-angle-double-right"></i>New Trip</a></li>
 						<li><a href="<?php echo base_url().'front-desk/trips';?>"><i class="fa fa-angle-double-right"></i>Trip Bookings</a></li>
-                         
+                         <li><a href="<?php echo base_url().'front-desk/find-distance';?>"><i class="fa fa-angle-double-right"></i>Find Distance</a></li>
                                 
                             </ul>
                         </li>
@@ -100,20 +100,6 @@
 							 
                         </li>
 
-                        <?php }else if($this->session->userdata('isLoggedIn')==true && $this->session->userdata('type')==FRONT_DESK && $this->session->userdata('permission')==PERMISSION_FOR_TRIP_BOOKING){ ?>
-							<li class="active">
-                            <a href="<?php echo base_url().'front-desk/trip-booking';?>">
-                                <i class="fa fa-angle-double-right"></i> <span> New Trip </span>
-                            </a>
-                        	</li>
-	
-						<?php }else if($this->session->userdata('isLoggedIn')==true && $this->session->userdata('type')==FRONT_DESK && $this->session->userdata('permission')==PERMISSION_FOR_VIEW_TRIPS){ ?>
-
-							<li class="active">
-                            <a href="<?php echo base_url().'front-desk/trips';?>">
-                                <i class="fa fa-angle-double-right"></i> <span> Trips </span>
-                            </a>
-                        </li>
                         <?php } ?>
                     </ul>
                 </section>

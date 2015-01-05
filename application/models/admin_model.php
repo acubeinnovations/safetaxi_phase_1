@@ -63,16 +63,16 @@ class admin_model extends CI_Model {
 		
 			for($i=0;$i<$count;$i++){
 			
-			$pages[$i]=$s[$i]['name'];
+			$pages[$s[$i]['id']]=$s[$i]['name'];
 			}
 			return $pages;
 		}else{
 			return false;
 		}
 	}
- 	function  insertUser($fname,$lname,$addr,$uname,$pwd,$mail,$phn,$user_permission_id) {
+ 	function  insertUser($fname,$lname,$addr,$uname,$pwd,$mail,$phn) {
 	
-	$data=array('username'=>$uname,'password'=>md5($pwd),'first_name'=>$fname,'last_name'=>$lname,'phone'=>$phn,'address'=>$addr,'user_status_id'=>USER_STATUS_ACTIVE,'user_type_id'=>FRONT_DESK,'email'=>$mail,'user_permission_id'=>$user_permission_id);
+	$data=array('username'=>$uname,'password'=>md5($pwd),'first_name'=>$fname,'last_name'=>$lname,'phone'=>$phn,'address'=>$addr,'user_status_id'=>USER_STATUS_ACTIVE,'user_type_id'=>FRONT_DESK,'email'=>$mail);
 
 		$this->db->set('created', 'NOW()', FALSE);
 	$this->db->insert('users',$data);
@@ -92,7 +92,13 @@ class admin_model extends CI_Model {
 		}
 		
 	}
-
+	function updatePermisions($data,$id){
+		
+		$this->db->where('id',$id);
+		$succesuser=$this->db->update('users',$data);
+		return true;
+		
+	}
    
 	function getProfile(){
 	$this->db->from('users');

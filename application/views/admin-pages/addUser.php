@@ -1,4 +1,15 @@
-
+		<?php    if($this->session->userdata('dbSuccess') != '') { ?>
+        <div class="success-message">
+            <div class="alert alert-success alert-dismissable">
+                <i class="fa fa-check"></i>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <?php 
+                echo $this->session->userdata('dbSuccess');
+                $this->session->set_userdata(array('dbSuccess'=>''));
+                ?>
+           </div>
+       </div>
+       <?php    } ?>
 		<?php if(isset($id) && $id > 0){
 
 		$url='admin/front-desk/'.$username;
@@ -60,13 +71,7 @@
 				 ?>
 				</div>
 				<?php }  ?>
-				<div class="form-group">
-				<?php 
-				 $class="form-control";
-					echo form_label('Permission','permissonlabel');
-				 echo $this->form_functions->populate_dropdown('user_permission_id',$user_permissions,$user_permission_id,$class);
-				 ?>
-				</div>
+				
 			
 				</div>
 				<div class="div-with-50-percent-width-with-margin-10">
@@ -86,9 +91,9 @@
 				<div class="form-group">
 					<?php echo form_label('Address','addresslabel');
 					if(isset($id)){
-					$row_address=5;
+					$row_address=2;
 					}	else{
-					$row_address=9;
+					$row_address=5;
 					}			
 				 echo form_textarea(array('name'=>'address','class'=>'form-control','placeholder'=>'Enter Address','value'=>$address, 'rows'  => $row_address,'cols' => '10')); ?>
 					<?php echo form_error('address', '<p class="text-red">', '</p>'); ?>
@@ -107,7 +112,34 @@
 			<?php if(isset($id)){ ?>
 			<fieldset class="body-border">
    			 <legend class="body-head">Permissions</legend>
+			<?php echo form_open(base_url().'admin/addUserPermissions/'.$id);?>
+			<div class="form-group check-all-check-box-container">
+				<input type="checkbox" name="checkall" class="checkall"/><?php echo nbs(3); ?>Check All
+			</div>
+			<table class="table table-bordered">
+			<tr>
+                <th style="width: 10px">Sl No</th>
+                <th>Pages</th>
+                <th style="width: 50px">Permission</th>
+            </tr>
+			<?php  $i=1;
+				foreach ($pages as $key =>$page ) { ?>
+				<tr>
+		            <td style="width: 10px"><?php echo $i; ?></td>
+		            <td><?php echo $page;  ?></td>
+		            <td><?php if(in_array($key,$page_ids)){ $checked="checked='checked'"; }else{ $checked=""; }  ?> <input type="checkbox" name="permissions[]" <?php echo $checked; ?> class="permission-check-box" value="<?php echo $key; ?>"/></td>
+           		</tr>
+			
+			<?php $i++; } ?>
 				
+			</table>
+			<div class="form-group">
+			<div class="hide-me"><?php echo form_input(array('name'=>'username','value'=>$username)); ?></div>
+			<?php echo form_submit("user-permission-add","Add Permisions","class='btn btn-primary'"); ?> 
+
+
+			</div>
+			 <?php echo form_close(); ?>
 			</fieldset>
 			<?php }
 				 ?> 

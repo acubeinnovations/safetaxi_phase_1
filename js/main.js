@@ -291,7 +291,7 @@ var cityLng = place.geometry.location.lng();
 $('.pickuplat').attr('value',cityLat);
 $('.pickuplng').attr('value',cityLng);
 $("#pickup").attr('value',place.name+','+place.address_components[0].short_name);
-
+$(".pickup_h").attr('value',place.formatted_address);
 //$("#pickup").focus();
 
 });
@@ -303,11 +303,19 @@ var cityLng = place.geometry.location.lng();
 $('.droplat').attr('value',cityLat);
 $('.droplng').attr('value',cityLng);
 $("#drop").attr('value',place.name+','+place.address_components[0].short_name);
-
+$(".drop_h").attr('value',place.formatted_address);
 //$("#drop").focus();
 });
 
+$('.calculate-trip-distance-rate').click(function(){
+var km=$('.distance_from_web').val();
+if(km!=''){
+rate=km*20;
+$('.trip-km').html(km+' KM');
+$('.trip-rate').html(rate);
+}
 
+});
 
 
 
@@ -723,8 +731,8 @@ setTimeout(function(){
 
 function getDistance(){
 
-var pickup=$("#pickup").val();//alert(pickupcity);
-var drop=$("#drop").val();
+var pickup=$(".pickup_h").val();//alert(pickupcity);
+var drop=$(".drop_h").val();
 pickup = pickup.replace(/\s+/g, '');
 drop = drop.replace(/\s+/g, '');
 if(pickup!='' && drop!=''){
@@ -1342,6 +1350,18 @@ $('#tab_1').trigger('click');
 
 //for marital status
 
+
+//user permission check box
+
+$('.check-all-check-box-container >.icheckbox_minimal > .iCheck-helper').click(function(){
+if($('.icheckbox_minimal').attr('aria-checked')=='true'){
+	$('.permission-check-box').attr('checked','checked');
+	$('.permission-check-box').parent().addClass('checked');
+}else{
+	$('.permission-check-box').removeAttr('checked','checked');
+	$('.permission-check-box').parent().removeClass('checked');
+}
+});
 
  });
 

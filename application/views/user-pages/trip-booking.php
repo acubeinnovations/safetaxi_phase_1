@@ -36,7 +36,7 @@ $count=1;
 				<!--trip-booking -start-->
 			<fieldset class="body-border">
 			<legend class="body-head">Trips</legend>
-				<div class="trip-booking"><?php if($id!=gINVALID){ ?><div class="float-right"><a href="<?php echo base_url();?>front-desk/trip-booking" class="btn btn-sm btn-info">New Trip</a></div><?php } ?>
+				<div class="trip-booking"><div class="float-right"><?php if($id!=gINVALID){ ?><a href="<?php echo base_url();?>front-desk/trip-booking" class="btn btn-sm btn-info">New Trip</a><?php } ?></div>
 					<?php	
 						$attributes = array('autocomplete'=>'off','id'=>'trip-form');
 						 echo form_open(base_url().'trip-booking/book-trip',$attributes); ?>
@@ -71,7 +71,7 @@ $count=1;
 									<?php echo form_label('Pickup','pickuplabel'); ?>
 									<?php echo form_input(array('name'=>'trip_from','class'=>'form-control height-27-px','placeholder'=>'Enter Pick Up','value'=>$trip_from,'id'=>'pickup')); ?>
 									<?php echo $this->form_functions->form_error_session('trip_from', '<p class="text-red">', '</p>'); ?>
-									<div class="hide-me"> <input class="pickuplat" name="trip_from_lat" type="text" value="<?php echo $trip_from_lat; ?>"><input class="pickuplng" name="trip_from_lng" type="text" value="<?php echo $trip_from_lng; ?>"><input class="distance_from_web" name="distance_in_km_from_web" type="text" value="<?php echo $distance_in_km_from_web; ?>"></div>
+									<div class="hide-me"> <input class="pickup_h"  type="text"><input class="pickuplat" name="trip_from_lat" type="text" value="<?php echo $trip_from_lat; ?>"><input class="pickuplng" name="trip_from_lng" type="text" value="<?php echo $trip_from_lng; ?>"><input class="distance_from_web" name="distance_in_km_from_web" type="text" value="<?php echo $distance_in_km_from_web; ?>"></div>
 								</div>
 							</td>
 							<td>
@@ -85,6 +85,7 @@ $count=1;
 							
 							<td>
 								<div class="form-group margin-10-px">
+									<?php if($trip_status_id==TRIP_STATUS_ACCEPTED || $trip_status_id==TRIP_STATUS_PENDING || $id==gINVALID ){ if($roundtrip=='t') { $checked = "checked='checked'"; }else{ $checked = ""; } ?> <input <?php echo $checked; ?> type="checkbox" name="roundtrip" class="roundtrip"/><?php echo nbs(2).form_label('Round Trip','Round_Trip'); } ?>
 									<?php if($driver_id!=gINVALID && $trip_status_id==TRIP_STATUS_ACCEPTED ){ ?><input  class="btn btn-warning btn-sm revoke-driver " name="revoke" type="submit" value="REVOKE DRIVER" ><?php } ?>	<div class="hide-me"> <input name="driver_id" class="" value="<?php echo $driver_id; ?>" type="text"></div>
 							 </div>
 							</td>
@@ -99,7 +100,7 @@ $count=1;
 									<?php echo form_label('Drop','droplabel'); ?>
 									<?php echo form_input(array('name'=>'trip_to','class'=>'form-control height-27-px','placeholder'=>'Enter Drop','value'=>$trip_to,'id'=>'drop')); ?>
 									<?php echo $this->form_functions->form_error_session('trip_to', '<p class="text-red">', '</p>'); ?>
-									<div class="hide-me"> <input class="droplat" name="trip_to_lat" type="text" value="<?php echo $trip_to_lat; ?>"><input class="droplng" name="trip_to_lng" type="text" value="<?php echo $trip_to_lng; ?>"></div>
+									<div class="hide-me"> <input class="drop_h"  type="text"> <input class="droplat" name="trip_to_lat" type="text" value="<?php echo $trip_to_lat; ?>"><input class="droplng" name="trip_to_lng" type="text" value="<?php echo $trip_to_lng; ?>"></div>
 								</div>
 							</td>
 							<td>

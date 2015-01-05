@@ -49,7 +49,6 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('firstname','First Name','trim|required|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('lastname','Last Name','trim|required|min_length[2]|xss_clean');
 		$this->form_validation->set_rules('address','Address','trim|xss_clean');
-		$this->form_validation->set_rules('user_permission_id','Permission','trim|required|xss_clean');
 		$this->form_validation->set_rules('username','Username','trim|required|min_length[4]|max_length[15]|xss_clean|is_unique[users.username]');
 		$this->form_validation->set_rules('password','Password','trim|required|min_length[5]|max_length[12]|matches[cpassword]|xss_clean');
 		$this->form_validation->set_rules('cpassword','Confirmation','trim|required|min_length[5]|max_length[12]|xss_clean');
@@ -64,7 +63,7 @@ class Admin extends CI_Controller {
 	  
 		  
 		   //inserting values to db
-		    $res	=	$this->admin_model->insertUser($firstname,$lastname,$address,$username,$password,$email,$phone,$user_permission_id);
+		    $res	=	$this->admin_model->insertUser($firstname,$lastname,$address,$username,$password,$email,$phone);
 		       if($res==true){ 
 			    //sending email to user
 					$to = $email;
@@ -185,6 +184,8 @@ class Admin extends CI_Controller {
 	}else{
 		
 		$data['title']='Profile Update |'.PRODUCT_NAME;
+		$tbl=array('pages');
+		$data['pages']=$this->admin_model->getPages();
 		if(isset($_REQUEST['user-profile-update'])){
 		//echo $this->input->post('fa_account');exit;
 			$data['firstname']= trim($this->input->post('firstname'));
@@ -195,14 +196,12 @@ class Admin extends CI_Controller {
 			$data['phone']    = $this->input->post('phone');
 			$data['id']		  = $this->input->post('id');
 			$data['status']   =   $this->input->post('status');
-			$data['user_permission_id']=$this->input->post('user_permission_id');
-			
+						
 			
 	        
 			$this->form_validation->set_rules('firstname','First Name','trim|required|min_length[2]|xss_clean');
 			$this->form_validation->set_rules('lastname','Last Name','trim|required|min_length[2]|xss_clean');
 			$this->form_validation->set_rules('address','Address','trim|xss_clean');
-			$this->form_validation->set_rules('user_permission_id','Permission','trim|required|xss_clean');
 			//$this->form_validation->set_rules('username','Username','trim|required|min_length[5]|max_length[20]|xss_clean|is_unique[users.username]');
 		if($this->input->post('email')==$this->input->post('hmail')){
 			$this->form_validation->set_rules('email','Email','trim|required|valid_email|xss_clean');
@@ -231,8 +230,9 @@ class Admin extends CI_Controller {
 		}else{
 		$data['user_status']=$this->admin_model->getUserStatus();
 		$data['user_permission_id']='';
+		$data['page_ids']=explode(',',$result['page_ids']);
 		$this->showAddUser($data);
-
+		
 		}
 		} else {
 		$data['user_status']=$this->admin_model->getUserStatus();
@@ -247,6 +247,7 @@ class Admin extends CI_Controller {
 		$data['phone']=$result['phone'];
 		$data['status']=$result['user_status_id'];
 		$data['user_permission_id']=$result['user_permission_id'];
+		$data['page_ids']=explode(',',$result['page_ids']);
 		$this->showAddUser($data);
 		}
 		}
@@ -290,7 +291,7 @@ class Admin extends CI_Controller {
 		    $dbdata['address']   = $this->input->post('address');
 			if($this->form_validation->run() != False) {
 				$val    		   = $this->admin_model->updateProfile($dbdata);
-				redirect(base_url().'admin');
+				redirect(base_url().'admin/front_desk/'.$dbdata['username']);
 			}else{
 				$this->show_profile($dbdata);
 			}
@@ -302,6 +303,32 @@ class Admin extends CI_Controller {
 	   }	
 		else{
 			$this->notAuthorized();
+		}
+	}
+	public function addUserPermissions($id){
+		if(isset($_REQUEST['user-permission-add'])){
+			$pages=$_REQUEST['permissions'];
+			$username=$_REQUEST['username'];
+			$permissions='';
+			if(!empty($pages)){
+				foreach ($pages as $key =>$value ) { 
+
+				$permissions.=$value;
+					if($key<count($pages)-1){
+						$permissions.=',';
+					}
+
+				}
+			
+				$data=array('page_ids'=>$permissions);
+			
+			}else{
+				$data=array('page_ids'=>'');
+			}
+
+			$this->admin_model->updatePermisions($data,$id);
+		$this->session->set_userdata(array('dbSuccess'=>'Permissions Added Successfully'));
+		redirect(base_url().'admin/front_desk/'.$username);
 		}
 	}
 	public function show_profile($data) {

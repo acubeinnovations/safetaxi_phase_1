@@ -194,6 +194,12 @@ class Trip_booking extends CI_Controller {
 				$data['pick_up_time']		=	$this->input->post('pick_up_time');
 				$data['distance_in_km_from_web']	=	$this->input->post('distance_in_km_from_web'); //NEED TO REMOVE COMMENT
 				
+				if($this->input->post('roundtrip')!=null){
+					$data['roundtrip']	='t';
+				}else{
+					$data['roundtrip']	='f';
+
+				}
 				
 			if($this->form_validation->run()==false){
 				$this->mysession->set('post',$data);
@@ -273,7 +279,9 @@ class Trip_booking extends CI_Controller {
 			$dbdata['trip_to_lng']					=$data['trip_to_lng'];
 			$dbdata['trip_to_landmark']				=$data['trip_to_landmark'];
 			$dbdata['user_id']						=$this->session->userdata('id');
-			
+		
+			$dbdata['round_trip']					=$data['roundtrip'];			
+
 			$customer['mob']=$this->session->userdata('customer_mobile');
 			$customer['email']=$this->session->userdata('customer_email');	
 			$customer['name']=$this->session->userdata('customer_name');

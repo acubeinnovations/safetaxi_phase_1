@@ -74,8 +74,7 @@ class user_model extends CI_Model {
                 'email'=>$this->details->email,
 				'username'=>$this->details->username,
 				'type'=>$this->details->user_type_id,
-				'permission'=>$this->details->user_permission_id,
-                'isLoggedIn'=>true,
+				'isLoggedIn'=>true,
 				'token_pass' =>$this->details->password
             )
         );
@@ -114,7 +113,26 @@ class user_model extends CI_Model {
 		}
 
    	}
-
+	public function getPageId($page){
+	$this->db->from('pages');
+    $this->db->where('name',$page);
+	$pagedetails=$this->db->get()->result();
+		if(!empty($pagedetails)){
+				return $pagedetails[0]->id;
+		}else{
+			return false;	
+		}
+	}
+	public function getPageIds($id){
+	$this->db->from('users');
+    $this->db->where('id',$id);
+	$userdetails=$this->db->get()->result();
+		if(!empty($userdetails)){
+				return $userdetails[0]->page_ids;
+		}else{
+			return false;	
+		}
+	}
 	public function getArray($tbl){
 	
 	$flag=0;
