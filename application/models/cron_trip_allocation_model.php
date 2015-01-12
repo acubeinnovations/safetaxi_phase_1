@@ -56,6 +56,7 @@ class Cron_trip_allocation_model extends CI_Model {
 	function sendNotification($data,$drivers){
 		for($driver_index=0;$driver_index<count($drivers);$driver_index++){
 		$data['app_key']=$drivers[$driver_index];
+		if(isset($data['app_key'])){
 		$this->db->set('created', 'NOW()', FALSE);
 		if($this->session->userdata('id')!=''){
 			$user_id=$this->session->userdata('id');
@@ -64,6 +65,7 @@ class Cron_trip_allocation_model extends CI_Model {
 		}
 		$this->db->set('user_id',$user_id , FALSE);
 		$this->db->insert('notifications',$data);
+		}
 		
 		}
 	

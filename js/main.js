@@ -278,7 +278,7 @@ var API_KEY='AIzaSyBy-tN2uOTP10IsJtJn8v5WvKh5uMYigq8';
 //address
 
 var options = {
-			 
+			
 		    componentRestrictions: {country: "IN"}
 		 };
 var autocompletepickup = new google.maps.places.Autocomplete($("#pickup")[0], options);
@@ -733,8 +733,8 @@ function getDistance(){
 
 var pickup=$(".pickup_h").val();//alert(pickupcity);
 var drop=$(".drop_h").val();
-pickup = pickup.replace(/\s+/g, '');
-drop = drop.replace(/\s+/g, '');
+//pickup = pickup.replace(/\s+/g, '');
+//drop = drop.replace(/\s+/g, '');
 if(pickup!='' && drop!=''){
 var url='https://maps.googleapis.com/maps/api/distancematrix/json?origins='+pickup+'&destinations='+drop+'&mode=driving&language=en&key='+API_KEY;
 

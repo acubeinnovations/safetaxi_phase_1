@@ -155,7 +155,7 @@ class Trip_booking extends CI_Controller {
 		}
 	}
 
-	function saveTrip($revoke){
+	function saveTrip($revoke){ 
 
 		if(isset($_REQUEST['id']) && $_REQUEST['id']!=gINVALID){
 					$data['id']=$this->input->post('id');
@@ -171,14 +171,19 @@ class Trip_booking extends CI_Controller {
 				$this->form_validation->set_rules('trip_to_landmark','Drop  landmark','trim|xss_clean');
 				$this->form_validation->set_rules('pick_up_date','Date','trim|required|xss_clean');
 				$this->form_validation->set_rules('pick_up_time','Time','trim|required|xss_clean');
-				$this->form_validation->set_rules('radius','Radius','trim|required|xss_clean');
+				if($revoke!=true){
+					$this->form_validation->set_rules('radius','Radius','trim|required|xss_clean');
+					$data['radius']				=	$this->input->post('radius');
+				}else{
+					$data['radius']				=	'1';	
+				}
 								
 	
 				$data['name']				=	$this->input->post('name');
 				$data['new_customer']		=	$this->input->post('new_customer');
 				
 				$data['mobile']				=	$this->input->post('mobile');
-				$data['radius']				=	$this->input->post('radius');
+				
 				$data['driver_id']				=	$this->input->post('driver_id');
 				
 				$data['trip_from']			=	$this->input->post('trip_from');
@@ -218,7 +223,7 @@ class Trip_booking extends CI_Controller {
 			$tripdatetime							=$data['pick_up_date'].' '.$data['pick_up_time'];
 			$dbdata['trip_type_id']					=$this->checkFutureOrInstantTrip($tripdatetime);
 				
-			if(trim($data['id'])!=gINVALID && trim($revoke)==true ){//echo $data['id'];echo $revoke;exit;
+			if(trim($data['id'])!=gINVALID && trim($revoke)==true ){
 				$canceltripbydriver['trip_status_id']			= TRIP_STATUS_DRIVER_CANCELLED;
 				$res = $this->trip_booking_model->updateTrip($canceltripbydriver,$data['id']);
 				$driver=$this->trip_booking_model->getDriverDetails($data['id']);

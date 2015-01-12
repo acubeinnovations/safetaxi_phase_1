@@ -69,6 +69,7 @@ class Sys_login extends CI_Controller {
 		
 		public function insertPagesToDb(){	
 					$i=0;
+					$files='';
 					$pages=$this->admin_model->getPages();
 					foreach(glob('./application/views/user-pages/*.*') as $filename){
 						if($pages!=false){
