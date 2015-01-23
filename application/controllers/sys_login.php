@@ -84,7 +84,7 @@ class Sys_login extends CI_Controller {
 							$i++;
 						}
 					} 
-					if(count($files)>0){
+					if(count($files)>0 && $files!=''){
 					$this->admin_model->insertPages($files);
 					}
 
