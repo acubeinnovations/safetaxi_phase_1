@@ -414,6 +414,44 @@ $('#reccurent_alternatives_pickuptimepicker0').datetimepicker({datepicker:false,
 
 });
 
+$('.local-trip-container > .icheckbox_minimal > .iCheck-helper').on('click',function(){
+if($('.local-trip-container > .icheckbox_minimal').attr('aria-checked')=='true'){
+
+
+disableDrop();
+}else{
+$('#drop').val('');
+$('#drop').removeAttr('disabled');
+$('#droploc').removeAttr('disabled');
+
+}
+
+});
+
+$('.round-trip-container > .icheckbox_minimal > .iCheck-helper').on('click',function(){
+if($('.local-trip-container > .icheckbox_minimal').attr('aria-checked')=='true'){
+$('.round-trip-container > .icheckbox_minimal > .iCheck-helper').trigger('click');
+}
+});
+
+if($('.localtrip').attr('checked')=='checked'){
+disableDrop();
+}
+
+function disableDrop(){
+$('#drop').val('local');
+$('#droploc').val('');
+$('.droplat').val('');
+$('.droplng').val('');
+$('.distance_from_web').val('1');
+$('#drop').attr('disabled','true');
+$('#droploc').attr('disabled','true');
+if($('.round-trip-container > .icheckbox_minimal').attr('aria-checked')=='true'){
+$('.round-trip-container > .icheckbox_minimal > .iCheck-helper').trigger('click');
+}
+
+}
+
 $('.add-reccurent-dates').click(function(){
 $('.height-300-px').css('height','420px');
 var slider=$('.reccurent-container').attr('slider');
@@ -1204,6 +1242,75 @@ markers=jQuery.parseJSON(markers);
         });
     }
 }
+
+
+var map;
+
+
+function initializeDirectionMap(trip_directions) 
+{ 
+	trip_directions=jQuery.parseJSON(trip_directions);
+	if(trip_directions!=''){
+	var latlng = new google.maps.LatLng(trip_directions[0]['lat'], trip_directions[0]['lng']);
+    var myOptions = {
+      zoom: 15,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById("track_map_canvas"), myOptions);
+
+	var rendererOptions = { map: map };
+	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+
+
+
+	var wps =[];
+	for(i=1;i<trip_directions.length-1;i++){
+		k=0;
+		var point = new google.maps.LatLng(trip_directions[i]['lat'], trip_directions[i]['lng']);
+		wps['location']=point;
+		k++;
+		
+	}
+	
+	
+	var org = new google.maps.LatLng(trip_directions[0]['lat'], trip_directions[0]['lng']);
+	var dest = new google.maps.LatLng(trip_directions[trip_directions.length-1]['lat'], trip_directions[trip_directions.length-1]['lng']);
+
+	var request = {
+			origin: org,
+			destination: dest,
+			waypoints: wps,
+			travelMode: google.maps.DirectionsTravelMode.DRIVING
+			};
+
+	directionsService = new google.maps.DirectionsService();
+	directionsService.route(request, function(response, status) {
+				if (status == google.maps.DirectionsStatus.OK) {
+					directionsDisplay.setDirections(response);
+				}
+				else
+					alert ('failed to get directions');
+			});
+}
+}
+
+
+$('#track-map-tab').click(function(){
+
+var trip_id=$('.id').val();
+	if(trip_id!=-1) {
+	$.post(base_url+"/maps/get-directions",
+			  {
+				trip_id:trip_id
+			  },function(data){
+				if(data){
+			 initializeDirectionMap(data);
+			}
+	});
+	}
+
+});
 
 $('#map-tab').click(function(){
 if($('#map-tab').attr('loaded')=='false'){

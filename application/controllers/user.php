@@ -454,7 +454,7 @@ class User extends CI_Controller {
 	$data['trip_to_lng']=$values[0]->trip_to_lng;
 	$data['driver_id']=$values[0]->driver_id;
 	$data['trip_status_id']=$values[0]->trip_status_id;
-	
+	$data['localtrip']=$values[0]->local_trip;
 	$data['radius']=1;
 	$data['distance_in_km_from_web']=$values[0]->distance_in_km_from_web;
 	$data['added_customer']='true';
@@ -479,6 +479,7 @@ class User extends CI_Controller {
 	$data['added_customer']='false';
 	$data['trip_status_id']=gINVALID;
 	$data['roundtrip']	='f';
+	$data['localtrip']='f';
 	}
 	}else{
 	$data['id']=gINVALID;
@@ -500,6 +501,7 @@ class User extends CI_Controller {
 	$data['added_customer']='false';
 	$data['trip_status_id']=gINVALID;
 	$data['roundtrip']	='f';
+	$data['localtrip']='f';
 	}
 	$tbl_arry=array('drivers');
 	

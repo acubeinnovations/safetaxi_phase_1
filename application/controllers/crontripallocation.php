@@ -34,7 +34,7 @@ class Crontripallocation extends CI_Controller {
 
 	$notifications=$this->cron_trip_allocation_model->getDriversWithTripAccepted($trips[$i]->id);
 	$booking_date_time=$trips[$i]->booking_date.' '.$trips[$i]->booking_time;
-		if(count($notifications)>2 || $this->isbookingTimeExceeded($booking_date_time)){
+		if(count($notifications)>0 || $this->isbookingTimeExceeded($booking_date_time)){
 			
 			$min_amount=INF;
 			$k=0;

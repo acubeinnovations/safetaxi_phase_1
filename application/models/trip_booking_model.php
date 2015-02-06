@@ -144,9 +144,21 @@ SELECT max( id ) FROM vehicle_locations_logs GROUP BY app_key ) ORDER BY VL.crea
 
 	}
 
+	function getTripDirections($id){
+		$qry = "SELECT lat,lng  FROM vehicle_locations_logs  WHERE trip_id=".mysql_real_escape_string($id)." ORDER BY created ASC";
+		$result=$this->db->query($qry);	
+		$result=$result->result_array();
+		if(count($result)>0){
+			return $result;
+		}else{
+			return false;
+		}
+
+	}
+
 	function getAvailableVehicles($data){
 	
-	$qry = sprintf("SELECT VL.app_key, VL.created, VL.id, VL.lat, VL.lng, ( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) ) AS distance
+	$qry = sprintf("SELECT VL.app_key,( 3959 * acos( cos( radians( '%s' ) ) * cos( radians( VL.lat ) ) * cos( radians( VL.lng ) - radians( '%s' ) ) + sin( radians( '%s' ) ) * sin( radians( VL.lat ) ) ) ) AS distance
 FROM vehicle_locations_logs AS VL
 LEFT JOIN drivers AS D ON D.app_key = VL.app_key
 WHERE VL.id
@@ -167,11 +179,16 @@ ORDER BY VL.created DESC",
 	/*SELECT max( id )
 FROM vehicle_locations_logs WHERE  TIMEDIFF( NOW(),created) <= '00:15:00'
 GROUP BY app_key
+ VL.created, VL.id, VL.lat, VL.lng
 	*/
 	$result=$this->db->query($qry);
 	$result=$result->result_array();
 	if(count($result)>0){
-	return $result;
+	//return $result;
+	for($i=0;$i<count($result);$i++){
+		$driver[$i]['app_key']=$result[$i]['app_key'];
+	}
+	return $driver;
 	}else{
 	return false;
 	}

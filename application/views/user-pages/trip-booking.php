@@ -85,7 +85,7 @@ $count=1;
 							
 							<td>
 								<div class="form-group margin-10-px">
-									<?php if($trip_status_id==TRIP_STATUS_ACCEPTED || $trip_status_id==TRIP_STATUS_PENDING || $id==gINVALID ){ if($roundtrip=='t') { $checked = "checked='checked'"; }else{ $checked = ""; } ?> <input <?php echo $checked; ?> type="checkbox" name="roundtrip" class="roundtrip"/><?php echo nbs(2).form_label('Round Trip','Round_Trip'); } ?>
+									<?php if($trip_status_id==TRIP_STATUS_ACCEPTED || $trip_status_id==TRIP_STATUS_PENDING || $id==gINVALID ){ if($roundtrip=='t') { $checked = "checked='checked'"; }else{ $checked = ""; } ?><div class="round-trip-container"> <input <?php echo $checked; ?> type="checkbox" name="roundtrip" class="roundtrip"/><?php echo nbs(2).form_label('Round Trip','Round_Trip'); } ?></div>
 									<?php if($driver_id!=gINVALID && $trip_status_id==TRIP_STATUS_ACCEPTED ){ ?><input  class="btn btn-warning btn-sm revoke-driver " name="revoke" type="submit" value="REVOKE DRIVER" ><?php } ?>	<div class="hide-me"> <input name="driver_id" class="" value="<?php echo $driver_id; ?>" type="text"></div>
 							 </div>
 							</td>
@@ -97,8 +97,8 @@ $count=1;
 							
 							<td>
 								<div class="form-group margin-10-px margin-top-less-12">
-									<?php echo form_label('Drop','droplabel'); ?>
-									<?php echo form_input(array('name'=>'trip_to','class'=>'form-control height-27-px','placeholder'=>'Enter Drop','value'=>$trip_to,'id'=>'drop')); ?>
+									<?php echo form_label('Drop','droplabel');   if($localtrip=='t') { $checked = "checked='checked'"; $disabled_drop="disabled=>'true'"; }else{ $checked = ""; $disabled_drop="";} ?><div class="float-right local-trip-container"> <input <?php echo $checked;  ?> type="checkbox" name="localtrip" class="localtrip"/><?php echo nbs(2).form_label('Local','local_trip');  ?> </div>
+									<?php echo form_input(array('name'=>'trip_to','class'=>'form-control height-27-px','placeholder'=>'Enter Drop','value'=>$trip_to,'id'=>'drop',$disabled_drop));?>
 									<?php echo $this->form_functions->form_error_session('trip_to', '<p class="text-red">', '</p>'); ?>
 									<div class="hide-me"> <input class="drop_h"  type="text"> <input class="droplat" name="trip_to_lat" type="text" value="<?php echo $trip_to_lat; ?>"><input class="droplng" name="trip_to_lng" type="text" value="<?php echo $trip_to_lng; ?>"></div>
 								</div>
@@ -106,7 +106,7 @@ $count=1;
 							<td>
 								<div class="form-group margin-10-px margin-top-less-12">
 									<?php echo form_label('Drop Landmark','droplandmarklabel'); ?>
-									<?php echo form_input(array('name'=>'trip_to_landmark','class'=>'form-control height-27-px','placeholder'=>'Enter Drop Landmark','value'=>$trip_to_landmark)); ?>
+									<?php echo form_input(array('name'=>'trip_to_landmark','id'=>'droploc','class'=>'form-control height-27-px','placeholder'=>'Enter Drop Landmark','value'=>$trip_to_landmark,$disabled_drop)); ?>
 									<?php echo $this->form_functions->form_error_session('trip_to_landmark', '<p class="text-red">', '</p>'); ?>
 								</div>
 							</td>
@@ -157,7 +157,7 @@ $count=1;
                                 <ul class="nav nav-tabs">
                                     <li class="active" id="list-tab"><a href="#tab_1" data-toggle="tab">List</a></li>
                                     <li class="" id="map-tab" loaded='false'><a href="#tab_2" data-toggle="tab">Map</a></li>
-                                   
+                                   	<li class="" id="track-map-tab" loaded='false'><a href="#tab_3" data-toggle="tab">Track Vehicle</a></li>
                                     
                                 </ul>
                                 <div class="tab-content">
@@ -197,6 +197,9 @@ $count=1;
                                     </div><!-- /.tab-pane -->
                                     <div class="tab-pane" id="tab_2">
                                        <div id="map_canvas"></div>
+                                    </div><!-- /.tab-pane -->
+																		 <div class="tab-pane" id="tab_3">
+                                       <div id="track_map_canvas"></div>
                                     </div><!-- /.tab-pane -->
                                 </div><!-- /.tab-content -->
                             </div>

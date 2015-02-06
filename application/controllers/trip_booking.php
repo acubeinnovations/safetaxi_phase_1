@@ -130,7 +130,30 @@ class Trip_booking extends CI_Controller {
 					$data_locations['center_lng']=$this->input->post('trip_from_lng');
 					$data_locations['radius']=$this->input->post('radius');	
 					$id=$this->input->post('id');
-					$drivers=$this->searchVehicles($data_locations);
+
+					$drivers_pick=false;
+					$drivers_drop=false;
+
+					$drivers_pick=$this->searchVehicles($data_locations);
+					
+					if($this->input->post('localtrip')==null){
+					$data_locations['center_lat']==$this->input->post('trip_to_lat');
+					$data_locations['center_lng']==$this->input->post('trip_to_lng');
+					
+
+					$drivers_drop=$this->searchVehicles($data_locations);
+					
+					}	
+					
+					if($drivers_pick!=false && $drivers_drop!=false){
+						$drivers=array_map("unserialize", array_unique(array_map("serialize",array_merge_recursive($drivers_pick,$drivers_drop))));
+					}else if($drivers_pick!=false){
+						$drivers=$drivers_pick;
+					}else if($drivers_drop!=false){
+						$drivers=$drivers_drop;
+					}else{
+						$drivers=false;
+					}
 					if($drivers!=false){
 						for($i=0;$i<count($drivers);$i++){
 							$app_key=$drivers[$i]['app_key'];
@@ -167,7 +190,9 @@ class Trip_booking extends CI_Controller {
 				$this->form_validation->set_rules('mobile','Mobile','trim|regex_match[/^[0-9]{10}$/]|numeric|xss_clean|required');
 				$this->form_validation->set_rules('trip_from','Pickup','trim|required|xss_clean');
 				$this->form_validation->set_rules('trip_from_landmark','Pickup Land Mark','trim|xss_clean');
-				$this->form_validation->set_rules('trip_to','Drop','trim|xss_clean|required');
+				if($this->input->post('localtrip')==null){
+					$this->form_validation->set_rules('trip_to','Drop','trim|xss_clean|required');
+				}
 				$this->form_validation->set_rules('trip_to_landmark','Drop  landmark','trim|xss_clean');
 				$this->form_validation->set_rules('pick_up_date','Date','trim|required|xss_clean');
 				$this->form_validation->set_rules('pick_up_time','Time','trim|required|xss_clean');
@@ -191,10 +216,7 @@ class Trip_booking extends CI_Controller {
 				$data['trip_from_lng']		=	$this->input->post('trip_from_lng');
 
 				$data['trip_from_landmark']	=	$this->input->post('trip_from_landmark');
-				$data['trip_to']			=	$this->input->post('trip_to');
-				$data['trip_to_lat']		=	$this->input->post('trip_to_lat');
-				$data['trip_to_lng']		=	$this->input->post('trip_to_lng');
-				$data['trip_to_landmark']	=	$this->input->post('trip_to_landmark');
+				
 				$data['pick_up_date']		=	$this->input->post('pick_up_date');
 				$data['pick_up_time']		=	$this->input->post('pick_up_time');
 				$data['distance_in_km_from_web']	=	$this->input->post('distance_in_km_from_web'); //NEED TO REMOVE COMMENT
@@ -203,6 +225,21 @@ class Trip_booking extends CI_Controller {
 					$data['roundtrip']	='t';
 				}else{
 					$data['roundtrip']	='f';
+
+				}
+			
+				if($this->input->post('localtrip')!=null){
+					$data['localtrip']	='t';
+					$data['trip_to']			=	'local';
+					$data['trip_to_lat']		=	'';
+					$data['trip_to_lng']		=	'';
+					$data['trip_to_landmark']	=	'';
+				}else{
+					$data['localtrip']	='f';
+					$data['trip_to']			=	$this->input->post('trip_to');
+					$data['trip_to_lat']		=	$this->input->post('trip_to_lat');
+					$data['trip_to_lng']		=	$this->input->post('trip_to_lng');
+					$data['trip_to_landmark']	=	$this->input->post('trip_to_landmark');
 
 				}
 				
@@ -285,7 +322,8 @@ class Trip_booking extends CI_Controller {
 			$dbdata['trip_to_landmark']				=$data['trip_to_landmark'];
 			$dbdata['user_id']						=$this->session->userdata('id');
 		
-			$dbdata['round_trip']					=$data['roundtrip'];			
+			$dbdata['round_trip']					=$data['roundtrip'];	
+			$dbdata['local_trip']					=$data['localtrip'];		
 
 			$customer['mob']=$this->session->userdata('customer_mobile');
 			$customer['email']=$this->session->userdata('customer_email');	
@@ -324,15 +362,37 @@ class Trip_booking extends CI_Controller {
 				redirect(base_url().'front-desk/trip-booking');
 
 				}else{
+				
 				$res = $this->trip_booking_model->bookTrip($dbdata);
 				if($res!=false && $res>0){
+					
 					$this->session->set_userdata(array('dbSuccess'=>'Trip Booked Succesfully..!!'));
 					$this->session->set_userdata(array('dbError'=>''));
 					$data_locations['center_lat']=$dbdata['trip_from_lat'];
 					$data_locations['center_lng']=$dbdata['trip_from_lng'];
 					$data_locations['radius']=$data['radius'];
 					
-					$drivers=$this->searchVehicles($data_locations);
+					$drivers_pick=false;
+					$drivers_drop=false;
+
+					$drivers_pick=$this->searchVehicles($data_locations);
+					
+					if($dbdata['local_trip']=='f'){
+					$data_locations['center_lat']=$dbdata['trip_to_lat'];
+					$data_locations['center_lng']=$dbdata['trip_to_lng'];
+					$data_locations['radius']=$data['radius'];
+
+					$drivers_drop=$this->searchVehicles($data_locations);
+					}	
+					if($drivers_pick!=false && $drivers_drop!=false){
+							$drivers=array_map("unserialize", array_unique(array_map("serialize",array_merge_recursive($drivers_pick,$drivers_drop))));
+					}else if($drivers_pick!=false){
+						$drivers=$drivers_pick;
+					}else if($drivers_drop!=false){
+						$drivers=$drivers_drop;
+					}else{
+						$drivers=false;
+					}
 					if($drivers!=false){
 						for($i=0;$i<count($drivers);$i++){
 							$app_key=$drivers[$i]['app_key'];

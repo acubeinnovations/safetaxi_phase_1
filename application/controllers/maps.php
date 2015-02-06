@@ -25,9 +25,9 @@ class Maps extends CI_Controller {
 		}else if($param1=='get-markers'){
 
 			$this->getMarkers();
+		}else if($param1=='get-directions'){
+			$this->getDirections();
 		}
-		
-		
 	}else{
 			echo 'you are not authorized access this page..';
 	}
@@ -72,6 +72,18 @@ class Maps extends CI_Controller {
 			}
 
 			echo json_encode($markers);
+
+
+			}
+		}
+		public function getDirections(){
+			if(isset($_REQUEST['trip_id'])){
+			$trip_id=$_REQUEST['trip_id'];
+			$trip_directions=$this->trip_booking_model->getTripDirections($trip_id);
+			
+			//print_r($trip_directions);exit;
+
+			echo json_encode($trip_directions);
 
 
 			}
